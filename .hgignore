@@ -1,0 +1,9 @@
+syntax: glob
+*.swp
+*~
+.DS_Store
+.bundle
+.git/*
+db/*.sqlite3
+log/*.log
+tmp/

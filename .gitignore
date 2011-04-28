@@ -1,0 +1,7 @@
+.hg/*
+.bundle
+tmp/
+db/*.sqlite3
+log/
+*.swp
+*~

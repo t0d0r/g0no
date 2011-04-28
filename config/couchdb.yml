@@ -1,0 +1,12 @@
+default: &default
+  validation_framework: :active_model #optional
+
+development:
+  <<: *default
+  database: development_db_name
+test:
+  <<: *default
+  database: test_db_name
+production:
+  <<: *default
+  database: <%= ENV['DB_NAME'] %>
