@@ -2,17 +2,16 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.5'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
 gem 'sqlite3'
-# gem 'couchrest_model', :git => 'git://github.com/couchrest/couchrest_model'
+gem 'couchrest'
+gem 'couchrest_model'
 gem 'haml'
-gem "sass"
-gem "json"
-gem "couch_potato"
-gem "couchrest_model"
-gem "nifty-generators", :group => :development
+gem 'sass'
+gem 'json'
+gem 'nifty-generators', :group => :development
+
+gem 'warden'
+gem 'devise'
 
 # Use unicorn as the web server
 # gem 'unicorn'

@@ -9,5 +9,5 @@ Event.addBehavior({
       $('title').innerHTML = $F(this);
     }
   },
-  "#date": DateSelector,
+//  "#date": DateSelector,
 });
