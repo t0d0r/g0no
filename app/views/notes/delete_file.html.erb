@@ -1,0 +1,17 @@
+<h1 id="title"><%= @note.title %></h1>
+
+<small>Author <%= @note.author %></small>
+<br/>
+<small>Updated <%= @note.updated_at.to_s(:rfc822) %> from <%= @note.updated_from %></small>
+
+<p><%= @note.description %></p>
+
+
+<h2>!!!! Your are about to delete file !!!!</h2>
+
+<h2>File <%= @filename %> will be deleted !!!</h2>
+
+<h2>Are You shure ?</h2>
+
+<%= link_to "Delete", note_path(:id => @note, :filename => @filename ) %> 
+<%= link_to "Cancel", note_path(:id => @note)%>

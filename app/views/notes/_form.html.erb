@@ -8,8 +8,8 @@
   <%= f.label "Description" %>
   <%= f.text_area :description %>
 
-  <%# f.label "Tags (separated by spaces)" %>
-  <%# f.text_field "tags", :value => @note.tags.join(" ") %>
+  <%= f.label "Tags (separated by spaces)" %>
+  <%= f.text_field "tags", :value => @note.tags.join(" ") %>
 
   <%= f.label "Visited On" %>
   <%= f.text_field "visited_on", :id => "date" %>
@@ -18,8 +18,8 @@
   <%= f.unobtrusive_date_text_picker "updated_at", :format => "y-m-d" %>
   <br />
   <%= f.label "Attachment" %>
-  <%= f.file_field "attachment" %>
-
+  <%= file_field_tag("note[attachments][]") %>  
+  
   <%= f.submit "Save" %>
   
 <% end %>

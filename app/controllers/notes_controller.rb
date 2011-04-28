@@ -1,11 +1,18 @@
+require 'open-uri'
+
 class NotesController < ApplicationController
+
   def index
-    # @notes = Note.all
-    # render :text => "text to render..."
+    @notes = Note.all
   end
   
   def show
-    @note = Note.find(params[:id])
+    if params[:filename]
+      @note = Note.find(params[:id])
+      send_data open([@note.uri, params[:filename]].join("/")).read, :filename => params[:filename]
+    else
+      @note = Note.find(params[:id])
+    end
   end
   
   def new
@@ -13,8 +20,13 @@ class NotesController < ApplicationController
   end
   
   def create
-    note = Note.create(params[:note])
-    note.save
+    params[:note][:author] = current_user.username
+    if Note.create params[:note]
+      flash[:success] = "Success !"
+    else
+      flash[:error] = "Fail !"
+    end
+    redirect_to notes_path
   end
   
   def edit
@@ -22,15 +34,28 @@ class NotesController < ApplicationController
   end
   
   def update
+    params[:note][:updated_from] = current_user.username
     @note = Note.find(params[:id])
-    @note = params[:note]
+    tags = params[:note][:tags]
+    params[:note][:tags] = tags.split(/\s+/)
+    @note.update_attributes(params[:note])
     
     respond_to do |wants|
       wants.html { redirect_to note_url(@note) }
     end
-    # Can also catch RestClient::RequestFailed for a 412 conflict
+  end
+
+  def by_tag
+    @tag = params[:id]                         if params[:id]
+    @notes = Note.by_tags :key => params[:id]  if params[:id]
+  end
+
+  def delete_file
+    @filename = params[:filename]
+    @note = Note.find(params[:id])
   end
   
   def destroy
   end
+
 end

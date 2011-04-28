@@ -1,6 +1,8 @@
 <h1 id="title"><%= @note.title %></h1>
 
-<small>Updated <%= @note.updated_at.to_s(:rfc822) %></small>
+<small>Author <%= @note.author %></small>
+<br/>
+<small>Updated <%= @note.updated_at.to_s(:rfc822) %> from <%= @note.updated_from %></small>
 
 <p><%= @note.description %></p>
 
@@ -10,11 +12,11 @@
     <li>
       <%= link_to attachment_name, note_path(:id => @note, :filename => attachment_name) %> 
       <%= number_to_human_size(attachment_attributes['length']) %>
+      <%= link_to "Delete", delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
     </li>
   <% end %>
 </ul>
 <% end %>
 
-<small><em>Tags:</em> <%# @note.tags.join(", ") %></small>
-
-<p><%= link_to "Edit", edit_note_path(@note) %></p>
+<small><em>Tags:</em><%= render :partial => 'by_tag', :collection => @note.tags %></small>
+<p><%= link_to "Edit", edit_note_path(@note)%></p>

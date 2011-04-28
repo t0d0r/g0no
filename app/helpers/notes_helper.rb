@@ -6,4 +6,10 @@ module NotesHelper
     end
   end
 
+  def link_to_tags(tags)
+    tags.each do |tag|
+    
+    end
+  end
+
 end

@@ -1,7 +1,7 @@
-<h1>Your Notes</h1>
+<h1>Notes tagged with <%= @tag %></h1>
 
 <% @notes.each do |note| %>
   <h2><%= link_to note.title, note_path(note) %></h2>
   <p><%= note.description %></p>
-  <small><em>Tags:</em> <%= render :partial => 'by_tag', :collection => note.tags %></small>
+  <small><em>Tags:</em> <%= note.tags.join(", ") %></small>
 <% end %>

@@ -1,7 +1,14 @@
 GOno::Application.routes.draw do
     
-  resources :notes
-  
+  devise_for :users
+
+  resources :notes do
+    member do
+      get :by_tag
+      get :delete_file
+    end
+  end
+
   root :to => "notes#index"
   # The priority is based upon order of creation:
   # first created -> highest priority.
