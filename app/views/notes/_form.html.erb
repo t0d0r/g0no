@@ -2,24 +2,24 @@
   
   <%= couchdb_rev_field f, @note %>
   
-  <%= f.label "Title" %>
-  <%= f.text_field :title %>
+  <%= f.label "Заглавие" %>
+  <%= f.text_field :title, :size => 60 %>
   
-  <%= f.label "Description" %>
+  <%= f.label "Описание" %>
   <%= f.text_area :description %>
 
-  <%= f.label "Tags (separated by spaces)" %>
-  <%= f.text_field "tags", :value => @note.tags.join(" ") %>
+  <%= f.label "ключови думи (отделени с място)" %>
+  <%= f.text_field "tags", :value => @note.tags.join(" "), :size => 60 %>
 
-  <%= f.label "Visited On" %>
-  <%= f.text_field "visited_on", :id => "date" %>
+  <%# f.label "Visited On" %>
+  <%# f.text_field "visited_on", :id => "date" %>
   
   <br />
   <%= f.unobtrusive_date_text_picker "updated_at", :format => "y-m-d" %>
   <br />
-  <%= f.label "Attachment" %>
+  <%= f.label "Файл" %>
   <%= file_field_tag("note[attachments][]") %>  
   
-  <%= f.submit "Save" %>
+  <%= f.submit "Запис" %>
   
 <% end %>

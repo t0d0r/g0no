@@ -10,6 +10,7 @@ class Note < CouchRest::Model::Base
   property :closed,       TrueClass,  :default => false # same as active
   property :author,       String,     :default => nil 
   property :updated_from, String,     :default => nil 
+  property :attachments_nfo, Hash,    :default => nil
   timestamps!
 
   view_by :all
@@ -30,6 +31,7 @@ class Note < CouchRest::Model::Base
 
   def attachments=(attachments)
     attachments.each do |attachment|
+      # TODO: add self.
       self.create_attachment(:file => attachment, :name => attachment.original_filename)
     end
   end

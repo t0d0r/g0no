@@ -1,8 +1,8 @@
 <h1 id="title"><%= @note.title %></h1>
 
-<small>Author <%= @note.author %></small>
+<small>Автор <%= @note.author %></small>
 <br/>
-<small>Updated <%= @note.updated_at.to_s(:rfc822) %> from <%= @note.updated_from %></small>
+<small>Редактиран <%= @note.updated_at.to_s(:rfc822) %> от <%= @note.updated_from %></small>
 
 <p><%= @note.description %></p>
 
@@ -12,7 +12,7 @@
     <li>
       <%= link_to attachment_name, note_path(:id => @note, :filename => attachment_name) %> 
       <%= number_to_human_size(attachment_attributes['length']) %>
-      <%= link_to "Delete", delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
+      <%= link_to "Delete", confirm_delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
     </li>
   <% end %>
 </ul>

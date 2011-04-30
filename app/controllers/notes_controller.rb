@@ -50,9 +50,20 @@ class NotesController < ApplicationController
     @notes = Note.by_tags :key => params[:id]  if params[:id]
   end
 
+  def confirm_delete_file
+    @filename = params[:filename]
+    @note = Note.find(params[:id])
+  end
+
   def delete_file
     @filename = params[:filename]
     @note = Note.find(params[:id])
+    @note.delete_attachment(@filename)
+    @note.save
+    flash[:notice] = "file #{@filename} was deleted!"
+    respond_to do |wants|
+      wants.html { redirect_to note_url(@note) }
+    end
   end
   
   def destroy
