@@ -6,17 +6,49 @@
 
 <p><%= @note.description %></p>
 
-<% if @note.attachments %>
+<strong><em>Финансова информация</em></strong>
+<br/>
+<div id="new_finance_div" style="display:none">
+  <%= form_for @note do |f| %>
+    <%= couchdb_rev_field f, @note %>
+    <%= text_field :new_finance, :date, :size => 8 %>
+    <%= collection_select :new_finance, :type, { 1 => "Приход", 2 => "Разход"}, :first, :last %>
+    <%= text_field :new_finance, :amount %>
+    <%= f.submit "Запис" %>
+  <% end %>
+</div>
+<%= link_to "+ Добави приход/разход", {}, :id => "new_finance_switch" %>
+
+<br/>
+<br/>
+<strong><em>Прикачени файлове</em></strong>
+<br/>
+
+<% unless @note.attachments.empty? %>
 <ul>
   <% @note.attachments.each do |attachment_name, attachment_attributes| %>
     <li>
       <%= link_to attachment_name, note_path(:id => @note, :filename => attachment_name) %> 
       <%= number_to_human_size(attachment_attributes['length']) %>
-      <%= link_to "Delete", confirm_delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
+      <%= link_to "Изтрий", confirm_delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
     </li>
   <% end %>
 </ul>
 <% end %>
 
-<small><em>Tags:</em><%= render :partial => 'by_tag', :collection => @note.tags %></small>
+<div id="upload_file_div" style="display:none">
+  <%= form_for @note, :html => {:multipart => true} do |f| %>
+    <br/>
+    <%= file_field_tag("note[attachments][]") %>  
+    <br/>
+    <%= f.submit "Запис" %>
+  <% end %>
+</div>
+<%= link_to "+ Добави файл", {}, :id => "upload_file_switch" %>
+
+<br/>
+<br/>
+<br/>
+
+<small><em>Тагове: </em><%= render :partial => 'by_tag', :collection => @note.tags %></small>
 <p><%= link_to "Edit", edit_note_path(@note)%></p>
