@@ -11,12 +11,14 @@ class Note < CouchRest::Model::Base
   property :author,       String,     :default => nil 
   property :updated_from, String,     :default => nil 
   property :attachments_nfo, Hash,    :default => nil
+  property :finance,      [Hash],     :default => []
+
   timestamps!
 
-  view_by :all
-  view_by :title
-  view_by :visited_on
-  view_by :visited_on, :title
+#  view_by :all
+#  view_by :title
+#  view_by :visited_on
+#  view_by :visited_on, :title
   view_by :tags,
     :map =>
       "function(doc) {
@@ -35,9 +37,13 @@ class Note < CouchRest::Model::Base
       self.create_attachment(:file => attachment, :name => attachment.original_filename)
     end
   end
+  
+  def new_finance=(arg)
+    self.finance << { :date => arg[:date], :type => arg[:type], :amount => arg[:amount] }
+  end
 
   def self.create(arg)
-    arg[:tags] = arg[:tags].split(/\s+/) if arg[:tags].is_a?(String)
+    arg[:tags] = arg[:tags].split(/\s+/).uniq if arg[:tags].is_a?(String)
     super arg
   end
 

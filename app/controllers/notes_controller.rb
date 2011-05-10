@@ -34,10 +34,13 @@ class NotesController < ApplicationController
   end
   
   def update
+    logger.info("PARAMS: #{params.inspect}")
     params[:note][:updated_from] = current_user.username
     @note = Note.find(params[:id])
     tags = params[:note][:tags]
-    params[:note][:tags] = tags.split(/\s+/)
+    params[:note][:tags] = tags.split(/\s+/) if params[:note][:tags]
+    params[:note][:new_finance] = params[:new_finance] if params[:new_finance]
+    
     @note.update_attributes(params[:note])
     
     respond_to do |wants|
