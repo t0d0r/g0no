@@ -38,7 +38,7 @@ class Note < CouchRest::Model::Base
     end
   end
   
-  def new_finance=(arg)
+  def add_finance=(arg)
     self.finance << { :date => arg[:date], :type => arg[:type], :amount => arg[:amount] }
   end
 

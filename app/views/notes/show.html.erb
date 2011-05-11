@@ -8,16 +8,28 @@
 
 <strong><em>Финансова информация</em></strong>
 <br/>
-<div id="new_finance_div" style="display:none">
+
+<% unless @note.finance.empty? %>
+  <table>
+    <tr>
+      <th>Дата</th>
+      <th>Тип</th>
+      <th>Сума</th>
+    </tr>
+    <%= render :partial => 'finance', :collection => @note.finance %>
+  </table>
+<% end %>
+
+<div id="add_finance_div" style="display:none">
   <%= form_for @note do |f| %>
     <%= couchdb_rev_field f, @note %>
-    <%= text_field :new_finance, :date, :size => 8 %>
-    <%= collection_select :new_finance, :type, { 1 => "Приход", 2 => "Разход"}, :first, :last %>
-    <%= text_field :new_finance, :amount %>
+    <%= text_field        :add_finance, :date, :size => 8 %>
+    <%= collection_select :add_finance, :type, { 1 => "Приход", 2 => "Разход"}, :first, :last %>
+    <%= text_field        :add_finance, :amount %>
     <%= f.submit "Запис" %>
   <% end %>
 </div>
-<%= link_to "+ Добави приход/разход", {}, :id => "new_finance_switch" %>
+<%= link_to "+ Добави приход/разход", {}, :id => "add_finance_switch" %>
 
 <br/>
 <br/>
