@@ -13,8 +13,12 @@
 //});
 
 $(function() {
-    $("#new_finance_date").attr("readonly", true);
-    $("#new_finance_date").datepicker({ dateFormat: 'dd.mm.yy' });
+    $("#add_finance_date").attr("readonly", true);
+    $("#add_finance_date").datepicker({ dateFormat: 'dd.mm.yy' });
+});
+
+$(function() {
+    $("#add_finance_amount").numeric({ buttons: false, format: { format: '0.##'}} );
 });
 
 $(function() {
@@ -25,8 +29,8 @@ $(function() {
 });
 
 $(function() {
-    $("#new_finance_switch").click(function() {
-      $("#new_finance_div").toggle("slow");
+    $("#add_finance_switch").click(function() {
+      $("#add_finance_div").toggle("slow");
       return false;
     });
 });
