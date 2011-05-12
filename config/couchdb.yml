@@ -1,12 +1,14 @@
 default: &default
-  validation_framework: :active_model #optional
+  required_authentination: false
+  database: "gono-<%= Rails.env %>"
+  server: 127.0.0.1:5984
 
 development:
   <<: *default
-  database: development_db_name
 test:
   <<: *default
-  database: test_db_name
 production:
   <<: *default
-  database: <%= ENV['DB_NAME'] %>
+  required_authentination: true
+  username: admin
+  password: adminsecrets
