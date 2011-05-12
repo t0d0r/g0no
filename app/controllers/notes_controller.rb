@@ -9,7 +9,7 @@ class NotesController < ApplicationController
   def show
     if params[:filename]
       @note = Note.find(params[:id])
-      send_data open([@note.uri, params[:filename]].join("/")).read, :filename => params[:filename]
+      send_data @note.fetch_attachment(params[:filename]), :filename => params[:filename]
     else
       @note = Note.find(params[:id])
     end
@@ -38,7 +38,7 @@ class NotesController < ApplicationController
     @note = Note.find(params[:id])
     tags = params[:note][:tags]
     params[:note][:tags] = tags.split(/\s+/) if params[:note][:tags]
-    params[:note][:add_finance] = params[:add_finance] if params[:add_finance]
+    params[:note][:finance] = params[:finance] if params[:finance]
     
     @note.update_attributes(params[:note])
     
