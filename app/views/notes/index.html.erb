@@ -1,7 +1,11 @@
-<h1>Your Notes</h1>
+<h1><%= t "Your Notes" %></h1>
 
 <% @notes.each do |note| %>
-  <h2><%= link_to note.title, note_path(note) %></h2>
+  <h2><%= link_to note.title, note_path(note) %>
+  <% if note.finance_total > 0 %>
+    <div class="amount"><%= f_price note.finance_total %></div>
+  <% end %>
+  </h2>
   <p><%= note.description %></p>
   <small><em>Tags:</em> <%= render :partial => 'by_tag', :collection => note.tags %></small>
 <% end %>
