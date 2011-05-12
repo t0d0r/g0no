@@ -3,6 +3,9 @@ $light_yellow: #f7f5ab
 
 $light_grey: #999999
 
+$link_normal: #1572c0
+$link_hover: #151ec0
+
 .container
   margin: 1em auto
   width: 500px
@@ -11,6 +14,19 @@ $light_grey: #999999
   background-image: url(/images/note.png)
   background-repeat: no-repeat
   background-position: top right  
+
+  div.amount
+    color: #47c816
+    display: inline
+    padding-left: 2em
+    font-size: 1.5em
+    font-family: Georgia, 'Times New Roman', Times, serif
+  a
+    color: $link_normal
+    text-decoration: none
+  a:hover
+    color: $link_hover
+
 
 ul#menu
   border-top: 1px solid white

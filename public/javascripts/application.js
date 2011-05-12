@@ -13,8 +13,8 @@
 //});
 
 $(function() {
-    $("#add_finance_date").attr("readonly", true);
-    $("#add_finance_date").datepicker({ dateFormat: 'dd.mm.yy' });
+    $("#finance_date").attr("readonly", true);
+    $("#dinance_date").datepicker({ dateFormat: 'dd.mm.yy' });
 });
 
 $(function() {
@@ -30,7 +30,7 @@ $(function() {
 
 $(function() {
     $("#add_finance_switch").click(function() {
-      $("#add_finance_div").toggle("slow");
+      $("#add_finance").toggle("slow");
       return false;
     });
 });
