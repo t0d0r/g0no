@@ -12,6 +12,7 @@ class Note < CouchRest::Model::Base
   property :updated_from, String,     :default => nil 
   property :attachments_nfo, Hash,    :default => nil
   property :finance,      [Hash],     :default => []
+  property :finance_total, Float,    :default => 0.0
 
   timestamps!
 
