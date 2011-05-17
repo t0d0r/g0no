@@ -7,34 +7,22 @@
   <%= stylesheet_link_tag :all %>
   <%= stylesheet_link_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/redmond/jquery-ui.css", "application" %>
   <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js", "application", "rails", "jquery-ui-numeric-min" %>
-  
+  <%= javascript_include_tag "jquery-autogrowtextarea" %>
+  <%# javascript_include_tag "autoresize.jquery.min" %>
   <%# javascript_include_tag :defaults, "lowpro", "date_selector" %>
+  <%= mark_it_up '#note_description1' %>
   <%= csrf_meta_tag %>
 </head>
 <body>
   <p style="color: green"><%= flash[:notice] %></p>
-
   <div class="container">
+    <%= show_add_remove_buttons?(controller) %>
     <%= yield  %>  
-
     <ul id="menu">
-      <li><%= link_to_unless_current "Бележки", notes_path %></li>
+      <li><%= link_to_unless_current t("Content"), notes_path %></li>
       <li><%# link_to_unless_current "Tags", tags_path %></li>
-      <li><%= link_to_unless_current "+ Добави нова", new_note_path %></li>
+      <li><%# link_to_unless_current "+ Добави нова", new_note_path %></li>
     </ul>
   </div>
 </body>
 </html>
-
-
-<!-- <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>Notes: <%= controller.action_name %></title>
-  <%= stylesheet_link_tag 'scaffold', 'application' %>
-  <%# javascript_include_tag :defaults, "lowpro", "date_selector", :cache => true %>
-</head>
-<body>
-
-
-</body>
-</html> -->

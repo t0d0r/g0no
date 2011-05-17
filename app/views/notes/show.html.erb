@@ -1,14 +1,9 @@
-<h1 id="title"><%= @note.title %></h1>
+<div style="margin:1em;">
+  &nbsp;
+</div>
+<%= render :partial => "form" %>
 
-<small>Автор <%= @note.author %></small>
-<br/>
-<small>Редактиран <%= @note.updated_at.to_s(:rfc822) %> от <%= @note.updated_from %></small>
-
-<p><%= @note.description %></p>
-
-<strong><em>Финансова информация</em></strong>
-<br/>
-
+<!--
 <% unless @note.finance.empty? %>
   <table>
     <tr>
@@ -31,12 +26,7 @@
   <% end %>
 </div>
 <%= link_to "+ Добави приход/разход", {}, :id => "add_finance_switch" %>
-
-<br/>
-<br/>
-<strong><em>Прикачени файлове</em></strong>
-<br/>
-
+-->
 <% unless @note.attachments.empty? %>
 <ul>
   <% @note.attachments.each do |attachment_name, attachment_attributes| %>
@@ -48,20 +38,16 @@
   <% end %>
 </ul>
 <% end %>
-
 <div id="upload_file_div" style="display:none">
   <%= form_for @note, :html => {:multipart => true} do |f| %>
     <br/>
     <%= file_field_tag("note[attachments][]") %>  
     <br/>
-    <%= f.submit "Запис" %>
+    <%= f.submit "Запис", {:id => 'submit_attachment'} %>
   <% end %>
 </div>
 <%= link_to "+ Добави файл", {}, :id => "upload_file_switch" %>
-
-<br/>
-<br/>
-<br/>
-
+<!--
 <small><em>Тагове: </em><%= render :partial => 'by_tag', :collection => @note.tags %></small>
 <p><%= link_to "Edit", edit_note_path(@note)%></p>
+-->

@@ -1,13 +1,37 @@
+.content_line {
+  margin: 0;
+  padding: 0;
+  min-height: 64px; }
+  .content_line .title, .content_line .amount {
+    font-size: 1.5em;
+    display: inline; }
+  .content_line p {
+    color: #0e0e0e;
+    margin: 0;
+    padding: 0; }
+  .content_line .created_at {
+    color: #999b92;
+    font-size: 12px; }
+
+.content_line:hover {
+  cursor: pointer; }
+  .content_line:hover .amount {
+    text-shadow: 1px 1px 2px black; }
+
+.empty_line {
+  border-bottom: 2px dashed #5b5b5b;
+  margin: 1em 0; }
+
 .container {
-  margin: 1em auto;
-  width: 500px;
+  margin: 0 auto;
+  width: 800px;
   padding: 1em 1.5em;
   background-color: #f7f5ab;
   background-image: url(/images/note.png);
   background-repeat: no-repeat;
   background-position: top right; }
   .container div.amount {
-    color: #47c816;
+    color: #d91831;
     display: inline;
     padding-left: 2em;
     font-size: 1.5em;
@@ -17,6 +41,20 @@
     text-decoration: none; }
   .container a:hover {
     color: #151ec0; }
+
+.bigplus {
+  color: #f9dc5b;
+  cursor: pointer;
+  float: right;
+  display: block;
+  text-align: right;
+  font-weight: bold;
+  padding-left: 18px;
+  padding-right: 18px;
+  font-size: 64px; }
+
+.bigplus:hover {
+  text-shadow: 2px 2px 3px black; }
 
 ul#menu {
   border-top: 1px solid white;
@@ -31,15 +69,48 @@ h1 {
   margin-right: 3em;
   line-height: 1em; }
 
+h2 {
+  margin: 0; }
+
+form input, form textarea {
+  outline: none;
+  background-color: transparent;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: #5b5b5b;
+  font-size: 2em; }
+form input {
+  width: 700px;
+  border: 0;
+  border-bottom: 2px dashed #999999; }
+form input:hover, form textarea:hover {
+  color: black; }
+form input:focus, form textarea:focus {
+  color: #151fc0;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-image: url(/images//bullet1.gif); }
+form input#note_title {
+  margin-bottom: 0.5em; }
 form label {
   display: block;
   margin-top: 1em; }
 form textarea {
-  height: 7em; }
-form input#note_submit {
+  font-size: 1em;
+  height: 1em;
+  width: 750px; }
+form input#note_attachments_ {
+  border: none;
+  font-size: 1em; }
+form input#note_submit, form input#submit_attachment {
+  border: 3px solid #941022;
+  color: white;
+  width: 128px;
   display: block;
-  margin-top: 1em;
-  font-size: 2em; }
+  font-size: 1em;
+  background-color: #941022; }
+form input#note_submit:hover {
+  border: 3px solid #941022;
+  background-color: red; }
 
 .calendar {
   background-color: #dddddd;

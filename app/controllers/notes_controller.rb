@@ -20,7 +20,7 @@ class NotesController < ApplicationController
   end
   
   def create
-    params[:note][:author] = current_user.username
+    params[:note][:author] = current_user.username || current_user.email
     if Note.create params[:note]
       flash[:success] = "Success !"
     else
@@ -30,6 +30,7 @@ class NotesController < ApplicationController
   end
   
   def edit
+    MarkItUp.skin = "simple"
     @note = Note.find(params[:id])
   end
   

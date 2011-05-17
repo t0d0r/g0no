@@ -1,15 +1,16 @@
 <%= form_for @note, :html => {:multipart => true} do |f| %>
   
   <%= couchdb_rev_field f, @note %>
-  
-  <%= f.label "Заглавие" %>
-  <%= f.text_field :title, :size => 60 %>
-  
-  <%= f.label "Описание" %>
-  <%= f.text_area :description %>
+  <%# f.label "Заглавие" %>
+  <%= f.text_field :title %>
 
-  <%= f.label "ключови думи (отделени с място)" %>
-  <%= f.text_field "tags", :value => @note.tags.join(" "), :size => 60 %>
+  
+  <%# f.label "Описание" %>
+  <%= f.text_area :description %>
+  <%= f.submit "Запис", { :class=>"button" } %>
+  <%# sanitize(textilize @note.description) %>
+  <%# f.label "ключови думи (отделени с място)" %>
+  <%# f.text_field "tags", :value => @note.tags.join(" "), :size => 60 %>
 
   <%# f.label "Visited On" %>
   <%# f.text_field "visited_on", :id => "date" %>
@@ -21,6 +22,5 @@
   <%# f.label "Файл" %>
   <%# file_field_tag("note[attachments][]") %>  
   
-  <%= f.submit "Запис" %>
   
 <% end %>

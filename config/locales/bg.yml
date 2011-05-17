@@ -6,6 +6,9 @@
 
 bg:
   "Your Notes": "Вашите Бележки"
+  "Notes by tag": "Бележки с ключова дума" 
+  Content: "Съдържание"
+  tags: "тагове"
   amount: "сума"
   remember_me: "Запомни ме"
   email: "Емайл"

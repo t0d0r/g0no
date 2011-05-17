@@ -1,14 +1,51 @@
 $dark_yellow: #f9dc5b
 $light_yellow: #f7f5ab
-
+$dark_grey: #5b5b5b
 $light_grey: #999999
+
+$created_at: #999b92
+
+$bigplus_normal: #e98619
+$bigplus_hover: #e94c19
 
 $link_normal: #1572c0
 $link_hover: #151ec0
 
+$amount_green: #47c816 
+$amount_red: #d91831
+$amount_color: $amount_red
+
+$input_hover: #000
+$input_focus: #151fc0
+
+.content_line
+  margin: 0
+  padding: 0
+  min-height: 64px
+  .title, .amount
+    font-size: 1.5em
+    float:left
+    display: inline
+  p
+    color: #0e0e0e
+    margin: 0
+    padding: 0
+  .created_at
+    color: $created_at
+    font-size: 12px
+
+.content_line:hover
+  cursor: pointer
+  .amount
+    text-shadow: 1px 1px 2px #000
+
+.empty_line
+  border-bottom: 2px dashed $dark_grey
+  margin: 1em 0
+  
 .container
-  margin: 1em auto
-  width: 500px
+  margin: 0 auto
+  width: 800px
   padding: 1em 1.5em
   background-color: $light_yellow
   background-image: url(/images/note.png)
@@ -16,7 +53,7 @@ $link_hover: #151ec0
   background-position: top right  
 
   div.amount
-    color: #47c816
+    color: $amount_color
     display: inline
     padding-left: 2em
     font-size: 1.5em
@@ -27,6 +64,19 @@ $link_hover: #151ec0
   a:hover
     color: $link_hover
 
+.bigplus
+  color: $dark_yellow
+  cursor: pointer
+  float: right
+  display: block
+  text-align: right
+  font-weight: bold
+  padding-left: 18px 
+  padding-right: 18px 
+  font-size: 64px
+
+.bigplus:hover
+  text-shadow: 2px 2px 3px #000
 
 ul#menu
   border-top: 1px solid white
@@ -42,19 +92,54 @@ h1
   margin-right: 3em
   line-height: 1em
 
+h2
+  margin: 0
+
 form
+  input, textarea
+    outline: none
+    background-color: transparent
+    font-family: Georgia, 'Times New Roman', Times, serif
+    color: $dark_grey
+    font-size: 2em
+  input
+    width: 700px
+    border: 0
+    border-bottom: 2px dashed $light_grey
+
+  input:hover, textarea:hover
+    color: $input_hover
+
+  input:focus, textarea:focus
+    color: $input_focus
+    background-position: top right
+    background-repeat: no-repeat
+    background-image: url(/images//bullet1.gif)
+
+  input#note_title
+    margin-bottom: 0.5em
 
   label
     display: block
     margin-top: 1em
     
   textarea
-    height: 7em
-    
-  input#note_submit
+    font-size: 1em
+    height: 1em
+    width: 750px
+  input#note_attachments_
+    border: none
+    font-size: 1em
+  input#note_submit, input#submit_attachment
+    border: 3px solid #941022
+    color: #fff
+    width: 128px
     display: block
-    margin-top: 1em
-    font-size: 2em
+    font-size: 1em
+    background-color: #941022
+  input#note_submit:hover
+    border: 3px solid #941022
+    background-color: red
     
     
 .calendar 

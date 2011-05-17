@@ -1,7 +1,7 @@
-<h1>Бележки с ключова дума: <%= @tag %></h1>
+<h1><%= t "Notes by tag" %>: <%= @tag %></h1>
 
 <% @notes.each do |note| %>
   <h2><%= link_to note.title, note_path(note) %></h2>
   <p><%= note.description %></p>
-  <small><em>Ключови думи:</em> <%= note.tags.join(", ") %></small>
+  <small><em><%= t "tags" %>:</em> <%= note.tags.join(", ") %></small>
 <% end %>

@@ -1,11 +1,16 @@
-<h1><%= t "Your Notes" %></h1>
-
-<% @notes.each do |note| %>
-  <h2><%= link_to note.title, note_path(note) %>
-  <% if note.finance_total > 0 %>
-    <div class="amount"><%= f_price note.finance_total %></div>
+<h1><%= t "Content" %></h1>
+  <div class="empty_line"></div>
+<% @notes.each_with_index do |note, idx| %>
+  <% link_to(note_path(note)) do %>
+    <div class="content_line">
+        <%= idx+1 %>.
+        <div class="title"> <%= note.title %></div> 
+        <% if note.finance_total > 0 %>
+          <div class="amount"><%= f_price note.finance_total %></div>
+        <% end %>
+        <p><%= truncate note.description, :length => 250,  :separator => ' ' %></p>
+        <div class="created_at">създаден преди <span><%= time_ago_in_words note.created_at %></span> от <%= note.author %></div>
+    </div>
   <% end %>
-  </h2>
-  <p><%= note.description %></p>
-  <small><em>Tags:</em> <%= render :partial => 'by_tag', :collection => note.tags %></small>
+  <div class="empty_line"></div>
 <% end %>
