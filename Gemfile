@@ -2,6 +2,8 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.5'
 
+gem 'RedCloth'
+# gem 'mark_it_up'
 gem 'sqlite3'
 gem 'couchrest'
 gem 'couchrest_model'
