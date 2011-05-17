@@ -1,3 +1,14 @@
+== 2011-05-11
+
+Проба за wysiwyg
+
+Gemfile 
+  gem "mark_it_up"
+
+  rails generate miu_controller
+
+* Copying assets to /Users/t0d0r/Projects/rails/g0no/public/mark_it_up
+* Run 'script/generate miu_controller' to generate MarkItUpController and to be able to use default preview parser
 
 == 2011-04-19
 
