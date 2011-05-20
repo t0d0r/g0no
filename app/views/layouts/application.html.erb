@@ -5,23 +5,35 @@
 <head>
   <title>g0No: <%= controller.action_name %></title>
   <%= stylesheet_link_tag :all %>
-  <%= stylesheet_link_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/redmond/jquery-ui.css", "application" %>
-  <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js", "application", "rails", "jquery-ui-numeric-min" %>
+  <%= javascript_include_tag "jquery-1.5.1.min" %>
+  <%= javascript_include_tag "jquery-ui-1.8.13.min" %> 
   <%= javascript_include_tag "jquery-autogrowtextarea" %>
-  <%# javascript_include_tag "autoresize.jquery.min" %>
-  <%# javascript_include_tag :defaults, "lowpro", "date_selector" %>
+  <%= javascript_include_tag "jquery.hint" %>
+  <%= javascript_include_tag "label_over" %>
+  <%= javascript_include_tag "application" %> 
+  <%= javascript_include_tag "rails" %>
+  <%# javascript_include_tag "fileuploader" %>
+  <%= javascript_include_tag "datepicker" %>
   <%= csrf_meta_tag %>
 </head>
 <body>
+  <div id="top-bar" width="100%">
+    <div id="nbar"></div>
+    <div id="nuser">
+      <%- if controller_name != 'sessions' %>
+        <%= link_to t("logout"), destroy_user_session_path %>
+      <% end -%>
+    </div>
+  </div>
   <p style="color: green"><%= flash[:notice] %></p>
-  <div class="container">
+  <div id="container">
     <%= show_add_remove_buttons?(controller) %>
     <%= yield  %>  
-    <ul id="menu">
-      <li><%= link_to_unless_current t("Content"), notes_path %></li>
-      <li><%# link_to_unless_current "Tags", tags_path %></li>
-      <li><%# link_to_unless_current "+ Добави нова", new_note_path %></li>
-    </ul>
+    <div class="bottom-nav">
+      <ul id="menu">
+        <li><%= link_to_unless_current t("content"), notes_path %></li>
+      </ul>
+    </div>
   </div>
 </body>
 </html>

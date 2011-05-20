@@ -9,7 +9,7 @@ class NotesController < ApplicationController
   def show
     if params[:filename]
       @note = Note.find(params[:id])
-      send_data @note.fetch_attachment(params[:filename]), :filename => params[:filename]
+      send_data @note.fetch_attachment(params[:filename]), :filename => @note.real_filename(params[:filename])
     else
       @note = Note.find(params[:id])
     end
@@ -39,8 +39,7 @@ class NotesController < ApplicationController
     @note = Note.find(params[:id])
     tags = params[:note][:tags]
     params[:note][:tags] = tags.split(/\s+/) if params[:note][:tags]
-    params[:note][:finance] = params[:finance] if params[:finance]
-    
+    @note.add_finance = params[:finance] if params[:finance]
     @note.update_attributes(params[:note])
     
     respond_to do |wants|
@@ -53,23 +52,28 @@ class NotesController < ApplicationController
     @notes = Note.by_tags :key => params[:id]  if params[:id]
   end
 
-  def confirm_delete_file
-    @filename = params[:filename]
-    @note = Note.find(params[:id])
-  end
-
   def delete_file
-    @filename = params[:filename]
-    @note = Note.find(params[:id])
-    @note.delete_attachment(@filename)
-    @note.save
-    flash[:notice] = "file #{@filename} was deleted!"
+    filename = params[:filename]
+#     begin
+      @note = Note.find(params[:id])
+      @note.delete_attachment(filename)
+      @note.save
+      flash[:notice] = "file #{@note.real_filename(filename)} was deleted!"
+#     rescue 
+#       flash[:notice] = "file #{@note.real_filename(filename)} is still here!"
+#     end
+
     respond_to do |wants|
       wants.html { redirect_to note_url(@note) }
     end
   end
   
   def destroy
+    @note = Note.find(params[:id])
+    if @note.destroy
+      flash[:notice] = "Документ със заглавие '#{@note.title}' беше изтрит успешно"
+    end
+    redirect_to :action => "index"
   end
 
 end

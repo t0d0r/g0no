@@ -7,12 +7,21 @@
 bg:
   "Your Notes": "Вашите Бележки"
   "Notes by tag": "Бележки с ключова дума" 
+  content: "съдържание"
   Content: "Съдържание"
   tags: "тагове"
   amount: "сума"
   remember_me: "Запомни ме"
   email: "Емайл"
   password: "Парола"
+  logout: "изход"
+  Add: "Добави" 
+  title: "заглавие"
+  description: "описание"
+  comment: "коментар"
+  Date: "дата"
+  amount: "сума"
+
   date:
     formats:
       default: "%d.%m.%Y"

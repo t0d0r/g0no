@@ -12,6 +12,10 @@ module NotesHelper
     end
   end
 
+  def link_to_filename(doc, name)
+    link_to doc.real_filename(name), note_path(:id => doc, :filename => name)
+  end
+
   def show_add_remove_buttons?(controller)
     if controller.controller_name == "notes"
       case controller.action_name

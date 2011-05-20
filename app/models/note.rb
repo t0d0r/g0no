@@ -1,3 +1,4 @@
+require 'md5'
 class Note < CouchRest::Model::Base
 
   use_database CouchServer.default_database
@@ -10,7 +11,7 @@ class Note < CouchRest::Model::Base
   property :closed,       TrueClass,  :default => false # same as active
   property :author,       String,     :default => nil 
   property :updated_from, String,     :default => nil 
-  property :attachments_nfo, Hash,    :default => nil
+  property :attachments_nfo, Hash,    :default => {}
   property :finance,      [Hash],     :default => []
   property :finance_total, Float,    :default => 0.0
 
@@ -35,7 +36,9 @@ class Note < CouchRest::Model::Base
   def attachments=(attachments)
     attachments.each do |attachment|
       # TODO: add self.
-      self.create_attachment(:file => attachment, :name => attachment.original_filename)
+      filename_key = attachment_hash(attachment.original_filename)
+      self.create_attachment(:file => attachment, :name => filename_key)
+      self.attachments_nfo[filename_key] =  { :filename => attachment.original_filename, :comment => 'мамуна' } 
     end
   end
   
@@ -46,6 +49,21 @@ class Note < CouchRest::Model::Base
   def self.create(arg)
     arg[:tags] = arg[:tags].split(/\s+/).uniq if arg[:tags].is_a?(String)
     super arg
+  end
+
+  def real_filename(hash)
+    attachments_nfo.has_key?(hash) ? attachments_nfo[hash]["filename"] : "unknown.dat"
+  end
+
+  def delete_attachment(arg)
+    attachments_nfo[arg].delete if attachments_nfo.has_key?(arg)
+    super arg
+  end
+
+  private
+
+  def attachment_hash(name)
+    MD5.new(name).hexdigest
   end
 
 end

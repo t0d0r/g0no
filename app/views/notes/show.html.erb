@@ -1,53 +1,57 @@
-<div style="margin:1em;">
-  &nbsp;
-</div>
+<div class="form">
 <%= render :partial => "form" %>
-
+</div>
 <!--
 <% unless @note.finance.empty? %>
-  <table>
-    <tr>
-      <th>Дата</th>
-      <th>Тип</th>
-      <th>Сума</th>
-    </tr>
     <%= render :partial => 'finance', :collection => @note.finance %>
-  </table>
 <% end %>
+-->
 
-<div id="add_finance" style="display:none">
+<div id="finance">
   <%= form_for @note do |f| %>
     <%= couchdb_rev_field f, @note %>
-    <label for="finance_amount"><%= t 'amount' %></label>
-    <%= text_field        :finance, :amount %>
-    <%= text_field        :finance, :date, :size => 8 %>
-    <%# collection_select :finance, :type, { 1 => "Приход", 2 => "Разход"}, :first, :last %>
-    <%= f.submit "Запис" %>
+    <div id="add_finance" width="100%" style="display:n0ne">
+        <div class="label">
+        <%= label :finance, :date, t(:Date),  { :class => :finance_date }%>
+        <%= unobtrusive_date_text_picker :finance, :date, { :value => Time.now, :divider => '.', :format => 'd-m-y'}, { :size => 10, :value => f_date(Time.now)  }  %>
+        </div>
+        <div class="label">
+        <%= label :finance, :amount, t(:amount),  { :class => :finance_amount }%>
+        <%= text_field :finance, :amount, { :size => 5 } %>
+        </div>
+        <div class="label">
+        <%= label :finance, :comment,  t(:comment),  { :class => :finance_comment }%>
+        <%= text_field :finance, :comment %>
+        </div>
+        <%# collection_select :finance, :type, { 1 => "Приход", 2 => "Разход"}, :first, :last %>
+        <%= f.submit "Запис" %>
+    </div>
   <% end %>
 </div>
-<%= link_to "+ Добави приход/разход", {}, :id => "add_finance_switch" %>
--->
+<div class="empty_line"></div>
+
+<div class="add_bar" style="clear: both">
+  <ul>
+    <li><%= link_to "+ Добави приход/разход", {}, :id => "finance_switch" %></li>
+    <li><%= link_to "+ Добави файл", {}, :id => "upload_file_switch" %></li>
+  </ul>
+</div>
+
 <% unless @note.attachments.empty? %>
-<ul>
-  <% @note.attachments.each do |attachment_name, attachment_attributes| %>
-    <li>
-      <%= link_to attachment_name, note_path(:id => @note, :filename => attachment_name) %> 
-      <%= number_to_human_size(attachment_attributes['length']) %>
-      <%= link_to "Изтрий", confirm_delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
-    </li>
-  <% end %>
-</ul>
+  <ul>
+    <% @note.attachments.each do |attachment_name, attachment_attributes| %>
+      <li>
+        <%= link_to_filename @note, attachment_name %>
+        <%= number_to_human_size(attachment_attributes['length']) %>
+        <%= link_to "Изтрий", delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
+      </li>
+    <% end %>
+  </ul>
 <% end %>
-<div id="upload_file_div" style="display:none">
+<div id="upload_file_div"> </div>
+<div id="upl0ad_file_div" style="display:n0ne">
   <%= form_for @note, :html => {:multipart => true} do |f| %>
-    <br/>
     <%= file_field_tag("note[attachments][]") %>  
-    <br/>
-    <%= f.submit "Запис", {:id => 'submit_attachment'} %>
+    <%= f.submit t("Add"), {:id => 'submit_attachment'} %>
   <% end %>
 </div>
-<%= link_to "+ Добави файл", {}, :id => "upload_file_switch" %>
-<!--
-<small><em>Тагове: </em><%= render :partial => 'by_tag', :collection => @note.tags %></small>
-<p><%= link_to "Edit", edit_note_path(@note)%></p>
--->

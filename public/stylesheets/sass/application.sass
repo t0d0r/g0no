@@ -18,24 +18,56 @@ $amount_color: $amount_red
 $input_hover: #000
 $input_focus: #151fc0
 
+input, input#note_attachments_
+  font-size: 1em
+
+div#add_finance
+  display: block
+  margin: 0
+
+div#top-bar
+  display: block
+  min-height: 10px
+  font-family: 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif
+  font-size: 11px
+  #nbar
+    float: left
+  #nuser
+    float: right
+    white-space: nowrap
+    a
+      text-decoration: none
+      padding: 2px 0 2px
+      padding-left: 5px
+      padding-right: 5px
+      -moz-border-radius: 3px
+      border-radius: 3px
+      background-color: $dark_yellow
+    a:hover
+      text-decoration: underline
+
 .content_line
   margin: 0
   padding: 0
   min-height: 64px
+
   .title, .amount
     font-size: 1.5em
     float:left
     display: inline
+
   p
     color: #0e0e0e
     margin: 0
     padding: 0
+
   .created_at
     color: $created_at
     font-size: 12px
 
 .content_line:hover
   cursor: pointer
+
   .amount
     text-shadow: 1px 1px 2px #000
 
@@ -43,14 +75,31 @@ $input_focus: #151fc0
   border-bottom: 2px dashed $dark_grey
   margin: 1em 0
   
-.container
+#container
   margin: 0 auto
   width: 800px
+  min-height: 300px
   padding: 1em 1.5em
   background-color: $light_yellow
   background-image: url(/images/note.png)
   background-repeat: no-repeat
   background-position: top right  
+
+  h1#note-content
+    color: $dark_grey
+
+  .bigplus
+    color: $dark_yellow
+    position: relative
+    float: right
+    cursor: pointer
+    top: 0
+    right: 20px
+    font-weight: bold
+    font-size: 64px
+
+  .bigplus:hover
+    text-shadow: 2px 2px 3px #000
 
   div.amount
     color: $amount_color
@@ -64,29 +113,30 @@ $input_focus: #151fc0
   a:hover
     color: $link_hover
 
-.bigplus
-  color: $dark_yellow
-  cursor: pointer
-  float: right
-  display: block
-  text-align: right
-  font-weight: bold
-  padding-left: 18px 
-  padding-right: 18px 
-  font-size: 64px
-
-.bigplus:hover
-  text-shadow: 2px 2px 3px #000
 
 ul#menu
-  border-top: 1px solid white
+  border-top: 2px solid $light_grey
   margin-top: 4em
   text-align: right
 
   li
+    margin: 0
     display: inline
-    border-right: 1px solid white
+    border: 2px solid $light_grey
+    background-color: $light_grey
     padding: 0 0.5em
+    -webkit-border-bottom-right-radius: 10px
+    -webkit-border-bottom-left-radius: 10px
+    -moz-border-radius-bottomright: 10px
+    -moz-border-radius-bottomleft: 10px
+    border-bottom-right-radius: 10px
+    border-bottom-left-radius: 10px
+    font-size: 1.5em
+    a
+      color: #000
+  li:hover
+    background-color: $dark_yellow
+    
 
 h1
   margin-right: 3em
@@ -95,52 +145,75 @@ h1
 h2
   margin: 0
 
-form
+.nowrap
+  white-space: nowrap
+
+.add_bar
+  display: none
+
+label.over
+  color: $light_grey
+  position: absolute
+  top: 5px
+  left: 10px
+  text-transform: lowercase
+div.label
+  position: relative
+  float: left
+
+form.note
+  min-height: 300px
+  label.over
+    color: $light_grey
+    position: absolute
+    top: 20px
+    left: 20px
+    text-transform: uppercase
+  div.label
+    position: relative
+    float: left
+  #note_button_bar
+    text-align: right
+    width: 800px
+    height: 32px
+  #note_reset_button
+    background-color: $dark_grey
   input, textarea
+    padding: 0
+    width: 800px
     outline: none
+    border: 0
+    border-bottom: 2px dashed $dark_grey
     background-color: transparent
     font-family: Georgia, 'Times New Roman', Times, serif
     color: $dark_grey
     font-size: 2em
-  input
-    width: 700px
-    border: 0
-    border-bottom: 2px dashed $light_grey
-
   input:hover, textarea:hover
     color: $input_hover
-
   input:focus, textarea:focus
     color: $input_focus
     background-position: top right
     background-repeat: no-repeat
     background-image: url(/images//bullet1.gif)
-
   input#note_title
     margin-bottom: 0.5em
-
-  label
-    display: block
-    margin-top: 1em
-    
   textarea
     font-size: 1em
     height: 1em
-    width: 750px
   input#note_attachments_
     border: none
     font-size: 1em
-  input#note_submit, input#submit_attachment
+  input#note_submit, input#submit_attachment, input.button
     border: 3px solid #941022
     color: #fff
     width: 128px
-    display: block
+    display: inline
     font-size: 1em
     background-color: #941022
-  input#note_submit:hover
+  input#note_submit:hover, .button:hover
     border: 3px solid #941022
     background-color: red
-    
+    cursor: pointer
     
 .calendar 
   background-color: #DDD
@@ -183,3 +256,9 @@ form
   td.day a:hover
     color: white
 
+body
+  margin-top: 4px
+  top: 0
+  right: 0
+
+.bottom-nav

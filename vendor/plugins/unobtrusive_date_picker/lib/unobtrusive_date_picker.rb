@@ -347,7 +347,8 @@ module ActionView # :nodoc: all
       def to_datepicker_text_tag(options = {}, html_options = {})
         options = merge_defaults_for_text_picker(options)
         html_options[:class] = get_html_classes_for_datepicker(options, html_options[:class])
-        html_options[:value] = format_date_value_for_text_field(value(object), options[:format], options[:divider])
+#         html_options[:value] = format_date_value_for_text_field(value(object), options[:format], options[:divider])
+        html_options[:value] = format_date_value_for_text_field(options[:value], options[:format], options[:divider])
         to_input_field_tag('text', html_options)
       end
 

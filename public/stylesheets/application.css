@@ -1,3 +1,31 @@
+input, input#note_attachments_ {
+  font-size: 1em; }
+
+div#add_finance {
+  display: block;
+  margin: 0; }
+
+div#top-bar {
+  display: block;
+  min-height: 10px;
+  font-family: "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+  font-size: 11px; }
+  div#top-bar #nbar {
+    float: left; }
+  div#top-bar #nuser {
+    float: right;
+    white-space: nowrap; }
+    div#top-bar #nuser a {
+      text-decoration: none;
+      padding: 2px 0 2px;
+      padding-left: 5px;
+      padding-right: 5px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      background-color: #f9dc5b; }
+    div#top-bar #nuser a:hover {
+      text-decoration: underline; }
+
 .content_line {
   margin: 0;
   padding: 0;
@@ -22,48 +50,61 @@
   border-bottom: 2px dashed #5b5b5b;
   margin: 1em 0; }
 
-.container {
+#container {
   margin: 0 auto;
   width: 800px;
+  min-height: 300px;
   padding: 1em 1.5em;
   background-color: #f7f5ab;
   background-image: url(/images/note.png);
   background-repeat: no-repeat;
   background-position: top right; }
-  .container div.amount {
+  #container h1#note-content {
+    color: #5b5b5b; }
+  #container .bigplus {
+    color: #f9dc5b;
+    position: relative;
+    float: right;
+    cursor: pointer;
+    top: 0;
+    right: 20px;
+    font-weight: bold;
+    font-size: 64px; }
+  #container .bigplus:hover {
+    text-shadow: 2px 2px 3px black; }
+  #container div.amount {
     color: #d91831;
     display: inline;
     padding-left: 2em;
     font-size: 1.5em;
     font-family: Georgia, "Times New Roman", Times, serif; }
-  .container a {
+  #container a {
     color: #1572c0;
     text-decoration: none; }
-  .container a:hover {
+  #container a:hover {
     color: #151ec0; }
 
-.bigplus {
-  color: #f9dc5b;
-  cursor: pointer;
-  float: right;
-  display: block;
-  text-align: right;
-  font-weight: bold;
-  padding-left: 18px;
-  padding-right: 18px;
-  font-size: 64px; }
-
-.bigplus:hover {
-  text-shadow: 2px 2px 3px black; }
-
 ul#menu {
-  border-top: 1px solid white;
+  border-top: 2px solid #999999;
   margin-top: 4em;
   text-align: right; }
   ul#menu li {
+    margin: 0;
     display: inline;
-    border-right: 1px solid white;
-    padding: 0 0.5em; }
+    border: 2px solid #999999;
+    background-color: #999999;
+    padding: 0 0.5em;
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    font-size: 1.5em; }
+    ul#menu li a {
+      color: black; }
+  ul#menu li:hover {
+    background-color: #f9dc5b; }
 
 h1 {
   margin-right: 3em;
@@ -72,45 +113,76 @@ h1 {
 h2 {
   margin: 0; }
 
-form input, form textarea {
-  outline: none;
-  background-color: transparent;
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: #5b5b5b;
-  font-size: 2em; }
-form input {
-  width: 700px;
-  border: 0;
-  border-bottom: 2px dashed #999999; }
-form input:hover, form textarea:hover {
-  color: black; }
-form input:focus, form textarea:focus {
-  color: #151fc0;
-  background-position: top right;
-  background-repeat: no-repeat;
-  background-image: url(/images//bullet1.gif); }
-form input#note_title {
-  margin-bottom: 0.5em; }
-form label {
-  display: block;
-  margin-top: 1em; }
-form textarea {
-  font-size: 1em;
-  height: 1em;
-  width: 750px; }
-form input#note_attachments_ {
-  border: none;
-  font-size: 1em; }
-form input#note_submit, form input#submit_attachment {
-  border: 3px solid #941022;
-  color: white;
-  width: 128px;
-  display: block;
-  font-size: 1em;
-  background-color: #941022; }
-form input#note_submit:hover {
-  border: 3px solid #941022;
-  background-color: red; }
+.nowrap {
+  white-space: nowrap; }
+
+.add_bar {
+  display: none; }
+
+label.over {
+  color: #999999;
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  text-transform: lowercase; }
+
+div.label {
+  position: relative;
+  float: left; }
+
+form.note {
+  min-height: 300px; }
+  form.note label.over {
+    color: #999999;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-transform: uppercase; }
+  form.note div.label {
+    position: relative;
+    float: left; }
+  form.note #note_button_bar {
+    text-align: right;
+    width: 800px;
+    height: 32px; }
+  form.note #note_reset_button {
+    background-color: #5b5b5b; }
+  form.note input, form.note textarea {
+    padding: 0;
+    width: 800px;
+    outline: none;
+    border: 0;
+    border-bottom: 2px dashed #5b5b5b;
+    background-color: transparent;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    color: #5b5b5b;
+    font-size: 2em; }
+  form.note input:hover, form.note textarea:hover {
+    color: black; }
+  form.note input:focus, form.note textarea:focus {
+    color: #151fc0;
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-image: url(/images//bullet1.gif); }
+  form.note input#note_title {
+    margin-bottom: 0.5em; }
+  form.note textarea {
+    font-size: 1em;
+    height: 1em; }
+  form.note input#note_attachments_ {
+    border: none;
+    font-size: 1em; }
+  form.note input#note_submit, form.note input#submit_attachment, form.note input.button {
+    border: 3px solid #941022;
+    color: white;
+    width: 128px;
+    display: inline;
+    font-size: 1em;
+    background-color: #941022; }
+  form.note input#note_submit:hover, form.note .button:hover {
+    border: 3px solid #941022;
+    background-color: red;
+    cursor: pointer; }
 
 .calendar {
   background-color: #dddddd;
@@ -143,3 +215,8 @@ form input#note_submit:hover {
       color: black; }
   .calendar td.day a:hover {
     color: white; }
+
+body {
+  margin-top: 4px;
+  top: 0;
+  right: 0; }

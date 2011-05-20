@@ -1,4 +1,4 @@
-<h1><%= t "Content" %></h1>
+<h1 id='note-content'><%= t "Content" %></h1>
   <div class="empty_line"></div>
 <% @notes.each_with_index do |note, idx| %>
   <%= link_to(note_path(note)) do %>

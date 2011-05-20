@@ -5,7 +5,6 @@ GOno::Application.routes.draw do
   resources :notes do
     member do
       get :by_tag
-      get :confirm_delete_file
       delete :delete_file
     end
   end
