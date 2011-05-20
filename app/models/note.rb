@@ -56,7 +56,7 @@ class Note < CouchRest::Model::Base
   end
 
   def delete_attachment(arg)
-    attachments_nfo[arg].delete if attachments_nfo.has_key?(arg)
+    attachments_nfo.delete(arg) if attachments_nfo.has_key?(arg)
     super arg
   end
 

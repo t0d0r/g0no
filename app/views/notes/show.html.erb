@@ -41,17 +41,21 @@
   <ul>
     <% @note.attachments.each do |attachment_name, attachment_attributes| %>
       <li>
-        <%= link_to_filename @note, attachment_name %>
-        <%= number_to_human_size(attachment_attributes['length']) %>
-        <%= link_to "Изтрий", delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
+        <div class="attachment">
+            <%= link_to_filename @note, attachment_name %>
+            <%= number_to_human_size(attachment_attributes['length']) %>
+            <%= link_to "Изтрий", delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
+        </div>
       </li>
     <% end %>
   </ul>
+  <div class="empty_line"></div>
 <% end %>
 <div id="upload_file_div"> </div>
 <div id="upl0ad_file_div" style="display:n0ne">
   <%= form_for @note, :html => {:multipart => true} do |f| %>
     <%= file_field_tag("note[attachments][]") %>  
+    <%= text_field_tag("note[attachment_comment]") %>
     <%= f.submit t("Add"), {:id => 'submit_attachment'} %>
   <% end %>
 </div>
