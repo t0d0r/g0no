@@ -3,7 +3,12 @@
 
 en:
   Content: "Content"
+  content: "content"
   amount: "amount"
   "Your Notes": "Your Notes"
   tags: "Tags"
   logout: Logout
+  Add:  "Add"
+  comment: "comment"
+  title: "title"
+

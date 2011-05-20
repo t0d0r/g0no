@@ -1,9 +1,29 @@
-input, input#note_attachments_ {
+input {
   font-size: 1em; }
 
-div#add_finance {
+input#note_attachments_ {
+  font-size: 1em;
+  width: 370px; }
+
+div#finance {
+  clear: both;
+  display: block;
+  min-height: 2em; }
+
+div#add_finance, div#upload_file_div {
   display: block;
   margin: 0; }
+
+div#add_finance input#submit_attachment, div#add_finance input#note_submit, div#upload_file_div input#submit_attachment, div#upload_file_div input#note_submit {
+  position: relative;
+  float: right;
+  width: 100px; }
+div#add_finance div, div#upload_file_div div {
+  float: left; }
+div#add_finance input#note_attachment_comment, div#upload_file_div input#note_attachment_comment {
+  width: 100%; }
+div#add_finance div.label.attachment, div#upload_file_div div.label.attachment {
+  width: 300px; }
 
 div#top-bar {
   display: block;
@@ -58,7 +78,8 @@ div#top-bar {
   background-color: #f7f5ab;
   background-image: url(/images/note.png);
   background-repeat: no-repeat;
-  background-position: top right; }
+  background-position: top right;
+  border: none; }
   #container h1#note-content {
     color: #5b5b5b; }
   #container .bigplus {
@@ -137,7 +158,7 @@ div.label {
   float: left; }
 
 form.note {
-  min-height: 300px; }
+  margin-bottom: 5em; }
   form.note label.over {
     color: #999999;
     position: absolute;
@@ -175,9 +196,6 @@ form.note {
   form.note textarea {
     font-size: 1em;
     height: 1em; }
-  form.note input#note_attachments_ {
-    border: none;
-    font-size: 1em; }
   form.note input#note_submit, form.note input#submit_attachment, form.note input.button {
     border: 3px solid #941022;
     color: white;

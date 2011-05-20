@@ -3,11 +3,11 @@
     <%= couchdb_rev_field f, @note %>
     <div class="label">
     <%= f.label :title, t(:title), { :class => :note_title } %>
-    <%= f.text_field :title, { :title => "заглавие", :class => "blur" } %>
+    <%= f.text_field :title, { :title => "заглавие", :class => "blur", :autocomplete => :off } %>
     </div>
     <div class="label">
       <%= f.label :description, t(:description),  { :class => :note_description }%>
-      <%= f.text_area :description %>
+      <%= f.text_area :description, { :autocomplete => :off } %>
     </div>
   </div>
   <div style="min-height: 48px;">

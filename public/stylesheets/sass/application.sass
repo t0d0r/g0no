@@ -18,12 +18,33 @@ $amount_color: $amount_red
 $input_hover: #000
 $input_focus: #151fc0
 
-input, input#note_attachments_
+input
   font-size: 1em
+  
+input#note_attachments_
+  font-size: 1em
+  width: 370px
 
-div#add_finance
+div#finance
+  clear: both
+  display: block
+  min-height: 2em
+
+div#add_finance, div#upload_file_div
   display: block
   margin: 0
+
+div#add_finance, div#upload_file_div
+  input#submit_attachment, input#note_submit
+    position: relative
+    float: right
+    width: 100px
+  div
+    float: left
+  input#note_attachment_comment
+    width: 100%
+  div.label.attachment
+    width: 300px
 
 div#top-bar
   display: block
@@ -84,6 +105,7 @@ div#top-bar
   background-image: url(/images/note.png)
   background-repeat: no-repeat
   background-position: top right  
+  border: none
 
   h1#note-content
     color: $dark_grey
@@ -167,7 +189,7 @@ div.label
   float: left
 
 form.note
-  min-height: 300px
+  margin-bottom: 5em
   label.over
     color: $light_grey
     position: absolute
@@ -205,9 +227,6 @@ form.note
   textarea
     font-size: 1em
     height: 1em
-  input#note_attachments_
-    border: none
-    font-size: 1em
   input#note_submit, input#submit_attachment, input.button
     border: 3px solid #941022
     color: #fff

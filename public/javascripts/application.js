@@ -40,6 +40,7 @@ $(function() {
   $("label.finance_date").labelOver("over")
   $("label.finance_amount").labelOver("over")
   $("label.finance_comment").labelOver("over")
+  $("label.note_attachment_comment").labelOver("over")
   $("input#note_title").keyup(function () { $("title").text($(this).val()); showButtonBar(this) });
   $("textarea#note_description").autoGrow();
   $("textarea#note_description").keyup(function() { showButtonBar(this) });
