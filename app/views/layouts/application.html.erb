@@ -27,13 +27,20 @@
   </div>
   <p style="color: green"><%= flash[:notice] %></p>
   <div id="container">
-    <%= show_add_remove_buttons?(controller) %>
-    <%= yield  %>  
-    <div class="bottom-nav">
+    <div class="upper-nav">
       <ul id="menu">
         <li><%= link_to_unless_current t("content"), notes_path %></li>
       </ul>
     </div>
+    <div class="upper-nfo">
+      <%= show_finance_total(@note) %>
+      <%= show_add_remove_buttons?(controller) %>
+    </div>
+    <div style="clear: both;">
+    <%= yield  %>  
+    </div>
+    <div style="display:block clear: both;height: 3em;">
+    </div>
   </div>
-</body>
+  </body>
 </html>

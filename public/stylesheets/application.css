@@ -1,29 +1,62 @@
 input {
   font-size: 1em; }
 
-input#note_attachments_ {
-  font-size: 1em;
-  width: 370px; }
-
 div#finance {
   clear: both;
   display: block;
-  min-height: 2em; }
-
-div#add_finance, div#upload_file_div {
-  display: block;
-  margin: 0; }
-
-div#add_finance input#submit_attachment, div#add_finance input#note_submit, div#upload_file_div input#submit_attachment, div#upload_file_div input#note_submit {
-  position: relative;
-  float: right;
-  width: 100px; }
-div#add_finance div, div#upload_file_div div {
-  float: left; }
-div#add_finance input#note_attachment_comment, div#upload_file_div input#note_attachment_comment {
+  min-height: 2em;
   width: 100%; }
-div#add_finance div.label.attachment, div#upload_file_div div.label.attachment {
-  width: 300px; }
+  div#finance #add_finance {
+    width: 100%; }
+    div#finance #add_finance .finance_amount {
+      padding-left: 1em; }
+    div#finance #add_finance .finance_comment {
+      padding-left: 1em;
+      width: 60%; }
+      div#finance #add_finance .finance_comment input {
+        width: 100%; }
+    div#finance #add_finance input#submit_finance {
+      float: right;
+      width: 10%; }
+
+.table-files, .table-finance {
+  border: 1px solid #999999;
+  -webkit-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 2px 5px 2px 5px; }
+  .table-files td, .table-finance td {
+    white-space: nowrap;
+    padding-left: 1em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #999999; }
+  .table-files .even, .table-finance .even {
+    background-color: #fcf9a6; }
+  .table-files .even:hover, .table-files .odd:hover, .table-finance .even:hover, .table-finance .odd:hover {
+    background-color: #eeea4e; }
+
+div#upload_file_div {
+  display: block;
+  width: 100%;
+  margin: 0; }
+  div#upload_file_div .upload-filename {
+    display: inline;
+    width: 80%; }
+  div#upload_file_div input#note_attachments_ {
+    border: 1px solid red;
+    margin: 0;
+    padding: 0; }
+  div#upload_file_div div.label.attachment {
+    display: inline;
+    clear: left;
+    width: 80%; }
+  div#upload_file_div input#note_attachment_comment {
+    width: 98%; }
+  div#upload_file_div input#submit_attachment {
+    float: right;
+    width: 10%; }
 
 div#top-bar {
   display: block;
@@ -71,6 +104,7 @@ div#top-bar {
   margin: 1em 0; }
 
 #container {
+  display: block;
   margin: 0 auto;
   width: 800px;
   min-height: 300px;
@@ -78,21 +112,9 @@ div#top-bar {
   background-color: #f7f5ab;
   background-image: url(/images/note.png);
   background-repeat: no-repeat;
-  background-position: top right;
-  border: none; }
+  background-position: top right; }
   #container h1#note-content {
     color: #5b5b5b; }
-  #container .bigplus {
-    color: #f9dc5b;
-    position: relative;
-    float: right;
-    cursor: pointer;
-    top: 0;
-    right: 20px;
-    font-weight: bold;
-    font-size: 64px; }
-  #container .bigplus:hover {
-    text-shadow: 2px 2px 3px black; }
   #container div.amount {
     color: #d91831;
     display: inline;
@@ -111,27 +133,56 @@ ul {
     list-style-type: none;
     margin: 0; }
 
-ul#menu {
-  border-top: 2px solid #999999;
-  margin-top: 4em;
-  text-align: right; }
-  ul#menu li {
-    margin: 0;
+.upper-nav {
+  position: relative;
+  top: -2.5em;
+  left: -1.5em;
+  clear: right; }
+  .upper-nav ul#menu {
+    margin: 0; }
+    .upper-nav ul#menu li {
+      margin: 0;
+      display: inline;
+      background-color: #f9dc5b;
+      -webkit-border-top-right-radius: 10px;
+      -webkit-border-top-left-radius: 10px;
+      -moz-border-radius-topright: 10px;
+      -moz-border-radius-topleft: 10px;
+      border-upper-right-radius: 10px;
+      border-upper-left-radius: 10px;
+      font-size: 1.5em;
+      padding: 0 1em; }
+      .upper-nav ul#menu li a {
+        color: #1572c0; }
+    .upper-nav ul#menu li:hover {
+      background-color: #f9dc5b;
+      cursor: pointer; }
+
+.upper-nfo .bigplus {
+  color: #f9dc5b;
+  display: inline;
+  position: relative;
+  float: right;
+  cursor: pointer;
+  top: -30px;
+  right: 20px;
+  font-weight: bold;
+  font-size: 64px; }
+.upper-nfo .bigplus:hover {
+  text-shadow: 2px 2px 3px black; }
+.upper-nfo .big-finance {
+  float: left;
+  text-align: right;
+  width: 720px; }
+  .upper-nfo .big-finance .text {
+    vertical-align: top;
+    font-size: 24px;
     display: inline;
-    border: 2px solid #999999;
-    background-color: #999999;
-    padding: 0 0.5em;
-    -webkit-border-bottom-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -moz-border-radius-bottomright: 10px;
-    -moz-border-radius-bottomleft: 10px;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    font-size: 1.5em; }
-    ul#menu li a {
-      color: black; }
-  ul#menu li:hover {
-    background-color: #f9dc5b; }
+    color: #5b5b5b; }
+  .upper-nfo .big-finance .total {
+    font-size: 64px;
+    display: inline;
+    color: #d91831; }
 
 h1 {
   margin-right: 3em;
@@ -157,56 +208,59 @@ div.label {
   position: relative;
   float: left; }
 
-form.note {
-  margin-bottom: 5em; }
-  form.note label.over {
-    color: #999999;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    text-transform: uppercase; }
-  form.note div.label {
-    position: relative;
-    float: left; }
-  form.note #note_button_bar {
-    text-align: right;
-    width: 800px;
-    height: 32px; }
-  form.note #note_reset_button {
-    background-color: #5b5b5b; }
-  form.note input, form.note textarea {
-    padding: 0;
-    width: 800px;
-    outline: none;
-    border: 0;
-    border-bottom: 2px dashed #5b5b5b;
-    background-color: transparent;
-    font-family: Georgia, "Times New Roman", Times, serif;
-    color: #5b5b5b;
-    font-size: 2em; }
-  form.note input:hover, form.note textarea:hover {
-    color: black; }
-  form.note input:focus, form.note textarea:focus {
-    color: #151fc0;
-    background-position: top right;
-    background-repeat: no-repeat;
-    background-image: url(/images//bullet1.gif); }
-  form.note input#note_title {
-    margin-bottom: 0.5em; }
-  form.note textarea {
-    font-size: 1em;
-    height: 1em; }
-  form.note input#note_submit, form.note input#submit_attachment, form.note input.button {
-    border: 3px solid #941022;
-    color: white;
-    width: 128px;
-    display: inline;
-    font-size: 1em;
-    background-color: #941022; }
-  form.note input#note_submit:hover, form.note .button:hover {
-    border: 3px solid #941022;
-    background-color: red;
-    cursor: pointer; }
+form.note label.over {
+  color: #999999;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  text-transform: uppercase; }
+form.note div.label {
+  position: relative;
+  float: left; }
+form.note #note_button_bar_container {
+  clear: both;
+  min-height: 48px;
+  height: auto !important;
+  height: 48px; }
+form.note #note_button_bar {
+  text-align: right;
+  width: 800px;
+  height: 32px; }
+form.note #note_reset_button {
+  background-color: #5b5b5b; }
+form.note input, form.note textarea {
+  padding: 0;
+  width: 800px;
+  outline: none;
+  border: 0;
+  border-bottom: 2px dashed #5b5b5b;
+  background-color: transparent;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: #5b5b5b;
+  font-size: 2em; }
+form.note input:hover, form.note textarea:hover {
+  color: black; }
+form.note input:focus, form.note textarea:focus {
+  color: #151fc0;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-image: url(/images//bullet1.gif); }
+form.note input#note_title {
+  margin-bottom: 0.5em; }
+form.note textarea {
+  font-size: 1em;
+  height: 1em; }
+form.note input#note_submit, form.note input#submit_attachment, form.note input.button {
+  border: 3px solid #941022;
+  color: white;
+  width: 128px;
+  display: inline;
+  font-size: 1em;
+  background-color: #941022; }
+form.note input#note_submit:hover, form.note .button:hover {
+  border: 3px solid #941022;
+  background-color: red;
+  cursor: pointer; }
 
 .calendar {
   background-color: #dddddd;

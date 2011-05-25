@@ -35,11 +35,19 @@ class NotesController < ApplicationController
   end
   
   def update
-    params[:note][:updated_from] = current_user.username
+    params[:note][:updated_from] = current_user.username || current_user.email
     @note = Note.find(params[:id])
     tags = params[:note][:tags]
     params[:note][:tags] = tags.split(/\s+/) if params[:note][:tags]
-    @note.add_finance = params[:finance] if params[:finance]
+    if params[:note][:attachments]
+      params[:note][:attachments].each { |attachment|
+        @note.attach_comments_to_filename(attachment.original_filename, params[:note][:attachment_comment])
+      }
+    end
+    if params[:finance]
+      params[:finance][:author] = current_user.username || current_user.email
+      @note.add_finance = params[:finance]
+    end
     @note.update_attributes(params[:note])
     
     respond_to do |wants|
@@ -54,14 +62,14 @@ class NotesController < ApplicationController
 
   def delete_file
     filename = params[:filename]
-#     begin
+    begin
       @note = Note.find(params[:id])
+      flash[:notice] = "file #{@note.real_filename(filename)} was deleted!"
       @note.delete_attachment(filename)
       @note.save
-      flash[:notice] = "file #{@note.real_filename(filename)} was deleted!"
-#     rescue 
-#       flash[:notice] = "file #{@note.real_filename(filename)} is still here!"
-#     end
+    rescue 
+      flash[:notice] = "file #{@note.real_filename(filename)} is still here!"
+    end
 
     respond_to do |wants|
       wants.html { redirect_to note_url(@note) }
@@ -75,5 +83,19 @@ class NotesController < ApplicationController
     end
     redirect_to :action => "index"
   end
+
+  private
+
+  def attach_comments_to_filenames(note, filename)
+    comment = params[:note][:attachment_comment]
+    key = note.attachment_hash(filename)
+    if note.attachments_nfo.has_key?(key)
+      note.attachments_nfo[key].merge( { :comment => comment } )
+    else
+      note.attachments_nfo[key] =  { :comment => comment } 
+    end
+    note
+  end
+
 
 end

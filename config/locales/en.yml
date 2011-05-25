@@ -2,13 +2,15 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  Content: "Content"
-  content: "content"
-  amount: "amount"
+  "Are You sure?": "Are you sure?"
   "Your Notes": "Your Notes"
-  tags: "Tags"
-  logout: Logout
   Add:  "Add"
+  Content: "Content"
+  amount: "amount"
   comment: "comment"
+  content: "content"
+  delete: "delete"
+  logout: Logout
+  tags: "Tags"
   title: "title"
 

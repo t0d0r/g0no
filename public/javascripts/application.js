@@ -59,6 +59,9 @@ $(function() {
       dataType: 'script'})
   });
   // createUploader($("#upload_file_div"))
+  $(".table-finance tr:last > td").css({border:"none" });
+  $(".table-files tr:last > td").css({border:"none" });
+  
 });
 
 

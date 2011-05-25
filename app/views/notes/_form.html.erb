@@ -2,19 +2,19 @@
   <div style="clear: both;">
     <%= couchdb_rev_field f, @note %>
     <div class="label">
-    <%= f.label :title, t(:title), { :class => :note_title } %>
-    <%= f.text_field :title, { :title => "заглавие", :class => "blur", :autocomplete => :off } %>
+      <%= f.label :title, t(:title), { :class => :note_title } %>
+      <%= f.text_field :title, { :title => "заглавие", :class => "blur", :autocomplete => :off } %>
     </div>
     <div class="label">
       <%= f.label :description, t(:description),  { :class => :note_description }%>
       <%= f.text_area :description, { :autocomplete => :off } %>
     </div>
   </div>
-  <div style="min-height: 48px;">
-  <div id="note_button_bar" style="display: none">
-    <%= f.submit "Запис", { :class=>"button" } %>
-    <%= submit_tag("Отказ", { :name => 'reset', :id => 'note_reset_button', :type => "reset", :class => "button" } ) %>
-  </div>
+  <div id="note_button_bar_container">
+    <div id="note_button_bar" style="display: none">
+      <%= f.submit "Запис", { :class=>"button" } %>
+      <%= submit_tag("Отказ", { :name => 'reset', :id => 'note_reset_button', :type => "reset", :class => "button" } ) %>
+    </div>
   </div>
   <div>
     <%# sanitize(textilize @note.description) %>
@@ -23,7 +23,7 @@
 
     <%# f.label "Visited On" %>
     <%# f.text_field "visited_on", :id => "date" %>
-    
+
     <%# f.text_field "updated_at" %>
     <%# f.text_field "updated_at", :value => f_date(@note.updated_at) %>
     <%# f.label "Файл" %>

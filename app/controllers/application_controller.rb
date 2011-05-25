@@ -21,14 +21,15 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     logger.debug "* Accept-Language: #{request.env['HTTP_ACCEPT_LANGUAGE']}"
-    I18n.locale = extract_locale_from_accept_language_header
+    if request.env['HTTP_ACCEPT_LANGUAGE']
+      I18n.locale = extract_locale_from_accept_language_header
+    end
     logger.debug "* Locale set to '#{I18n.locale}'"
-#    I18n.locale = :en
   end
 
   private
   def extract_locale_from_accept_language_header
-    request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first
+    request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first || :en
   end
 
 

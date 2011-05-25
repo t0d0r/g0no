@@ -1,30 +1,31 @@
 <div class="form">
 <%= render :partial => "form" %>
 </div>
-<!--
-<% unless @note.finance.empty? %>
-    <%= render :partial => 'finance', :collection => @note.finance %>
-<% end %>
--->
 
+<% unless @note.finance.empty? %>
+  <table width="100%" cellspacing="0" cellpadding="0" class="table-finance">
+    <%= render :partial => 'finance', :collection => @note.finance.sort_by { |finance| finance['created_at'] }.reverse  %>
+  </table>
+<% end %>
+<div class="empty_line"></div>
 <div id="finance">
   <%= form_for @note do |f| %>
     <%= couchdb_rev_field f, @note %>
     <div id="add_finance" >
-        <div class="label">
+        <div class="label finance_date">
           <%= label :finance, :date, t(:Date),  { :class => :finance_date }%>
           <%= unobtrusive_date_text_picker :finance, :date, { :value => Time.now, :divider => '.', :format => 'd-m-y', :no_transparency => true }, { :size => 10, :value => f_date(Time.now)  }  %>
         </div>
-        <div class="label">
+        <div class="label finance_amount">
           <%= label :finance, :amount, t(:amount),  { :class => :finance_amount }%>
           <%= text_field :finance, :amount, { :size => 5, :autocomplete => :off  } %>
         </div>
-        <div class="label">
+        <div class="label finance_comment">
           <%= label :finance, :comment,  t(:comment),  { :class => :finance_comment }%>
           <%= text_field :finance, :comment, { :autocomplete => :off } %>
         </div>
         <%# collection_select :finance, :type, { 1 => "Приход", 2 => "Разход"}, :first, :last %>
-        <%= f.submit t("Add") %>
+        <%= f.submit t("Add"), { :id => 'submit_finance'} %>
     </div>
   <% end %>
 </div>
@@ -38,37 +39,37 @@
 </div>
 
 <% unless @note.attachments.empty? %>
-  <div>
-    <table width="100%">
-      <% @note.attachments.each do |attachment_name, attachment_attributes| %>
-        <tr>
-          <td>
+  <div style="width: 100%;">
+    <table width="100%" cellspacing="0" cellpadding="0" class="table-files">
+      <% @note.attachments.each_with_index do | (attachment_name, attachment_attributes), idx| %>
+        <tr closs="<%= odd_or_even(idx) %>">
+          <td width="20%">
             <%= link_to_filename @note, attachment_name %>
           </td>
-          <td>
+          <td width="10%" align="right">
             <%= number_to_human_size(attachment_attributes['length']) %>
           </td>
-          <td>
-            <%= t("Comment") %>
+          <td align="left" width="65%">
+            <%= @note.attachments_nfo[attachment_name]['comment'] %>
           </td>
-          <td>
-            <%= link_to "Изтрий", delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => "Are You sure ?" %> 
+          <td align="right" width="5%">
+            <%= link_to t("delete"), delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => t("Are You sure?") %> 
           </td>
-        <tr>
+        </tr>
       <% end %>
     </table>
   </div>
   <div class="empty_line"></div>
 <% end %>
-  <%= form_for @note, :html => {:multipart => true} do |f| %>
-    <div id="upload_file_div" >
-      <div>
-        <%= file_field_tag("note[attachments][]") %>  
-      </div>
-      <div class="label attachment">
-        <%= label :note, :attachment_comment,  t(:comment),  { :class => :note_attachment_comment }%>
-        <%= text_field_tag("note[attachment_comment]", {}, { :autocomplete => :off }) %>
-      </div>
-      <%= f.submit t("Add"), { :id => 'submit_attachment', :class => :button } %>
+<%= form_for @note, :html => {:multipart => true} do |f| %>
+  <div id="upload_file_div" >
+    <div class="upload-filename">
+      <%= file_field_tag("note[attachments][]") %>  
     </div>
-  <% end %>
+    <div class="label attachment">
+      <%= label :note, :attachment_comment,  t(:comment),  { :class => :note_attachment_comment }%>
+      <%= text_field_tag("note[attachment_comment]", {}, { :autocomplete => :off }) %>
+    </div>
+    <%= f.submit t("Add"), { :id => 'submit_attachment', :class => :button } %>
+  </div>
+<% end %>

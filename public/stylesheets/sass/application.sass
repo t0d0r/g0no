@@ -5,6 +5,9 @@ $light_grey: #999999
 
 $created_at: #999b92
 
+$even_color: #fcf9a6
+$odd_color: #eeea4e
+
 $bigplus_normal: #e98619
 $bigplus_hover: #e94c19
 
@@ -21,30 +24,65 @@ $input_focus: #151fc0
 input
   font-size: 1em
   
-input#note_attachments_
-  font-size: 1em
-  width: 370px
-
 div#finance
   clear: both
   display: block
   min-height: 2em
-
-div#add_finance, div#upload_file_div
-  display: block
-  margin: 0
-
-div#add_finance, div#upload_file_div
-  input#submit_attachment, input#note_submit
-    position: relative
-    float: right
-    width: 100px
-  div
-    float: left
-  input#note_attachment_comment
+  width: 100%
+  #add_finance
     width: 100%
+    .finance_amount
+      padding-left: 1em
+    .finance_date
+    .finance_comment
+      padding-left: 1em
+      width: 60%
+      input
+        width: 100%
+    input#submit_finance
+      float: right
+      width: 10%
+
+
+.table-files, .table-finance
+  border: 1px solid $light_grey
+  -webkit-border-radius: 5px
+  -webkit-border-radius: 5px
+  -moz-border-radius: 5px
+  border-radius: 5px
+  padding: 2px 5px 2px 5px
+  td
+    white-space: nowrap
+    padding-left: 1em
+    padding-top: 5px 
+    padding-bottom: 5px 
+    border-bottom: 1px solid $light_grey
+  .even
+    background-color: $even_color
+  .odd
+  .even:hover, .odd:hover
+    background-color: $odd_color
+
+div#upload_file_div
+  display: block
+  width: 100%
+  margin: 0
+  .upload-filename
+    display: inline
+    width: 80%
+  input#note_attachments_
+    border: 1px solid red
+    margin: 0
+    padding: 0
   div.label.attachment
-    width: 300px
+    display: inline
+    clear: left
+    width: 80%
+  input#note_attachment_comment
+    width: 98%
+  input#submit_attachment
+    float: right
+    width: 10%
 
 div#top-bar
   display: block
@@ -97,6 +135,7 @@ div#top-bar
   margin: 1em 0
   
 #container
+  display: block
   margin: 0 auto
   width: 800px
   min-height: 300px
@@ -105,23 +144,9 @@ div#top-bar
   background-image: url(/images/note.png)
   background-repeat: no-repeat
   background-position: top right  
-  border: none
 
   h1#note-content
     color: $dark_grey
-
-  .bigplus
-    color: $dark_yellow
-    position: relative
-    float: right
-    cursor: pointer
-    top: 0
-    right: 20px
-    font-weight: bold
-    font-size: 64px
-
-  .bigplus:hover
-    text-shadow: 2px 2px 3px #000
 
   div.amount
     color: $amount_color
@@ -141,29 +166,58 @@ ul
     list-style-type: none
     margin: 0
 
-ul#menu
-  border-top: 2px solid $light_grey
-  margin-top: 4em
-  text-align: right
-
-  li
+.upper-nav
+  position: relative
+  top: -2.5em
+  left: -1.5em 
+  clear: right
+  ul#menu
     margin: 0
+    li
+      margin: 0
+      display: inline
+      background-color: $dark_yellow
+      -webkit-border-top-right-radius: 10px
+      -webkit-border-top-left-radius: 10px
+      -moz-border-radius-topright: 10px
+      -moz-border-radius-topleft: 10px
+      border-upper-right-radius: 10px
+      border-upper-left-radius: 10px
+      font-size: 1.5em
+      padding: 0 1em
+      a
+        color: $link_normal
+    li:hover
+      background-color: $dark_yellow
+      cursor: pointer
+.upper-nfo
+  .bigplus
+    color: $dark_yellow
     display: inline
-    border: 2px solid $light_grey
-    background-color: $light_grey
-    padding: 0 0.5em
-    -webkit-border-bottom-right-radius: 10px
-    -webkit-border-bottom-left-radius: 10px
-    -moz-border-radius-bottomright: 10px
-    -moz-border-radius-bottomleft: 10px
-    border-bottom-right-radius: 10px
-    border-bottom-left-radius: 10px
-    font-size: 1.5em
-    a
-      color: #000
-  li:hover
-    background-color: $dark_yellow
-    
+    position: relative
+    float: right
+    cursor: pointer
+    top: -30px
+    right: 20px 
+    font-weight: bold
+    font-size: 64px
+
+  .bigplus:hover
+    text-shadow: 2px 2px 3px #000
+
+  .big-finance
+    float: left
+    text-align: right
+    width: 720px
+    .text
+      vertical-align: top
+      font-size: 24px
+      display: inline
+      color: $dark_grey
+    .total
+      font-size: 64px
+      display: inline
+      color: $amount_red
 
 h1
   margin-right: 3em
@@ -189,7 +243,6 @@ div.label
   float: left
 
 form.note
-  margin-bottom: 5em
   label.over
     color: $light_grey
     position: absolute
@@ -199,6 +252,11 @@ form.note
   div.label
     position: relative
     float: left
+  #note_button_bar_container
+    clear: both
+    min-height: 48px
+    height: auto !important
+    height: 48px
   #note_button_bar
     text-align: right
     width: 800px

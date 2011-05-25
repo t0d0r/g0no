@@ -1,5 +1,5 @@
 <tr>
-  <td><%= finance["date"] %></td>
-  <td><%= {"1" => "Приход", "2" => "Разход"}[finance["type"]] %></td>
-  <td><%= finance["amount"] %></td>
+  <td width="10%"><%= finance["date"] %></td>
+  <td width="10%" align="right"><%= f_price finance["amount"] %></td>
+  <td width="80%"><%= finance["comment"] %></td>
 </tr>

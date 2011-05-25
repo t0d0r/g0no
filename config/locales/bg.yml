@@ -5,22 +5,24 @@
 # Минимална локализация на приложения за поддръжка на български език.
 
 bg:
-  "Your Notes": "Вашите Бележки"
+  "Are You sure?": "Сигурни ли сте?"
   "Notes by tag": "Бележки с ключова дума" 
-  content: "съдържание"
-  Content: "Съдържание"
-  tags: "тагове"
-  amount: "сума"
-  remember_me: "Запомни ме"
-  email: "Емайл"
-  password: "Парола"
-  logout: "изход"
+  "Your Notes": "Вашите Бележки"
   Add: "Добави" 
-  title: "заглавие"
-  description: "описание"
-  comment: "коментар"
+  Content: "Съдържание"
   Date: "дата"
   amount: "сума"
+  comment: "коментар"
+  content: "съдържание"
+  delete: "изтриване"
+  description: "описание"
+  expence: "разход"
+  email: "Емайл"
+  logout: "изход"
+  password: "Парола"
+  remember_me: "Запомни ме"
+  tags: "тагове"
+  title: "заглавие"
 
   date:
     formats:

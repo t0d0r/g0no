@@ -35,15 +35,20 @@ class Note < CouchRest::Model::Base
 
   def attachments=(attachments)
     attachments.each do |attachment|
-      # TODO: add self.
       filename_key = attachment_hash(attachment.original_filename)
       self.create_attachment(:file => attachment, :name => filename_key)
-      self.attachments_nfo[filename_key] =  { :filename => attachment.original_filename, :comment => 'мамуна' } 
+      if self.attachments_nfo.has_key?(filename_key)
+        self.attachments_nfo[filename_key].merge({ :filename => attachment.original_filename }) 
+      else
+        self.attachments_nfo[filename_key] = { :filename => attachment.original_filename }
+      end
     end
   end
   
   def add_finance=(arg)
-    self.finance << { :date => arg[:date], :type => arg[:type], :amount => arg[:amount] }
+    self.finance << { :date => arg[:date], :comment => arg[:comment], :amount => arg[:amount], 
+                      :created_at => Time.now, :author => arg[:author] }
+    self.finance_total += arg[:amount].to_f
   end
 
   def self.create(arg)
@@ -51,13 +56,22 @@ class Note < CouchRest::Model::Base
     super arg
   end
 
-  def real_filename(hash)
-    attachments_nfo.has_key?(hash) ? attachments_nfo[hash]["filename"] : "unknown.dat"
+  def real_filename(key)
+    self.attachments_nfo.has_key?(key) ? self.attachments_nfo[key]["filename"] : "UNKNOWN"
   end
 
   def delete_attachment(arg)
     attachments_nfo.delete(arg) if attachments_nfo.has_key?(arg)
     super arg
+  end
+
+  def attach_comments_to_filename(filename, comment)
+    key = attachment_hash(filename)
+    if attachments_nfo.has_key?(key)
+      self.attachments_nfo[key].merge( { :filename => filename, :comment => comment } )
+    else
+      self.attachments_nfo[key] =  { :filename => filename, :comment => comment } 
+    end
   end
 
   private
