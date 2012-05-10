@@ -42,7 +42,7 @@
   <div style="width: 100%;">
     <table width="100%" cellspacing="0" cellpadding="0" class="table-files">
       <% @note.attachments.each_with_index do | (attachment_name, attachment_attributes), idx| %>
-        <tr closs="<%= odd_or_even(idx) %>">
+        <tr class="<%= odd_or_even(idx) %>">
           <td width="20%">
             <%= link_to_filename @note, attachment_name %>
           </td>

@@ -1,299 +1,94 @@
-input {
-  font-size: 1em; }
+/*
+Syntax error: Inconsistent indentation: 1 tab was used for indentation, but the rest of the document was indented using 2 spaces.
+        on line 348 of /Users/t0d0r/Projects/rails/g0no/public/stylesheets/sass/application.sass
 
-div#finance {
-  clear: both;
-  display: block;
-  min-height: 2em;
-  width: 100%; }
-  div#finance #add_finance {
-    width: 100%; }
-    div#finance #add_finance .finance_amount {
-      padding-left: 1em; }
-    div#finance #add_finance .finance_comment {
-      padding-left: 1em;
-      width: 60%; }
-      div#finance #add_finance .finance_comment input {
-        width: 100%; }
-    div#finance #add_finance input#submit_finance {
-      float: right;
-      width: 10%; }
+343:   right: 0
+344: 
+345: .bottom-nav
+346: 
+347: #notice, #warning, #error 
+348: 	font: 100% "Trebuchet MS",Verdana,Helvetica,Arial,sans-serif !important bold
+349: 	margin: 5px
+350: 	padding: 1em
+351: 	-moz-border-radius: .5em /* gecko */
+352: 	-webkit-border-radius: .5em /* webkit */
+353: 	border-radius: .5em /* w3 */
 
-.table-files, .table-finance {
-  border: 1px solid #999999;
-  -webkit-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  padding: 2px 5px 2px 5px; }
-  .table-files td, .table-finance td {
-    white-space: nowrap;
-    padding-left: 1em;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #999999; }
-  .table-files .even, .table-finance .even {
-    background-color: #fcf9a6; }
-  .table-files .even:hover, .table-files .odd:hover, .table-finance .even:hover, .table-finance .odd:hover {
-    background-color: #eeea4e; }
-
-div#upload_file_div {
-  display: block;
-  width: 100%;
-  margin: 0; }
-  div#upload_file_div .upload-filename {
-    display: inline;
-    width: 80%; }
-  div#upload_file_div input#note_attachments_ {
-    margin: 0;
-    padding: 0; }
-  div#upload_file_div div.label.attachment {
-    display: inline;
-    clear: left;
-    width: 80%; }
-  div#upload_file_div input#note_attachment_comment {
-    width: 98%; }
-  div#upload_file_div input#submit_attachment {
-    float: right;
-    width: 10%; }
-
-div#top-bar {
-  display: block;
-  min-height: 10px;
-  font-family: "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
-  font-size: 11px; }
-  div#top-bar #nbar {
-    float: left; }
-  div#top-bar #nuser {
-    float: right;
-    white-space: nowrap; }
-    div#top-bar #nuser a {
-      text-decoration: none;
-      padding: 2px 0 2px;
-      padding-left: 5px;
-      padding-right: 5px;
-      -moz-border-radius: 3px;
-      border-radius: 3px;
-      background-color: #f9dc5b; }
-    div#top-bar #nuser a:hover {
-      text-decoration: underline; }
-
-.content_line {
-  margin: 0;
-  padding: 0;
-  min-height: 64px; }
-  .content_line .title, .content_line .amount {
-    font-size: 1.5em;
-    display: inline; }
-  .content_line p {
-    color: #0e0e0e;
-    margin: 0;
-    padding: 0; }
-  .content_line .created_at {
-    color: #999b92;
-    font-size: 12px; }
-
-.content_line:hover {
-  cursor: pointer; }
-  .content_line:hover .amount {
-    text-shadow: 1px 1px 2px black; }
-
-.empty_line {
-  border-bottom: 2px dashed #5b5b5b;
-  margin: 1em 0; }
-
-#container {
-  display: block;
-  margin: 0 auto;
-  width: 800px;
-  min-height: 300px;
-  padding: 1em 1.5em;
-  background-color: #f7f5ab;
-  background-image: url(/images/note.png);
-  background-repeat: no-repeat;
-  background-position: top right; }
-  #container h1#note-content {
-    color: #5b5b5b; }
-  #container div.amount {
-    color: #d91831;
-    display: inline;
-    padding-left: 2em;
-    font-size: 1.5em;
-    font-family: Georgia, "Times New Roman", Times, serif; }
-  #container a {
-    color: #1572c0;
-    text-decoration: none; }
-  #container a:hover {
-    color: #151ec0; }
-
-ul {
-  padding: 0; }
-  ul li {
-    list-style-type: none;
-    margin: 0; }
-
-.upper-nav {
-  position: relative;
-  top: -2.5em;
-  left: -1.5em;
-  clear: right; }
-  .upper-nav ul#menu {
-    margin: 0; }
-    .upper-nav ul#menu li {
-      margin: 0;
-      display: inline;
-      background-color: #f9dc5b;
-      -webkit-border-top-right-radius: 10px;
-      -webkit-border-top-left-radius: 10px;
-      -moz-border-radius-topright: 10px;
-      -moz-border-radius-topleft: 10px;
-      border-upper-right-radius: 10px;
-      border-upper-left-radius: 10px;
-      font-size: 1.5em;
-      padding: 0 1em; }
-      .upper-nav ul#menu li a {
-        color: #1572c0; }
-    .upper-nav ul#menu li:hover {
-      background-color: #f9dc5b;
-      cursor: pointer; }
-
-.upper-nfo .bigplus {
-  color: #f9dc5b;
-  display: inline;
-  position: relative;
-  float: right;
-  cursor: pointer;
-  top: -30px;
-  right: 20px;
-  font-weight: bold;
-  font-size: 64px; }
-.upper-nfo .bigplus:hover {
-  text-shadow: 2px 2px 3px black; }
-.upper-nfo .big-finance {
-  float: left;
-  text-align: right;
-  width: 720px; }
-  .upper-nfo .big-finance .text {
-    vertical-align: top;
-    font-size: 24px;
-    display: inline;
-    color: #5b5b5b; }
-  .upper-nfo .big-finance .total {
-    font-size: 64px;
-    display: inline;
-    color: #d91831; }
-
-h1 {
-  margin-right: 3em;
-  line-height: 1em; }
-
-h2 {
-  margin: 0; }
-
-.nowrap {
-  white-space: nowrap; }
-
-.add_bar {
-  display: none; }
-
-label.over {
-  color: #999999;
-  position: absolute;
-  top: 5px;
-  left: 10px;
-  text-transform: lowercase; }
-
-div.label {
-  position: relative;
-  float: left; }
-
-form.note label.over {
-  color: #999999;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  text-transform: uppercase; }
-form.note div.label {
-  position: relative;
-  float: left; }
-form.note #note_button_bar_container {
-  clear: both;
-  min-height: 48px;
-  height: auto !important;
-  height: 48px; }
-form.note #note_button_bar {
-  text-align: right;
-  width: 800px;
-  height: 32px; }
-form.note #note_reset_button {
-  background-color: #5b5b5b; }
-form.note input, form.note textarea {
-  padding: 0;
-  width: 800px;
-  outline: none;
-  border: 0;
-  border-bottom: 2px dashed #5b5b5b;
-  background-color: transparent;
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: #5b5b5b;
-  font-size: 2em; }
-form.note input:hover, form.note textarea:hover {
-  color: black; }
-form.note input:focus, form.note textarea:focus {
-  color: #151fc0;
-  background-position: top right;
-  background-repeat: no-repeat;
-  background-image: url(/images//bullet1.gif); }
-form.note input#note_title {
-  margin-bottom: 0.5em; }
-form.note textarea {
-  font-size: 1em;
-  height: 1em; }
-form.note input#note_submit, form.note input#submit_attachment, form.note input.button {
-  border: 3px solid #941022;
-  color: white;
-  width: 128px;
-  display: inline;
-  font-size: 1em;
-  background-color: #941022; }
-form.note input#note_submit:hover, form.note .button:hover {
-  border: 3px solid #941022;
-  background-color: red;
-  cursor: pointer; }
-
-.calendar {
-  background-color: #dddddd;
-  font-family: verdana, helvetica, sans-serif;
-  font-size: 80%;
-  color: black;
-  cursor: pointer;
-  width: 200px;
-  border-collapse: collapse;
-  border: 1px solid #dddddd; }
-  .calendar th {
-    padding: 2px; }
-  .calendar a {
-    color: black;
-    text-decoration: none; }
-  .calendar td {
-    padding: 2px;
-    background-color: white;
-    border: 1px solid #dddddd;
-    text-align: center; }
-  .calendar td.selected {
-    background-color: #aaaaaa; }
-  .calendar td.selected a {
-    color: white; }
-  .calendar td.weekend {
-    background-color: #eeeeee; }
-  .calendar td.today {
-    background-color: yellow; }
-    .calendar td.today a {
-      color: black; }
-  .calendar td.day a:hover {
-    color: white; }
-
-body {
-  margin-top: 4px;
-  top: 0;
-  right: 0; }
+Backtrace:
+/Users/t0d0r/Projects/rails/g0no/public/stylesheets/sass/application.sass:348
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:401:in `tabulate'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:339:in `each_with_index'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:359:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:359:in `each_with_index'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:359:in `tabulate'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:322:in `_to_tree'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:291:in `_render'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:239:in `render'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/util.rb:298:in `silence_sass_warnings'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/engine.rb:239:in `render'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin/compiler.rb:319:in `update_stylesheet'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin/compiler.rb:181:in `update_stylesheets'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin/compiler.rb:175:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin/compiler.rb:175:in `update_stylesheets'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin/compiler.rb:173:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin/compiler.rb:173:in `update_stylesheets'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin.rb:81:in `update_stylesheets'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin.rb:54:in `check_for_updates'
+/opt/local/lib/ruby/gems/1.8/gems/sass-3.1.0.alpha.252/lib/sass/../sass/plugin/rack.rb:51:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/warden-0.10.7/lib/warden/manager.rb:35:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/warden-0.10.7/lib/warden/manager.rb:34:in `catch'
+/opt/local/lib/ruby/gems/1.8/gems/warden-0.10.7/lib/warden/manager.rb:34:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/best_standards_support.rb:17:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/head.rb:14:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/methodoverride.rb:24:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/params_parser.rb:21:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/flash.rb:182:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/session/abstract_store.rb:149:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/cookies.rb:302:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/activerecord-3.0.5/lib/active_record/query_cache.rb:32:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/activerecord-3.0.5/lib/active_record/connection_adapters/abstract/query_cache.rb:28:in `cache'
+/opt/local/lib/ruby/gems/1.8/gems/activerecord-3.0.5/lib/active_record/query_cache.rb:12:in `cache'
+/opt/local/lib/ruby/gems/1.8/gems/activerecord-3.0.5/lib/active_record/query_cache.rb:31:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/activerecord-3.0.5/lib/active_record/connection_adapters/abstract/connection_pool.rb:354:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/callbacks.rb:46:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/activesupport-3.0.5/lib/active_support/callbacks.rb:415:in `_run_call_callbacks'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/callbacks.rb:44:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/sendfile.rb:107:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/remote_ip.rb:48:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/show_exceptions.rb:47:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/rack/logger.rb:13:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/runtime.rb:17:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/activesupport-3.0.5/lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/lock.rb:11:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/lock.rb:11:in `synchronize'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/lock.rb:11:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/actionpack-3.0.5/lib/action_dispatch/middleware/static.rb:30:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/application.rb:168:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/application.rb:77:in `send'
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/application.rb:77:in `method_missing'
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/rack/log_tailer.rb:14:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in `service'
+/opt/local/lib/ruby/1.8/webrick/httpserver.rb:104:in `service'
+/opt/local/lib/ruby/1.8/webrick/httpserver.rb:65:in `run'
+/opt/local/lib/ruby/1.8/webrick/server.rb:173:in `start_thread'
+/opt/local/lib/ruby/1.8/webrick/server.rb:162:in `start'
+/opt/local/lib/ruby/1.8/webrick/server.rb:162:in `start_thread'
+/opt/local/lib/ruby/1.8/webrick/server.rb:95:in `start'
+/opt/local/lib/ruby/1.8/webrick/server.rb:92:in `each'
+/opt/local/lib/ruby/1.8/webrick/server.rb:92:in `start'
+/opt/local/lib/ruby/1.8/webrick/server.rb:23:in `start'
+/opt/local/lib/ruby/1.8/webrick/server.rb:82:in `start'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/handler/webrick.rb:13:in `run'
+/opt/local/lib/ruby/gems/1.8/gems/rack-1.2.2/lib/rack/server.rb:213:in `start'
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/commands/server.rb:65:in `start'
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/commands.rb:30
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/commands.rb:27:in `tap'
+/opt/local/lib/ruby/gems/1.8/gems/railties-3.0.5/lib/rails/commands.rb:27
+script/rails:6:in `require'
+script/rails:6
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Inconsistent indentation: 1 tab was used for indentation, but the rest of the document was indented using 2 spaces.\A         on line 348 of /Users/t0d0r/Projects/rails/g0no/public/stylesheets/sass/application.sass\A \A 343:   right: 0\A 344: \A 345: .bottom-nav\A 346: \A 347: #notice, #warning, #error \A 348: 	font: 100% \"Trebuchet MS\",Verdana,Helvetica,Arial,sans-serif !important bold\A 349: 	margin: 5px\A 350: 	padding: 1em\A 351: 	-moz-border-radius: .5em /* gecko */\A 352: 	-webkit-border-radius: .5em /* webkit */\A 353: 	border-radius: .5em /* w3 */"; }

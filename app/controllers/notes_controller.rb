@@ -3,6 +3,9 @@ require 'open-uri'
 class NotesController < ApplicationController
 
   def index
+    flash[:notice] = "This is notice."
+    flash[:warning] = "This is warning."
+    flash[:info] = "This is info."
     @notes = Note.all
   end
   

@@ -25,7 +25,13 @@
       <% end -%>
     </div>
   </div>
-  <p style="color: green"><%= flash[:notice] %></p>
+  <div id="flash">
+    <% [ :error, :warning, :notice ].each do |condition| %>
+    <%# javascript_tag "$('#error').effect('highlight',{},1000);" %>
+    <%= render :partial => "partials/flash", :locals => {:condition => condition, :flash => flash } if flash.has_key?(condition) %>
+    <%= javascript_tag  "$('#{condition.to_s}').hide();$('#{condition.to_s}').appear()" %>
+    <% end %>
+  </div>
   <div id="container">
     <div class="upper-nav">
       <ul id="menu">
