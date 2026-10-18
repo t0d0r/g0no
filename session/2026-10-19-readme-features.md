@@ -41,5 +41,5 @@ session/2026-10-19-readme-features.md.
 
 ## Next step
 
-Commit the README change when the operator asks, then continue with
+Committed as f5e8ae4 and pushed to origin/master. Continue with
 todo/todo.md.
