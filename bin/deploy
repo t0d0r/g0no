@@ -19,7 +19,7 @@ set -e
 rev=$1
 cd ~
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
-podman build --quiet -t localhost/g0no:$rev -t localhost/g0no:latest src
+podman build --quiet --format docker -t localhost/g0no:$rev -t localhost/g0no:latest src
 systemctl --user daemon-reload
 systemctl --user restart g0no
 for _ in $(seq 60); do

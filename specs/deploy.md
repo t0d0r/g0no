@@ -16,7 +16,9 @@ to be not affected in case of exploit".
 | network | the container publishes only `127.0.0.1:3182`; Apache on the host is the only way in |
 | TLS | Apache vhost from `deploy/apache.conf`, Let's Encrypt certificate from certbot (webroot of the existing ACME alias), renewed by `certbot.timer` |
 
-The container runs with `no-new-privileges` and all capabilities dropped.
+The container runs with `no-new-privileges` and all capabilities dropped;
+the sysctl `net.ipv4.ip_unprivileged_port_start=80`, in the container's own
+network namespace only, lets the image's user still listen on port 80.
 A process that escapes it is the unprivileged user `g0no`, which cannot
 read the operator's home or other apps' files.
 
@@ -46,7 +48,8 @@ Production starts with an empty database and only the admin user (operator,
 
 1. `git archive HEAD` is unpacked into `~g0no/src` (only committed code is
    shipped; a dirty tree gives a warning).
-2. As `g0no` (`sudo runuser -l g0no`): `podman build` tags
+2. As `g0no` (`sudo runuser -l g0no`): `podman build --format docker` (the
+   OCI format would drop the image's `HEALTHCHECK`) tags
    `localhost/g0no:<rev>` and `:latest`, `systemctl --user daemon-reload`
    and `restart g0no`,
    wait up to two minutes for `/up` on `127.0.0.1:3182`, prune old images.

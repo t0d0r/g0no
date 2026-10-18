@@ -18,6 +18,9 @@ PublishPort=127.0.0.1:3182:80
 UserNS=keep-id:uid=1000,gid=1000
 NoNewPrivileges=true
 DropCapability=all
+# With no capabilities the image's user may still listen on port 80 (Thruster)
+# inside the container's own network namespace.
+Sysctl=net.ipv4.ip_unprivileged_port_start=80
 
 [Service]
 Restart=always
