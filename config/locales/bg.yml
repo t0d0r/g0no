@@ -203,6 +203,12 @@ bg:
     markdown:
       show_formatted: "Покажи като Markdown"
       show_plain: "Покажи като обикновен текст"
+    sort:
+      title: "Подредба: %{order}. Щракнете за следващата."
+      created_asc: "Първо най-старите"
+      created_desc: "Първо най-новите"
+      updated_desc: "Последно редактирани"
+      updated_asc: "Отдавна нередактирани"
     send_reset_instructions: "Изпрати инструкции за нова парола"
 
   flash:

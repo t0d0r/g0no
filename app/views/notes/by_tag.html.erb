@@ -1,7 +1,7 @@
 <% content_for :title, @tag %>
 <div class="desk__header">
   <h1 class="desk__title"><%= t "Notes by tag" %>: <%= @tag %></h1>
-  <span class="desk__meta"><%= t("ui.notes_count", count: @notes.size) %></span>
+  <span class="desk__meta"><%= t("ui.notes_count", count: @notes.size) %> <%= render "sort_button", sort: @sort %></span>
 </div>
 
 <div class="board">

@@ -1,4 +1,5 @@
-<%= link_to note_path(note), class: "sticky sticky--#{sticky_color(note)} card" do %>
+<%= link_to note_path(note), class: "sticky sticky--#{sticky_color(note)} card",
+            data: { card: true, id: note.id, created: note.created_at.to_f, updated: note.updated_at.to_f } do %>
   <span class="sticky__bar" aria-hidden="true"></span>
   <div class="card__body">
     <h2 class="card__title"><%= note.title %></h2>

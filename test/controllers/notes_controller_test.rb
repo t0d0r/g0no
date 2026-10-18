@@ -487,6 +487,34 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".note-text[hidden]"
   end
 
+
+  test "the board is sorted by the sort button and remembers it" do
+    sign_in users(:admin)
+    notes(:groceries).update_columns(created_at: 3.days.ago, updated_at: 1.hour.ago)
+    notes(:trip).update_columns(created_at: 2.days.ago, updated_at: 2.days.ago)
+
+    get notes_url
+    assert_equal %w[Groceries Trip], css_select(".card .card__title").map(&:text)
+    assert_select "a.sort-button[data-sort=created_asc][href=?]", "/notes?sort=created_desc"
+
+    get notes_url(sort: "created_desc")
+    assert_equal %w[Trip Groceries], css_select(".card .card__title").map(&:text)
+
+    get notes_url
+    assert_select "a.sort-button[data-sort=created_desc]"
+    assert_equal %w[Trip Groceries], css_select(".card .card__title").map(&:text)
+
+    get notes_url(sort: "updated_desc")
+    assert_equal %w[Groceries Trip], css_select(".card .card__title").map(&:text)
+    assert_select ".card[data-created][data-updated][data-id]", 2
+  end
+
+  test "the sort link keeps the search and drops other parameters" do
+    sign_in users(:admin)
+    get notes_url(q: "o", color: "blue", host: "evil.example", sort: "nope")
+    assert_select "a.sort-button[data-sort=created_asc][href=?]", "/notes?color=blue&q=o&sort=created_desc"
+  end
+
   private
 
   def attach_file(note)

@@ -4,11 +4,21 @@ class NotesController < ApplicationController
   before_action :set_note, only: %i[show edit update destroy download_file preview_file delete_file share unshare
                                    history restore]
 
+  # Orders of the board, in the order the sort button cycles through them.
+  SORTS = {
+    "created_asc" => { created_at: :asc, id: :asc },
+    "created_desc" => { created_at: :desc, id: :desc },
+    "updated_desc" => { updated_at: :desc, id: :desc },
+    "updated_asc" => { updated_at: :asc, id: :asc }
+  }.freeze
+
+  before_action :set_sort, only: %i[index by_tag]
+
   # The search box in the menu bar sends q (title or description) and color.
   def index
     @query = params[:q].to_s.strip
     @color = params[:color].presence_in(Note::COLORS)
-    @notes = Note.includes(:finance_entries).order(:created_at)
+    @notes = Note.includes(:finance_entries).order(SORTS.fetch(@sort))
     @notes = @notes.search(@query) if @query.present?
     @notes = @notes.where(color: @color) if @color
   end
@@ -64,7 +74,7 @@ class NotesController < ApplicationController
 
   def by_tag
     @tag = params[:id]
-    @notes = Note.tagged_with(@tag).order(:title)
+    @notes = Note.tagged_with(@tag).order(SORTS.fetch(@sort))
   end
 
   # Attachments are streamed through these actions, not Active Storage's public
@@ -124,6 +134,15 @@ class NotesController < ApplicationController
 
   def set_note
     @note = Note.find(params[:id])
+  end
+
+  # ?sort= (from the sort button without JavaScript) wins and is remembered
+  # in the "sort" cookie, which the script also sets.
+  def set_sort
+    if (sort = params[:sort].presence_in(SORTS.keys))
+      cookies.permanent[:sort] = { value: sort, same_site: :lax }
+    end
+    @sort = sort || cookies[:sort].presence_in(SORTS.keys) || SORTS.keys.first
   end
 
   def note_params

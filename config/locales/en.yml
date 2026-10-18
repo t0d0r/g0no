@@ -196,6 +196,12 @@ en:
     markdown:
       show_formatted: "Show as Markdown"
       show_plain: "Show as plain text"
+    sort:
+      title: "Order: %{order}. Click for the next order."
+      created_asc: "Oldest first"
+      created_desc: "Newest first"
+      updated_desc: "Recently edited"
+      updated_asc: "Least recently edited"
     send_reset_instructions: "Send me reset instructions"
 
   flash:

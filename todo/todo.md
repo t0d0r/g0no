@@ -27,6 +27,7 @@
 - [x] Markdown switch per note with clickable task lists (specs/markdown.md)
 - [x] double-click puts the caret where clicked, also in Markdown notes (specs/markdown.md)
 - [x] text size as three A buttons; no scroll bar at Big / Extra big (specs/features.md)
+- [x] sort button on the board with light rearrange animation (specs/features.md)
 - [ ] run `make import` against the real CouchDB and check the notes (specs/couchdb-import.md)
 - [ ] move the old users database to storage/ and migrate it, or recreate users (specs/auth.md)
 - [ ] decide whether registration stays open; restrict it if the app is public (specs/auth.md)

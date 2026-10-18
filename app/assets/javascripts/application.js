@@ -351,6 +351,65 @@ function setUpNoteLock(form, { save, say }) {
   lock();
 }
 
+// The sort button next to the note count cycles the board order. Cards are
+// reordered in place and glide to their new spot (FLIP: measure, move,
+// animate the difference). The animation is kept light: transform only,
+// about 0.3 s, only for cards on screen, none with reduced motion.
+function setUpSort(button) {
+  const board = document.querySelector(".board");
+  if (!board) return;
+  const sorts = JSON.parse(button.dataset.sorts);
+  const keys = Object.keys(sorts);
+  const label = button.querySelector("[data-sort-label]");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  const compare = (sort) => {
+    const [field, direction] = sort.split("_");
+    const sign = direction === "asc" ? 1 : -1;
+    return (a, b) =>
+      sign * (Number(a.dataset[field]) - Number(b.dataset[field]) || Number(a.dataset.id) - Number(b.dataset.id));
+  };
+
+  const onScreen = (rect) => rect.bottom > 0 && rect.top < window.innerHeight;
+
+  const reorder = (sort) => {
+    const cards = [...board.querySelectorAll("[data-card]")];
+    const before = new Map(cards.map((card) => [card, card.getBoundingClientRect()]));
+    // Cards keep their place after the "new note" tile and before the empty text.
+    const anchor = cards[0]?.previousElementSibling;
+    const sorted = [...cards].sort(compare(sort));
+    if (anchor) anchor.after(...sorted);
+    else board.prepend(...sorted);
+    if (reduceMotion.matches) return;
+
+    sorted.forEach((card) => {
+      const first = before.get(card);
+      const last = card.getBoundingClientRect();
+      if (!onScreen(first) && !onScreen(last)) return;
+      // Under the text size zoom, rectangles are zoomed but translate is not.
+      const zoom = card.currentCSSZoom || 1;
+      const dx = (first.left - last.left) / zoom;
+      const dy = (first.top - last.top) / zoom;
+      if (!dx && !dy) return;
+      card.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }],
+                   { duration: 300, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
+    });
+  };
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    const sort = keys[(keys.indexOf(button.dataset.sort) + 1) % keys.length];
+    reorder(sort);
+    document.cookie = `sort=${sort}; path=/; max-age=31536000; samesite=lax`;
+    button.dataset.sort = sort;
+    label.textContent = sorts[sort];
+    button.title = button.dataset.titleTemplate.replace("%{order}", sorts[sort]);
+    const next = new URL(button.href);
+    next.searchParams.set("sort", keys[(keys.indexOf(sort) + 1) % keys.length]);
+    button.href = next;
+  });
+}
+
 // Attachment preview: one <dialog> per page, filled from the clicked
 // [data-preview-item] link. Arrow keys move between files; Escape closes.
 function setUpPreview(dialog) {
@@ -627,6 +686,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll("[data-preview-dialog]").forEach(setUpPreview);
   setUpColorChoices();
+  document.querySelectorAll("[data-sort-button]").forEach(setUpSort);
   document.querySelectorAll("[data-capsule]").forEach(setUpCapsule);
   document.querySelectorAll("form[data-drop-upload]").forEach(setUpDropUpload);
 

@@ -489,6 +489,27 @@ form.button_to {
   white-space: nowrap;
 }
 
+.sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.sort-button:hover {
+  background: var(--tool-hover);
+  color: var(--desk-ink);
+  text-decoration: none;
+}
+
+.sort-button:focus-visible {
+  outline: 3px solid var(--accent-ring);
+}
+
 /* ---------- flash ---------- */
 
 /* Messages are small stickies pinned to the top right of the desk. */

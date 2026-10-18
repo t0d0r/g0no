@@ -103,6 +103,10 @@ upload. All done in one turn:
   (zoom rounding showed a horizontal scroll bar in Safari).
 - A demo note ("Caret plain demo") was kept: the operator edited it.
 
+- Board sort button (oldest / newest / recently edited / least recently
+  edited) in a cookie; cards glide to new places (FLIP, transform only,
+  300 ms, zoom-corrected, off with reduced motion).
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -165,7 +169,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 102 tests
+- `make check` - rubocop, brakeman, 104 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)

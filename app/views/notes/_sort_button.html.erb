@@ -1,0 +1,13 @@
+<%# Cycles the board order (NotesController::SORTS). Without JavaScript it is a
+    link to the next order; application.js reorders the cards in place. %>
+<% sorts = NotesController::SORTS.keys %>
+<% next_sort = sorts[(sorts.index(sort) + 1) % sorts.size] %>
+<%# Only the search and colour filter are carried over; other query keys (such
+    as host) must never reach url_for. %>
+<% href = "#{request.path}?#{request.query_parameters.slice("q", "color").merge("sort" => next_sort).to_query}" %>
+<%= link_to href, class: "sort-button",
+            title: t("ui.sort.title", order: t("ui.sort.#{sort}")),
+            data: { sort_button: true, sort: sort, sorts: sorts.to_h { |key| [ key, t("ui.sort.#{key}") ] }.to_json,
+                    title_template: t("ui.sort.title", order: "%{order}") } do %>
+  <%= icon :sort, size: 12 %><span data-sort-label><%= t("ui.sort.#{sort}") %></span>
+<% end %>

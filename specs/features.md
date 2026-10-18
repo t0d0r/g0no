@@ -5,7 +5,7 @@ signed-in user.
 
 | route | behaviour |
 |-------|-----------|
-| `GET /` and `GET /notes` | board of note cards (oldest first) with title, the first 250 characters of the description, age and author, a paperclip with the number of files, a link icon when shared, and the total expense when above zero; the first card links to a new note |
+| `GET /` and `GET /notes` | board of note cards (in the chosen order, see Sorting) with title, the first 250 characters of the description, age and author, a paperclip with the number of files, a link icon when shared, and the total expense when above zero; the first card links to a new note |
 | `GET /notes?q=&color=` | search from the menu bar: `q` matches title or description (case-insensitive, `%` and `_` taken literally), `color` limits to one paper colour; unknown colours are ignored; the header shows the filter with a "Clear filter" link and the new-note tile is hidden |
 | `GET /notes/new`, `POST /notes` | create a note; author is the current user; a missing or duplicate title re-renders the form with status 422 (JSON: `{error}` with 422, `{url, saved_at}` with 201) |
 | `GET /notes/:id` | a note window: title and description edited in place and saved automatically (see Autosave), the total expense, the expense list (newest first) with the add-expense form, the attachment list with the upload form, and the sharing section (sharing.md); the title bar has close (back to the list), the colour menu and delete boxes |
@@ -17,8 +17,25 @@ signed-in user.
 | `GET /notes/:id/history`, `POST /notes/:id/history/:version_id/restore` | history of the note and restore (history.md) |
 | `DELETE /notes/:id/delete_file?attachment_id=` | delete an attachment |
 | `DELETE /notes/:id` | delete a note (the "-" box in the note's title bar, with a confirmation prompt) |
-| `GET /notes/:tag/by_tag` | notes with the given tag |
+| `GET /notes/:tag/by_tag` | notes with the given tag, in the chosen order |
 | `GET /up` | health check, 200 when the app boots |
+
+## Sorting
+
+Operator, 2026-10-19: a button next to the note count that cycles the
+order, with light animation when the cards rearrange.
+
+- Orders, in cycle order: Oldest first (`created_asc`, the default), Newest
+  first (`created_desc`), Recently edited (`updated_desc`), Least recently
+  edited (`updated_asc`); ties by id. Applies to the board, search results
+  and notes by tag.
+- The choice is kept in the `sort` cookie (one year, SameSite=Lax).
+  `?sort=` sets it; without JavaScript the button is a link to the next
+  order that keeps only `q` and `color` from the query string.
+- With JavaScript the cards are reordered in place and glide to their new
+  place (FLIP): transform only, 300 ms, ease-out, only cards on screen,
+  corrected for the text size zoom so nothing jumps; no animation with
+  `prefers-reduced-motion`.
 
 ## Autosave
 
