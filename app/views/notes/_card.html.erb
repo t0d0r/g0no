@@ -6,8 +6,20 @@
   </div>
   <div class="card__footer">
     <span class="card__meta"><%= t("ui.created_by", time: time_ago_in_words(note.created_at), author: note.author) %></span>
-    <% if note.finance_total > 0 %>
-      <span class="amount"><%= f_price note.finance_total %></span>
-    <% end %>
+    <span class="card__badges">
+      <% if note.note_attachments_count > 0 %>
+        <span class="card__badge card__badge--files" title="<%= t("ui.files_count", count: note.note_attachments_count) %>">
+          <%= icon :clip, label: t("ui.files_count", count: note.note_attachments_count) %><%= note.note_attachments_count %>
+        </span>
+      <% end %>
+      <% if note.shared? %>
+        <span class="card__badge card__badge--shared" title="<%= t("ui.share.shared") %>">
+          <%= icon :link, label: t("ui.share.shared") %>
+        </span>
+      <% end %>
+      <% if note.finance_total > 0 %>
+        <span class="amount"><%= f_price note.finance_total %></span>
+      <% end %>
+    </span>
   </div>
 <% end %>

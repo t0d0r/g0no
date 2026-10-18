@@ -1,0 +1,92 @@
+<% content_for :title, t("ui.admin.title") %>
+<div class="desk__header">
+  <h1 class="desk__title"><%= t("ui.admin.title") %></h1>
+</div>
+
+<div class="stats">
+  <div class="sticky sticky--yellow stat"><span class="stat__value"><%= @stats[:users] %></span><span class="stat__label"><%= t("ui.admin.stats.users") %></span></div>
+  <div class="sticky sticky--blue stat"><span class="stat__value"><%= @stats[:notes] %></span><span class="stat__label"><%= t("ui.admin.stats.notes") %></span></div>
+  <div class="sticky sticky--green stat"><span class="stat__value"><%= @stats[:files] %></span><span class="stat__label"><%= t("ui.admin.stats.files") %></span></div>
+  <div class="sticky sticky--pink stat"><span class="stat__value"><%= number_to_human_size(@stats[:storage]) %></span><span class="stat__label"><%= t("ui.admin.stats.storage") %></span></div>
+  <div class="sticky sticky--purple stat"><span class="stat__value"><%= f_price @stats[:expenses] %></span><span class="stat__label"><%= t("ui.admin.stats.expenses") %></span></div>
+</div>
+
+<section class="sticky sticky--gray panel" aria-labelledby="users-title">
+  <header class="sticky__bar"><span class="sticky__caption"><%= t("ui.admin.users") %></span></header>
+  <div class="panel__body">
+    <div class="panel__head">
+      <h2 class="section-title" id="users-title"><%= t("ui.admin.users") %></h2>
+      <%= link_to t("ui.admin.new_user"), new_admin_user_path, class: "btn btn--primary" %>
+    </div>
+    <div class="table-scroll">
+      <table class="ledger table-users">
+        <thead>
+          <tr>
+            <th><%= User.human_attribute_name(:username) %></th>
+            <th><%= User.human_attribute_name(:email) %></th>
+            <th><%= t("ui.admin.role") %></th>
+            <th class="num"><%= t("ui.admin.sign_ins") %></th>
+            <th><%= t("ui.admin.last_sign_in") %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr id="<%= dom_id(user) %>">
+              <td class="text"><%= user.username.presence || "-" %></td>
+              <td class="text"><%= user.email %></td>
+              <td><% if user.admin? %><span class="tag-pill"><%= t("ui.admin.admin") %></span><% end %></td>
+              <td class="num"><%= user.sign_in_count.to_i %></td>
+              <td class="date">
+                <%= user.last_sign_in_at ? t("ui.admin.ago", time: time_ago_in_words(user.last_sign_in_at)) : t("ui.admin.never") %>
+              </td>
+              <td class="action">
+                <%= link_to t("ui.admin.edit"), edit_admin_user_path(user) %>
+                <% unless user == current_user %>
+                  <%= button_to t("delete"), admin_user_path(user), method: :delete, class: "link-button",
+                                form: { data: confirm_data(
+                                  title: t("ui.confirm.delete_user_title", name: user.display_name),
+                                  body: t("ui.confirm.delete_user", name: user.display_name, email: user.email),
+                                  button: t("ui.confirm.delete_user_button")) } %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sticky sticky--gray panel" aria-labelledby="shares-title">
+  <header class="sticky__bar"><span class="sticky__caption"><%= t("ui.admin.shared_notes") %></span></header>
+  <div class="panel__body">
+    <h2 class="section-title" id="shares-title"><%= t("ui.admin.shared_notes") %></h2>
+    <% if @shared_notes.any? %>
+      <div class="table-scroll">
+        <table class="ledger table-shares">
+          <tbody>
+            <% @shared_notes.each do |note| %>
+              <tr id="<%= dom_id(note, :share) %>">
+                <td class="text"><%= link_to note.title, note_path(note) %></td>
+                <td>
+                  <%= icon(note.share_password? ? :lock : :link) %>
+                  <%= note.share_password? ? t("ui.share.with_password") : t("ui.share.open_link") %>
+                </td>
+                <td class="date"><%= t("ui.admin.ago", time: time_ago_in_words(note.shared_at)) %></td>
+                <td class="action">
+                  <%= button_to t("ui.share.stop"), admin_share_path(note), method: :delete, class: "link-button",
+                                form: { data: confirm_data(title: t("ui.confirm.stop_share_title", title: note.title),
+                                                           body: t("ui.confirm.stop_share"),
+                                                           button: t("ui.share.stop")) } %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="panel__empty"><%= t("ui.admin.no_shared_notes") %></p>
+    <% end %>
+  </div>
+</section>

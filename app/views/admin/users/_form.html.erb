@@ -1,0 +1,42 @@
+<%= form_with model: [ :admin, user ], class: "admin-form" do |f| %>
+  <% if user.errors.any? %>
+    <div class="form-errors" role="alert">
+      <ul>
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="field">
+    <%= f.label :username %>
+    <%= f.text_field :username, class: "field-input", autocomplete: "off" %>
+  </div>
+  <div class="field">
+    <%= f.label :email %>
+    <%= f.email_field :email, class: "field-input", autocomplete: "off", required: true %>
+  </div>
+  <div class="field">
+    <%= f.label :password %>
+    <%= f.password_field :password, class: "field-input", autocomplete: "new-password", required: user.new_record? %>
+    <% if user.persisted? %><small class="field-hint"><%= t("ui.admin.password_keep") %></small><% end %>
+  </div>
+  <div class="field">
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation, class: "field-input", autocomplete: "new-password" %>
+  </div>
+  <div class="field field--check">
+    <% if user == current_user %>
+      <input type="checkbox" checked disabled id="user_admin_self">
+      <label for="user_admin_self"><%= t("ui.admin.admin") %></label>
+      <small class="field-hint"><%= t("ui.admin.self_admin") %></small>
+    <% else %>
+      <%= f.check_box :admin %>
+      <%= f.label :admin, t("ui.admin.admin") %>
+    <% end %>
+  </div>
+  <div class="note-actions">
+    <%= link_to t("ui.cancel"), admin_root_path, class: "btn" %>
+    <%= f.submit t("ui.save"), class: "btn btn--primary" %>
+  </div>
+<% end %>

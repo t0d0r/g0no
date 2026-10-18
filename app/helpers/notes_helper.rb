@@ -1,12 +1,37 @@
 module NotesHelper
-  STICKY_COLORS = %w[yellow blue green pink purple gray].freeze
+  STICKY_COLORS = Note::COLORS
 
-  # Each note keeps the same paper colour; new notes start yellow like Stickies.
   def sticky_color(note)
-    note.persisted? ? STICKY_COLORS[note.id % STICKY_COLORS.size] : "yellow"
+    note.color.presence_in(STICKY_COLORS) || "yellow"
   end
 
   def link_to_attachment(note, attachment)
     link_to attachment.filename.to_s, download_file_note_path(note, attachment_id: attachment)
+  end
+
+  # A file name that opens the preview dialog (see application.js). Without
+  # JavaScript the link downloads the file.
+  def attachment_preview_link(attachment, download_url:, preview_url:)
+    details = [ number_to_human_size(attachment.byte_size), attachment.comment.presence ].compact.join(" - ")
+    link_to attachment.filename.to_s, download_url,
+            class: "file-link",
+            data: { preview_item: true, preview_kind: attachment.preview_kind || "none",
+                    preview_url: (preview_url if attachment.preview_kind),
+                    filename: attachment.filename.to_s, details: details }
+  end
+
+  # Small inline SVG icons, so the app ships no image or icon font.
+  ICONS = {
+    clip: '<path d="M10.5 4.5 5.4 9.6a1.8 1.8 0 0 0 2.5 2.5l5.6-5.6a3 3 0 0 0-4.2-4.2L3.6 8a4.2 4.2 0 0 0 6 6l4.4-4.4" />',
+    link: '<path d="M7 9.5a2.8 2.8 0 0 0 4 0l2.4-2.4a2.8 2.8 0 0 0-4-4L8.2 4.3" /><path d="M9 6.5a2.8 2.8 0 0 0-4 0L2.6 8.9a2.8 2.8 0 0 0 4 4l1.2-1.2" />',
+    lock: '<rect x="3.5" y="7" width="9" height="6.5" rx="1.2" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />',
+    search: '<circle cx="7" cy="7" r="4.2" /><path d="m10.2 10.2 3.3 3.3" />'
+  }.freeze
+
+  def icon(name, label: nil)
+    attributes = label ? { role: "img", "aria-label": label } : { "aria-hidden": "true" }
+    content_tag(:svg, ICONS.fetch(name).html_safe, class: "icon", viewBox: "0 0 16 16", width: 14, height: 14,
+                fill: "none", stroke: "currentColor", "stroke-width": 1.5, "stroke-linecap": "round",
+                "stroke-linejoin": "round", **attributes)
   end
 end

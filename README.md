@@ -2,7 +2,13 @@
 
 A small notes application: each note has a title, a description, tags, a list
 of expenses (finance entries with a running total) and file attachments.
-Users sign in with Devise. The UI is in Bulgarian and English.
+Users sign in with Devise. The UI is in Bulgarian and English and looks like
+macOS Stickies.
+
+Notes can be searched and filtered by colour from the menu bar, recoloured
+from a fixed set, shared by link (optionally with a password), and given
+files by drag and drop; attachments open in a preview dialog. Administrators
+manage users and shared links at `/admin`.
 
 Started in 2011 on Rails 3.0 with CouchDB; migrated in 2026 to Rails 8.1 with
 SQLite. The 2011 development notes are in `doc/NOTES-2011.md`.

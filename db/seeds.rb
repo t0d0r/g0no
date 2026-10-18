@@ -4,12 +4,19 @@
 #   ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=... [ADMIN_USERNAME=admin] bin/rails db:seed
 #
 # `make run` and `make docker-up` generate them in .env (bin/setup-env).
-# An existing admin user is left unchanged, including its password.
+# An existing admin user keeps its email and password; the seed only makes
+# sure it has the admin flag, which opens the admin panel (/admin).
 
 def create_admin_user
   username = ENV["ADMIN_USERNAME"].presence || "admin"
-  if User.where("lower(username) = ?", username.downcase).exists?
-    puts "create_admin_user: user '#{username}' already exists."
+  existing = User.where("lower(username) = ?", username.downcase).first
+  if existing
+    if existing.admin?
+      puts "create_admin_user: user '#{username}' already exists."
+    else
+      existing.update_column(:admin, true)
+      puts "create_admin_user: user '#{username}' already exists; marked as administrator."
+    end
     return
   end
 
@@ -20,7 +27,7 @@ def create_admin_user
     return
   end
 
-  user = User.new(email: email, password: password, password_confirmation: password, username: username)
+  user = User.new(email: email, password: password, password_confirmation: password, username: username, admin: true)
   if user.save
     puts "create_admin_user: created user '#{username}' <#{email}> with the password from ADMIN_PASSWORD."
   else

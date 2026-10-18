@@ -14,7 +14,11 @@
     <% if user_signed_in? %>
       <nav class="menubar__nav">
         <%= link_to_unless_current(t("Content"), notes_path) { content_tag(:span, t("Content"), class: "current") } %>
+        <% if current_user.admin? %>
+          <%= link_to_unless_current(t("ui.admin.title"), admin_root_path) { content_tag(:span, t("ui.admin.title"), class: "current") } %>
+        <% end %>
       </nav>
+      <%= render "partials/search" %>
       <div class="menubar__right">
         <span class="menubar__user"><%= current_user.display_name %></span>
         <%= button_to t("logout"), destroy_user_session_path, method: :delete, class: "menubar__button" %>
@@ -40,5 +44,8 @@
       <%= yield %>
     <% end %>
   </main>
+  <% if user_signed_in? %>
+    <%= render "partials/confirm_dialog" %>
+  <% end %>
 </body>
 </html>

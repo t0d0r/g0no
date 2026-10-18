@@ -1,0 +1,19 @@
+<%# One dialog per page, filled by application.js from the [data-preview-item] links. %>
+<dialog class="sticky sticky--<%= color %> preview" data-preview-dialog aria-labelledby="preview-caption"
+        data-no-preview="<%= t("ui.preview.none") %>" data-load-error="<%= t("ui.preview.error") %>">
+  <header class="sticky__bar">
+    <button type="button" class="sticky__box" data-preview-close title="<%= t("ui.preview.close") %>"
+            aria-label="<%= t("ui.preview.close") %>">&times;</button>
+    <span class="sticky__caption" id="preview-caption" data-preview-caption></span>
+    <button type="button" class="sticky__box" data-preview-prev title="<%= t("ui.preview.previous") %>"
+            aria-label="<%= t("ui.preview.previous") %>">&lsaquo;</button>
+    <button type="button" class="sticky__box" data-preview-next title="<%= t("ui.preview.next") %>"
+            aria-label="<%= t("ui.preview.next") %>">&rsaquo;</button>
+  </header>
+  <div class="preview__media" data-preview-media></div>
+  <footer class="preview__footer">
+    <span class="preview__meta" data-preview-meta></span>
+    <span class="preview__count" data-preview-count></span>
+    <a class="btn btn--primary" data-preview-download href="#"><%= t("ui.preview.download") %></a>
+  </footer>
+</dialog>

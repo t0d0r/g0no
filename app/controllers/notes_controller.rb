@@ -1,8 +1,15 @@
 class NotesController < ApplicationController
-  before_action :set_note, only: %i[show edit update destroy download_file delete_file]
+  include AttachmentServing
 
+  before_action :set_note, only: %i[show edit update destroy download_file preview_file delete_file share unshare]
+
+  # The search box in the menu bar sends q (title or description) and color.
   def index
+    @query = params[:q].to_s.strip
+    @color = params[:color].presence_in(Note::COLORS)
     @notes = Note.includes(:finance_entries).order(:created_at)
+    @notes = @notes.search(@query) if @query.present?
+    @notes = @notes.where(color: @color) if @color
   end
 
   def show
@@ -26,6 +33,7 @@ class NotesController < ApplicationController
 
   # The show page has three forms that all submit here: title and description,
   # a finance entry (params[:finance]), and file uploads (note[attachments][]).
+  # The colour menu also submits here (note[color]).
   def update
     @note.assign_attributes(note_params.merge(updated_from: current_user.display_name))
     if params[:finance]
@@ -48,20 +56,34 @@ class NotesController < ApplicationController
     @notes = Note.tagged_with(@tag).order(:title)
   end
 
-  # Attachments are streamed through this action, not Active Storage's public
-  # routes, so downloading a file requires a signed-in user.
+  # Attachments are streamed through these actions, not Active Storage's public
+  # routes, so reading a file requires a signed-in user.
   def download_file
-    attachment = @note.note_attachments.find(params[:attachment_id])
-    send_data attachment.file.download,
-              filename: attachment.filename.to_s,
-              type: attachment.content_type,
-              disposition: "attachment"
+    send_attachment @note.note_attachments.find(params[:attachment_id])
+  end
+
+  def preview_file
+    send_attachment_preview @note.note_attachments.find(params[:attachment_id])
   end
 
   def delete_file
     attachment = @note.note_attachments.find(params[:attachment_id])
     attachment.destroy
     redirect_to note_url(@note), notice: t("flash.file_deleted", filename: attachment.filename)
+  end
+
+  # Creates a new share link (optionally with a password), replacing any old one.
+  def share
+    if @note.share(password: params[:share_password])
+      redirect_to note_url(@note, anchor: "sharing"), notice: t("flash.note_shared")
+    else
+      redirect_to note_url(@note, anchor: "sharing"), alert: @note.errors.full_messages.to_sentence
+    end
+  end
+
+  def unshare
+    @note.unshare!
+    redirect_to note_url(@note, anchor: "sharing"), notice: t("flash.note_unshared")
   end
 
   def destroy
@@ -76,7 +98,7 @@ class NotesController < ApplicationController
   end
 
   def note_params
-    params.fetch(:note, {}).permit(:title, :description, :tag_list, :visited_on)
+    params.fetch(:note, {}).permit(:title, :description, :tag_list, :visited_on, :color)
   end
 
   def finance_params

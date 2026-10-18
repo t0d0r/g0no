@@ -1,4 +1,4 @@
-<%= form_with model: note, class: "note-form", data: { note_form: true } do |f| %>
+<%= form_with model: note, id: "note_form", class: "note-form", data: { note_form: true } do |f| %>
   <% if note.errors.any? %>
     <div class="form-errors" role="alert">
       <ul>

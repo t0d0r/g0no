@@ -14,6 +14,11 @@ Schema source of truth: `db/schema.rb`. Migrations live in `db/migrate/`.
 | author | string | display name of the creator (username, else email) |
 | updated_from | string | display name of the last editor |
 | couchdb_id | string, unique | `_id` of the CouchDB document it was imported from |
+| color | string, not null, default "yellow" | one of `Note::COLORS` |
+| note_attachments_count | integer, default 0 | counter cache for the paperclip badge |
+| share_token | string, unique | set while the note is shared (sharing.md) |
+| share_password_digest | string | bcrypt hash of the optional share password |
+| shared_at | datetime | when the current link was made |
 
 ## tags and taggings
 
@@ -34,7 +39,8 @@ required). Deleting the record purges the file.
 
 ## users
 
-Devise columns (see auth.md) plus `username`.
+Devise columns (see auth.md) plus `username` (unique, case-insensitive,
+validated in the model) and `admin` (boolean, default false; admin.md).
 
 ## Mapping from the 2011 CouchDB document
 
@@ -50,5 +56,7 @@ Devise columns (see auth.md) plus `username`.
 
 ## Security Note
 
-Uploaded files are stored unscanned in `storage/` and served only with
-`Content-Disposition: attachment`, so a browser never renders them inline.
+Uploaded files are stored unscanned in `storage/`. Downloads use
+`Content-Disposition: attachment`; only the preview types listed in
+features.md are ever sent inline. Share passwords are stored as bcrypt
+hashes only.

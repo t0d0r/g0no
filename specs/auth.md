@@ -15,9 +15,11 @@ in 2011).
 ## Admin user
 
 `db/seeds.rb` creates the user `ADMIN_USERNAME` (default `admin`) with
-`ADMIN_EMAIL` and `ADMIN_PASSWORD` when no user with that username exists
-(case-insensitive), even if other users exist. An existing admin user is
-never changed, so editing `.env` later does not change its password. Without
+`ADMIN_EMAIL` and `ADMIN_PASSWORD` and the admin flag when no user with that
+username exists (case-insensitive), even if other users exist. For an
+existing user with that username the seed only sets the admin flag if it is
+missing; email and password are never changed, so editing `.env` later does
+not change the password. Without
 `ADMIN_EMAIL` or `ADMIN_PASSWORD` the seed prints a message and does nothing.
 The password is never printed.
 
@@ -28,8 +30,8 @@ missing and fills only empty values: `SECRET_KEY_BASE` (random),
 `.env`, runs the seed and starts the server. `make docker-up` runs it before
 starting the container, whose entrypoint runs the seed on every start.
 
-To change the admin password, update the user (for example with
-`bin/rails runner`), not `.env`.
+To change the admin password, use the admin panel (`/admin`, admin.md) or
+`bin/rails runner`, not `.env`.
 
 ## Users created by the 2011 app
 

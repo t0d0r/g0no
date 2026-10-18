@@ -21,6 +21,7 @@ class SeedsTest < ActiveSupport::TestCase
     admin = User.find_by!(username: "admin")
     assert_equal "boss@example.com", admin.email
     assert admin.valid_password?("s3cret-pass")
+    assert admin.admin?
     assert_match "created user 'admin'", out
     assert_no_match "s3cret-pass", out
   end
@@ -30,6 +31,17 @@ class SeedsTest < ActiveSupport::TestCase
 
     assert users(:admin).reload.valid_password?("password")
     assert_match "already exists", out
+  end
+
+  test "marks an existing user with the admin username as administrator" do
+    users(:admin).update_column(:admin, false)
+    out = run_seeds("ADMIN_EMAIL" => "new@example.com", "ADMIN_PASSWORD" => "another-pass")
+
+    admin = users(:admin).reload
+    assert admin.admin?
+    assert_equal "admin@example.com", admin.email
+    assert admin.valid_password?("password")
+    assert_match "marked as administrator", out
   end
 
   test "uses ADMIN_USERNAME" do

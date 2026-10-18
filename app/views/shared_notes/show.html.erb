@@ -1,0 +1,38 @@
+<% content_for :title, @note.title %>
+<article class="sticky sticky--<%= sticky_color(@note) %> note-window shared-note">
+  <header class="sticky__bar">
+    <span class="sticky__caption"><%= t("ui.share.shared_note") %></span>
+  </header>
+  <div class="note-window__body">
+    <div class="note-head">
+      <h1 class="note-title note-title--static"><%= @note.title %></h1>
+      <% if @note.finance_total > 0 %>
+        <div class="note-total">
+          <span class="note-total__label"><%= t("expence") %></span>
+          <span class="note-total__value"><%= f_price @note.finance_total %></span>
+        </div>
+      <% end %>
+    </div>
+    <div class="note-text"><%= @note.description %></div>
+
+    <% finance_entries = @note.finance_entries.to_a %>
+    <% if finance_entries.any? %>
+      <section class="note-section" aria-labelledby="expenses-title">
+        <h2 class="section-title" id="expenses-title"><%= t("ui.expenses") %></h2>
+        <table class="ledger table-finance">
+          <%= render partial: "notes/finance", collection: finance_entries %>
+        </table>
+      </section>
+    <% end %>
+
+    <% if @attachments.any? %>
+      <section class="note-section" aria-labelledby="files-title">
+        <h2 class="section-title" id="files-title"><%= t("ui.files") %></h2>
+        <%= render "notes/attachments", attachments: @attachments, note: nil,
+                   download: ->(a) { shared_note_download_path(@note.share_token, a) },
+                   preview: ->(a) { shared_note_preview_path(@note.share_token, a) } %>
+      </section>
+    <% end %>
+  </div>
+</article>
+<%= render "notes/preview_dialog", color: sticky_color(@note) %>

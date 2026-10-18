@@ -1,16 +1,33 @@
 <% content_for :title, t("Content") %>
+<% filtered = @query.present? || @color %>
 <div class="desk__header">
-  <h1 class="desk__title"><%= t "Content" %></h1>
-  <span class="desk__meta"><%= t("ui.notes_count", count: @notes.size) %></span>
+  <h1 class="desk__title">
+    <% if filtered %>
+      <%= t("ui.search.results") %><% if @query.present? %>: <%= @query %><% end %>
+    <% else %>
+      <%= t "Content" %>
+    <% end %>
+  </h1>
+  <span class="desk__meta">
+    <% if @color %>
+      <span class="filter__dot sticky--<%= @color %>" aria-hidden="true"></span><%= t("ui.colors.#{@color}") %> -
+    <% end %>
+    <%= t("ui.notes_count", count: @notes.size) %>
+    <% if filtered %>
+      - <%= link_to t("ui.search.clear"), notes_path, class: "desk__clear" %>
+    <% end %>
+  </span>
 </div>
 
 <div class="board">
-  <%= link_to new_note_path, class: "card--new sticky" do %>
-    <span class="card--new__plus" aria-hidden="true">+</span>
-    <span><%= t("ui.new_note") %></span>
+  <% unless filtered %>
+    <%= link_to new_note_path, class: "card--new sticky" do %>
+      <span class="card--new__plus" aria-hidden="true">+</span>
+      <span><%= t("ui.new_note") %></span>
+    <% end %>
   <% end %>
   <%= render partial: "card", collection: @notes, as: :note %>
   <% if @notes.empty? %>
-    <p class="empty"><%= t("ui.no_notes") %></p>
+    <p class="empty"><%= filtered ? t("ui.search.no_results") : t("ui.no_notes") %></p>
   <% end %>
 </div>

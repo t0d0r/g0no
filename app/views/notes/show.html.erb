@@ -27,21 +27,12 @@
     <h2 class="section-title" id="files-title"><%= t("ui.files") %></h2>
     <% attachments = @note.note_attachments.select(&:persisted?) %>
     <% if attachments.any? %>
-      <table class="ledger table-files">
-        <% attachments.each do |attachment| %>
-          <tr>
-            <td class="text"><%= link_to_attachment @note, attachment %></td>
-            <td class="comment"><%= attachment.comment %></td>
-            <td class="size"><%= number_to_human_size(attachment.byte_size) %></td>
-            <td class="action">
-              <%= button_to t("delete"), delete_file_note_path(@note, attachment_id: attachment), method: :delete,
-                            class: "link-button", form: { data: { confirm: t("Are You sure?") } } %>
-            </td>
-          </tr>
-        <% end %>
-      </table>
+      <%= render "attachments", attachments: attachments, note: @note,
+                 download: ->(a) { download_file_note_path(@note, attachment_id: a) },
+                 preview: ->(a) { preview_file_note_path(@note, attachment_id: a) } %>
     <% end %>
-    <%= form_with model: @note, multipart: true, class: "inline-form", id: "upload_file_div" do |f| %>
+    <%= form_with model: @note, multipart: true, class: "inline-form", id: "upload_file_div",
+                  data: { drop_upload: true, drop_text: t("ui.drop.overlay"), uploading_text: t("ui.drop.uploading") } do |f| %>
       <%= label_tag "note_attachments_", t("ui.files"), class: "sr-only" %>
       <%= file_field_tag "note[attachments][]", multiple: true, id: "note_attachments_", class: "field-file" %>
       <%= label :note, :attachment_comment, t(:comment), class: "sr-only" %>
@@ -49,5 +40,9 @@
                          class: "field-input field-input--comment", placeholder: t(:comment).capitalize, autocomplete: :off %>
       <%= f.submit t("ui.upload"), id: "submit_attachment", class: "btn" %>
     <% end %>
+    <p class="drop-hint"><%= t("ui.drop.hint") %></p>
   </section>
+
+  <%= render "sharing", note: @note %>
 <% end %>
+<%= render "preview_dialog", color: sticky_color(@note) %>

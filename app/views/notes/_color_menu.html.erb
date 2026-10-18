@@ -1,0 +1,22 @@
+<%# The Stickies colour menu: a fixed set of paper colours, no custom ones. %>
+<% current = sticky_color(note) %>
+<% if note.persisted? %>
+  <%= form_with model: note, class: "color-menu", aria: { label: t("ui.color") } do %>
+    <% Note::COLORS.each do |color| %>
+      <button type="submit" name="note[color]" value="<%= color %>"
+              class="swatch sticky--<%= color %>" title="<%= t("ui.colors.#{color}") %>"
+              aria-label="<%= t("ui.colors.#{color}") %>" aria-pressed="<%= color == current %>"></button>
+    <% end %>
+  <% end %>
+<% else %>
+  <%# Inputs belong to the note form (form="note_form"), so the colour is saved with the new note. %>
+  <span class="color-menu" role="radiogroup" aria-label="<%= t("ui.color") %>">
+    <% Note::COLORS.each do |color| %>
+      <label class="swatch sticky--<%= color %>" title="<%= t("ui.colors.#{color}") %>">
+        <input type="radio" name="note[color]" value="<%= color %>" form="note_form" class="sr-only"
+               <%= "checked" if color == current %> data-color-choice>
+        <span class="sr-only"><%= t("ui.colors.#{color}") %></span>
+      </label>
+    <% end %>
+  </span>
+<% end %>

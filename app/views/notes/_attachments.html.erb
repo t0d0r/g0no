@@ -1,0 +1,22 @@
+<%# File list with preview links. Locals: attachments, download (lambda), preview (lambda), note (nil for read-only). %>
+<table class="ledger table-files">
+  <% attachments.each do |attachment| %>
+    <tr>
+      <td class="text">
+        <%= attachment_preview_link attachment, download_url: download.call(attachment), preview_url: preview.call(attachment) %>
+      </td>
+      <td class="comment"><%= attachment.comment %></td>
+      <td class="size"><%= number_to_human_size(attachment.byte_size) %></td>
+      <% if note %>
+        <td class="action">
+          <%= button_to t("delete"), delete_file_note_path(note, attachment_id: attachment), method: :delete,
+                        class: "link-button", form: { data: confirm_data(
+                          title: t("ui.confirm.delete_file_title"),
+                          body: t("ui.confirm.delete_file", filename: attachment.filename,
+                                  size: number_to_human_size(attachment.byte_size)),
+                          button: t("ui.confirm.delete_file_button")) } %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

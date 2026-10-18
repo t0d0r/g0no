@@ -1,0 +1,29 @@
+<section class="note-section" id="sharing" aria-labelledby="sharing-title">
+  <h2 class="section-title" id="sharing-title"><%= t("ui.share.title") %></h2>
+  <% if note.shared? %>
+    <p class="share-status">
+      <%= icon(note.share_password? ? :lock : :link) %>
+      <%= note.share_password? ? t("ui.share.status_password") : t("ui.share.status_open") %>
+      <span class="share-status__since"><%= t("ui.share.since", time: time_ago_in_words(note.shared_at)) %></span>
+    </p>
+    <div class="inline-form">
+      <label for="share_url" class="sr-only"><%= t("ui.share.link") %></label>
+      <input type="text" id="share_url" class="field-input field-input--comment share-url" readonly
+             value="<%= shared_note_url(note.share_token) %>">
+      <button type="button" class="btn" data-copy="#share_url" data-copied="<%= t("ui.share.copied") %>">
+        <%= t("ui.share.copy") %>
+      </button>
+      <%= button_to t("ui.share.stop"), share_note_path(note), method: :delete, class: "btn btn--danger",
+                    form: { data: confirm_data(title: t("ui.confirm.stop_share_title", title: note.title_was),
+                                               body: t("ui.confirm.stop_share"),
+                                               button: t("ui.share.stop")) } %>
+    </div>
+    <p class="share-hint"><%= t("ui.share.renew_hint") %></p>
+  <% end %>
+  <%= form_with url: share_note_path(note), class: "inline-form", id: "share_form" do %>
+    <label for="share_password" class="sr-only"><%= t("ui.share.password") %></label>
+    <input type="password" name="share_password" id="share_password" class="field-input field-input--comment"
+           placeholder="<%= t("ui.share.password_placeholder") %>" autocomplete="new-password" minlength="6" maxlength="72">
+    <button type="submit" class="btn"><%= note.shared? ? t("ui.share.renew") : t("ui.share.create") %></button>
+  <% end %>
+</section>

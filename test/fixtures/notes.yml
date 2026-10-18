@@ -2,8 +2,10 @@ groceries:
   title: Groceries
   description: Weekly shopping
   author: admin
+  color: yellow
 
 trip:
   title: Trip
   description: Summer holiday
   author: admin
+  color: blue

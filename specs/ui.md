@@ -45,12 +45,33 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
 - **Flash messages:** white rounded banners above the content with a
   coloured left edge (blue notice, red alert) and a close button.
 
+- **Menu bar search:** a search field and a round colour button between the
+  links and the user name. The button opens a small menu of the six colours
+  plus "All colours"; picking one searches at once. On phones the search
+  field takes its own row under the links.
+- **Colour menu:** six small squares in a note's title strip, the current one
+  ringed. Fixed set only.
+- **Card badges:** paperclip + file count, link icon for shared notes, then
+  the total. Icons are inline SVG (`NotesHelper#icon`), no image files.
+- **Preview dialog:** a large sticky in the note's colour over a dimmed desk;
+  title strip with close, file name and previous/next boxes; footer with
+  size, comment, position and a blue Download button.
+- **Confirm dialog:** a small yellow sticky with a red "!" badge, a bold
+  question, a sentence on what will happen, Cancel and a red action button.
+- **Drop overlay:** dashed blue border and "Drop files to attach them to
+  this note" over the note window while files are dragged onto it.
+- **Admin:** coloured stat tiles, grey sticky panels with tables.
+- **Shared note:** the note window without boxes or forms, caption "Shared
+  note"; password page and "link not available" page as small stickies.
+
 ## Constraints
 
 - Works at 390px width with no horizontal scrolling.
 - Visible focus rings on links, buttons and fields; every form field has a
   label (visually hidden where the placeholder shows it).
-- Delete actions ask for confirmation (`data-confirm`).
+- Delete actions ask for confirmation in the confirm dialog (`data-confirm`,
+  `data-confirm-title`, `data-confirm-button` via
+  `ApplicationHelper#confirm_data`).
 
 ## Translations
 
@@ -61,7 +82,11 @@ browser (see features.md).
 ## Verified
 
 Screenshots were taken on 2026-10-18 with headless Chrome at 1280px and
-390px for the sign-in (with an error), sign-up, board and note pages.
+390px for the sign-in (with an error), sign-up, board and note pages. Later
+the same day (puppeteer-core driving Chrome): colour filter, search, note
+with colour menu, image / PDF / text previews, confirm dialog, drop overlay
+and upload, sharing section, admin panel, shared note locked / wrong
+password / unlocked, and the board at 390px.
 
 ## Security Note
 

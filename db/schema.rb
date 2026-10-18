@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_18_173127) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_18_200004) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -69,7 +69,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_173127) do
     t.string "couchdb_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "note_attachments_count", default: 0, null: false
+    t.string "share_token"
+    t.string "share_password_digest"
+    t.datetime "shared_at"
+    t.string "color", default: "yellow", null: false
     t.index ["couchdb_id"], name: "index_notes_on_couchdb_id", unique: true
+    t.index ["share_token"], name: "index_notes_on_share_token", unique: true
     t.index ["title"], name: "index_notes_on_title", unique: true
   end
 
@@ -104,6 +110,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_173127) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "reset_password_sent_at"
+    t.boolean "admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

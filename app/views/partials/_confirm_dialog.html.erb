@@ -1,0 +1,17 @@
+<%# Replaces window.confirm for forms with data-confirm (see application.js). %>
+<dialog class="sticky sticky--yellow confirm" data-confirm-dialog aria-labelledby="confirm-title"
+        aria-describedby="confirm-body" data-default-title="<%= t("ui.confirm.title") %>"
+        data-default-button="<%= t("ui.confirm.ok") %>">
+  <div class="sticky__bar"><span class="sticky__caption">g0No</span></div>
+  <form method="dialog" class="confirm__body">
+    <div class="confirm__icon" aria-hidden="true">!</div>
+    <div class="confirm__text">
+      <h2 class="confirm__title" id="confirm-title" data-confirm-title></h2>
+      <p class="confirm__message" id="confirm-body" data-confirm-body></p>
+    </div>
+    <div class="confirm__actions">
+      <button type="submit" value="cancel" class="btn" data-confirm-cancel autofocus><%= t("ui.cancel") %></button>
+      <button type="submit" value="confirm" class="btn btn--destructive" data-confirm-ok></button>
+    </div>
+  </form>
+</dialog>

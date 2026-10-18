@@ -34,19 +34,64 @@
   screenshots at 1280px and 390px. Demo notes used for the screenshots were
   deleted afterwards; the local development database holds only `admin`.
 
+### Evening: admin, sharing, search, previews
+
+Operator asked for (in order): admin panel for the admin user, attachment
+indication on notes, preview modal for attachments, sharing by link or link +
+password, menu bar search with filter and per-note colours from a fixed set,
+a more informative confirmation than "Are you sure?", and drag and drop
+upload. All done in one turn:
+
+- `users.admin`; seeds create the admin with the flag or set it on the
+  existing admin user. `/admin` (dashboard, user CRUD, revoke shares).
+- `notes.note_attachments_count` (counter cache) -> paperclip badge on cards.
+- Preview dialog (`<dialog>`, plain JS) for image, PDF, video, audio, text;
+  inline only for an allow-list, with CSP sandbox and Range support
+  (`AttachmentServing` concern, shared by NotesController and
+  SharedNotesController).
+- `notes.share_token`, `share_password_digest`, `shared_at`; public
+  `/s/:token` pages; password unlock remembered in the session; rate limit.
+- `notes.color` (backfilled with the old `id mod 6`), colour menu in the
+  note title strip, `?q=&color=` search on the board from the menu bar.
+- Confirm dialog naming the note/file/user and the consequence.
+- Drag and drop onto the note window submits the upload form.
+- Bug found in the browser check and fixed: `Referrer-Policy: no-referrer`
+  on share pages made the password form fail CSRF (Origin: null); now
+  `same-origin`.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
 of CouchDB, authenticated attachment downloads with Active Storage routes
 off, no JS framework, secrets only from the environment.
 
+- Colours are a fixed set of six; no custom colours (operator: "colors by
+  set, not custom one"). The menu bar filter is server-side (`GET /notes`).
+- A non-admin opening `/admin` is redirected with an alert (not a 404).
+- Sharing again always makes a new token, so "change password" and "new
+  link" are the same action and old links die.
+
 ## Open
 
 - Real data import and users database move have not been run (no access to
   the production data from this session).
 - Registration is open and SMTP is not configured.
+- Share-password rate limit is in-process memory; fine for one Puma process.
+- The local development database still holds three demo notes from the
+  screenshot run (Groceries, Garden, Car service) because the operator added
+  their own files to them while testing; the other demo notes and the demo
+  user were deleted.
 
 ## Files touched
+
+Evening: db/migrate/20261018200001-04, app/models (note, note_attachment,
+user), app/controllers (notes, shared_notes, admin/*, concerns/attachment_serving),
+config/routes.rb, app/helpers, app/views (layout, partials/_search,
+partials/_confirm_dialog, notes/*, shared_notes/*, admin/*),
+app/assets (application.css, application.js), config/locales/{en,bg}.yml,
+db/seeds.rb, test/ (fixtures, notes and admin controller tests, seeds test),
+specs/admin.md, specs/sharing.md, specs/features.md, specs/ui.md,
+specs/data-model.md, specs/auth.md, specs/README.md, README.md, todo.
 
 Later: bin/setup-env, db/seeds.rb, Makefile, bin/docker-entrypoint,
 .env.example, app/assets/stylesheets/application.css,
@@ -63,13 +108,16 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 34 tests
+- `make check` - rubocop, brakeman, 66 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)
 - `make audit` - gem vulnerability check
 
 ## Next step
+
+Try the new features with `make run` (sign in as admin, open `/admin`, share
+a note, drop a file on a note). Then:
 
 Run `COUCHDB_URL=... make import` (or `make docker-import`) against the real
 2011 CouchDB and compare the note count and totals with the old app.

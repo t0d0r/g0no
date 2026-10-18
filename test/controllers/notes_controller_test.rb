@@ -142,4 +142,198 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to notes_url
   end
+
+  test "searches notes by title or description from the menu bar" do
+    sign_in users(:admin)
+    get notes_url, params: { q: "holiday" }
+    assert_response :success
+    assert_select ".card .card__title", count: 1, text: "Trip"
+    assert_select "a.card--new", count: 0
+    assert_select "input[name=q][value=?]", "holiday"
+  end
+
+  test "filters notes by colour" do
+    sign_in users(:admin)
+    get notes_url, params: { color: "blue" }
+    assert_select ".card .card__title", count: 1, text: "Trip"
+    assert_select ".filter input[name=color][value=blue][checked]"
+  end
+
+  test "ignores an unknown colour filter" do
+    sign_in users(:admin)
+    get notes_url, params: { color: "orange" }
+    assert_select ".card", 2
+  end
+
+  test "search treats LIKE wildcards literally" do
+    sign_in users(:admin)
+    get notes_url, params: { q: "%" }
+    assert_select ".card", 0
+    assert_select ".empty"
+  end
+
+  test "changes the colour of a note from the fixed set" do
+    sign_in users(:admin)
+    patch note_url(@note), params: { note: { color: "green" } }
+    assert_redirected_to note_url(@note)
+    assert_equal "green", @note.reload.color
+
+    patch note_url(@note), params: { note: { color: "#ff0000" } }
+    assert_response :unprocessable_content
+    assert_equal "green", @note.reload.color
+  end
+
+  test "creates a note with a chosen colour" do
+    sign_in users(:admin)
+    post notes_url, params: { note: { title: "Pink one", color: "pink" } }
+    assert_equal "pink", Note.find_by!(title: "Pink one").color
+  end
+
+  test "the note window has a colour menu" do
+    sign_in users(:admin)
+    get note_url(@note)
+    assert_select ".color-menu button[name=?]", "note[color]", 6
+    assert_select ".color-menu button[aria-pressed=true][value=yellow]"
+  end
+
+  test "cards show how many files a note has" do
+    sign_in users(:admin)
+    2.times { attach_file(@note) }
+    get notes_url
+    assert_select ".card", text: /Groceries/ do
+      assert_select ".card__badge--files", text: "2"
+    end
+    assert_select ".card__badge--files", 1
+  end
+
+  test "delete buttons say what will be deleted" do
+    sign_in users(:admin)
+    attach_file(@note)
+    get note_url(@note)
+    assert_select "form[data-confirm-title=?][data-confirm-button=?]", "Delete this note?", "Delete note" do |forms|
+      assert_match "'Groceries' will be deleted permanently, with 2 expenses and 1 file.", forms.first["data-confirm"]
+    end
+    assert_select "form[data-confirm-title=?]", "Delete this file?" do |forms|
+      assert_match "'hello.txt' (16 Bytes)", forms.first["data-confirm"]
+    end
+    assert_select "dialog[data-confirm-dialog]"
+  end
+
+  test "file links open the preview dialog" do
+    sign_in users(:admin)
+    attachment = attach_file(@note)
+    get note_url(@note)
+    assert_select "a.file-link[data-preview-kind=text][data-preview-url=?]",
+                  preview_file_note_path(@note, attachment_id: attachment)
+    assert_select "dialog[data-preview-dialog]"
+  end
+
+  test "previews an allowed type inline" do
+    sign_in users(:admin)
+    attachment = attach_file(@note)
+    get preview_file_note_url(@note, attachment_id: attachment)
+    assert_response :success
+    assert_equal "hello from g0no\n", response.body
+    assert_match(/\Ainline/, response.headers["Content-Disposition"])
+    assert_equal "text/plain; charset=utf-8", response.media_type + "; charset=" + response.charset
+    assert_match "sandbox", response.headers["Content-Security-Policy"]
+  end
+
+  test "never previews HTML" do
+    sign_in users(:admin)
+    attachment = @note.note_attachments.create!(
+      file: { io: StringIO.new("<script>alert(1)</script>"), filename: "x.html", content_type: "text/html" })
+    get preview_file_note_url(@note, attachment_id: attachment)
+    assert_response :not_found
+  end
+
+  test "serves a byte range for the preview" do
+    sign_in users(:admin)
+    attachment = attach_file(@note)
+    get preview_file_note_url(@note, attachment_id: attachment), headers: { "Range" => "bytes=0-4" }
+    assert_response :partial_content
+    assert_equal "hello", response.body
+    assert_equal "bytes 0-4/16", response.headers["Content-Range"]
+  end
+
+  test "shares a note with an open link" do
+    sign_in users(:admin)
+    post share_note_url(@note)
+    assert_redirected_to note_url(@note, anchor: "sharing")
+    token = @note.reload.share_token
+    assert token.present?
+    assert_not @note.share_password?
+
+    sign_out :user
+    get shared_note_url(token)
+    assert_response :success
+    assert_select "h1.note-title", "Groceries"
+    assert_equal "same-origin", response.headers["Referrer-Policy"]
+    assert_select "form.button_to", 0
+  end
+
+  test "a password-protected share asks for the password" do
+    sign_in users(:admin)
+    post share_note_url(@note), params: { share_password: "open-sesame" }
+    token = @note.reload.share_token
+    attachment = attach_file(@note)
+    sign_out :user
+
+    get shared_note_url(token)
+    assert_select "#unlock_form"
+    assert_select "h1.note-title", 0
+    get shared_note_download_url(token, attachment)
+    assert_redirected_to shared_note_url(token)
+
+    post unlock_shared_note_url(token), params: { password: "wrong" }
+    assert_response :unprocessable_content
+
+    post unlock_shared_note_url(token), params: { password: "open-sesame" }
+    assert_redirected_to shared_note_url(token)
+    get shared_note_url(token)
+    assert_select "h1.note-title", "Groceries"
+    get shared_note_download_url(token, attachment)
+    assert_equal "hello from g0no\n", response.body
+    get shared_note_preview_url(token, attachment)
+    assert_response :success
+  end
+
+  test "rejects a share password that is too short" do
+    sign_in users(:admin)
+    post share_note_url(@note), params: { share_password: "abc" }
+    assert_nil @note.reload.share_token
+    assert flash[:alert].present?
+  end
+
+  test "a new link or stopping sharing revokes the old link" do
+    sign_in users(:admin)
+    post share_note_url(@note)
+    old_token = @note.reload.share_token
+    post share_note_url(@note)
+    assert_not_equal old_token, @note.reload.share_token
+    get shared_note_url(old_token)
+    assert_response :not_found
+
+    delete share_note_url(@note)
+    assert_nil @note.reload.share_token
+  end
+
+  test "unknown share tokens are not found" do
+    get shared_note_url("nope")
+    assert_response :not_found
+  end
+
+  test "shared files only come from the shared note" do
+    sign_in users(:admin)
+    other = attach_file(notes(:trip))
+    post share_note_url(@note)
+    get shared_note_download_url(@note.reload.share_token, other)
+    assert_response :not_found
+  end
+
+  private
+
+  def attach_file(note)
+    note.note_attachments.create!(file: fixture_file_upload("hello.txt", "text/plain"))
+  end
 end

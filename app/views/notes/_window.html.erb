@@ -1,13 +1,19 @@
-<article class="sticky sticky--<%= sticky_color(note) %> note-window">
+<article class="sticky sticky--<%= sticky_color(note) %> note-window" data-sticky>
   <header class="sticky__bar">
     <%= link_to "×", notes_path, class: "sticky__box", title: t("ui.back"), aria: { label: t("ui.back") } %>
     <span class="sticky__caption">
       <%= note.persisted? ? t("ui.edited", time: time_ago_in_words(note.updated_at)) : t("ui.new_note") %>
     </span>
+    <%= render "color_menu", note: note %>
     <% if note.persisted? %>
       <%= button_to "−", note_path(note), method: :delete, class: "sticky__box",
                     title: t("ui.delete_note"), aria: { label: t("ui.delete_note") },
-                    form: { data: { confirm: t("Are You sure?") } } %>
+                    form: { data: confirm_data(
+                      title: t("ui.confirm.delete_note_title"),
+                      body: t("ui.confirm.delete_note", title: note.title_was,
+                              expenses: t("ui.confirm.expenses", count: note.finance_entries.count),
+                              files: t("ui.files_count", count: note.note_attachments_count)),
+                      button: t("ui.confirm.delete_note_button")) } %>
     <% else %>
       <span class="sticky__box sticky__box--spacer" aria-hidden="true"></span>
     <% end %>
