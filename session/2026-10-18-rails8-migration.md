@@ -83,6 +83,10 @@ upload. All done in one turn:
   `PreferencesController` as no-JS fallback. Dark colours moved to CSS
   variables so both the system setting and the switch drive them.
 
+- Long descriptions showed a scroll bar (auto-grow forgot the border);
+  fixed, plus a copy-to-clipboard box in the title strip and a new yellow
+  sticky favicon / touch icon.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -145,7 +149,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 89 tests
+- `make check` - rubocop, brakeman, 91 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- g0No icon: a yellow sticky note with its darker title strip -->
+  <rect x="5" y="6" width="55" height="55" rx="4" fill="#000" fill-opacity="0.18"/>
+  <rect x="3" y="3" width="55" height="55" rx="4" fill="#fff6a8"/>
+  <path d="M3 7a4 4 0 0 1 4-4h47a4 4 0 0 1 4 4v9H3z" fill="#f5e270"/>
+  <rect x="3.5" y="3.5" width="54" height="54" rx="3.5" fill="none" stroke="#000" stroke-opacity="0.18"/>
+  <path d="M12 27h37M12 36h37M12 45h24" stroke="#c7b04f" stroke-width="3.5" stroke-linecap="round"/>
+</svg>

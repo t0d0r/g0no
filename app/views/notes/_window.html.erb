@@ -5,6 +5,7 @@
       <%= note.persisted? ? t("ui.edited", time: time_ago_in_words(note.updated_at)) : t("ui.new_note") %>
     </span>
     <%= render "color_menu", note: note %>
+    <%= copy_note_box text_selector: "#note_description", title_selector: "#note_title" %>
     <% if note.persisted? %>
       <%= link_to history_note_path(note), class: "sticky__box sticky__box--icon",
                   title: t("ui.history.open"), aria: { label: t("ui.history.open") } do %>

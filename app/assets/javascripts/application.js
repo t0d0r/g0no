@@ -1,12 +1,61 @@
 // Page behaviour for g0No. Plain JavaScript, no framework.
 
+// Text areas grow with their text instead of scrolling. scrollHeight leaves
+// out the border, which with border-box sizing would leave the box a pixel
+// short and bring back the scroll bar. Without JavaScript the field keeps
+// its normal scroll bar, so no text is hidden.
 function autoGrow(textarea) {
+  textarea.style.overflowY = "hidden";
   const grow = () => {
     textarea.style.height = "auto";
-    textarea.style.height = `${textarea.scrollHeight}px`;
+    const border = textarea.offsetHeight - textarea.clientHeight;
+    textarea.style.height = `${textarea.scrollHeight + border}px`;
   };
   textarea.addEventListener("input", grow);
+  window.addEventListener("resize", grow);
+  document.fonts?.ready.then(grow);
+  // The text size menu changes data-scale on <html>; the wrap changes with it.
+  new MutationObserver(grow).observe(document.documentElement, { attributes: true, attributeFilter: ["data-scale"] });
   grow();
+}
+
+// Copies the note's text (or its title when there is no text) to the
+// clipboard. navigator.clipboard needs HTTPS or localhost; elsewhere a
+// hidden text area and execCommand do the job.
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const scratch = document.createElement("textarea");
+    scratch.value = text;
+    scratch.setAttribute("readonly", "");
+    scratch.style.position = "fixed";
+    scratch.style.opacity = "0";
+    document.body.append(scratch);
+    scratch.select();
+    document.execCommand("copy");
+    scratch.remove();
+  }
+}
+
+function setUpCopyNote(button) {
+  const read = (selector) => {
+    const element = document.querySelector(selector);
+    if (!element) return "";
+    return ("value" in element ? element.value : element.textContent).trim();
+  };
+  button.hidden = false;
+  button.addEventListener("click", async () => {
+    const text = read(button.dataset.copyText) || read(button.dataset.copyTitle);
+    if (!text) return;
+    await copyText(text);
+    button.classList.add("is-copied");
+    button.title = button.dataset.copied;
+    setTimeout(() => {
+      button.classList.remove("is-copied");
+      button.title = button.dataset.label;
+    }, 1500);
+  });
 }
 
 // Notes save themselves, like Stickies: shortly after typing stops, when a
@@ -387,6 +436,7 @@ function setUpCapsule(capsule) {
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-autogrow]").forEach(autoGrow);
+  document.querySelectorAll("[data-copy-note]").forEach(setUpCopyNote);
   document.querySelectorAll("form[data-note-form]").forEach(setUpNoteForm);
 
   setUpConfirm(document.querySelector("[data-confirm-dialog]"));

@@ -648,6 +648,17 @@ form.button_to {
   vertical-align: 0;
 }
 
+/* Copy box: the copy icon turns into a check mark for a moment. */
+.copy-note__done,
+.copy-note.is-copied > .icon {
+  display: none;
+}
+
+.copy-note.is-copied .copy-note__done {
+  display: inline-flex;
+  color: #1f7a33;
+}
+
 .swatch:focus-visible,
 .swatch:has(input:focus-visible) {
   outline: 2px solid var(--accent);

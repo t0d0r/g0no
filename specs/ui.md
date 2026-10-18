@@ -69,6 +69,19 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   Dark colours are CSS variables, redefined under
   `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and
   `:root[data-theme="dark"]`.
+- **Description field:** grows with its text and never shows a scroll bar
+  (the height includes the border; it is measured again on resize, when
+  fonts load and when the text size changes). Without JavaScript it keeps a
+  normal scroll bar so no text is hidden.
+- **Copy box:** a small copy icon in the note's title strip (and on shared
+  notes) puts the note's text on the clipboard, or the title when there is
+  no text; it shows a green check mark for 1.5 seconds. Falls back to
+  `execCommand("copy")` where the Clipboard API is unavailable (plain HTTP
+  other than localhost). Hidden without JavaScript.
+- **Site icon:** a small yellow sticky with a darker title strip and three
+  text lines: `public/icon.svg` (source), `favicon.ico` (16/32/48 PNG
+  entries), `icon.png` (512) and `apple-touch-icon.png` (180, on the desk
+  colour because iOS does not allow transparency).
 - **Autosave status:** small grey text under the description, red when a
   save fails.
 - **Colour menu dice:** a small five-dot die after the swatches; it turns a

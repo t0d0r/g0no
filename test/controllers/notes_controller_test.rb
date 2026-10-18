@@ -426,6 +426,21 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "green", note.color
   end
 
+
+  test "the note window has a copy box for the note's text" do
+    sign_in users(:admin)
+    get note_url(@note)
+    assert_select "button.copy-note[hidden][data-copy-text=?][data-copy-title=?]", "#note_description", "#note_title"
+    assert_select "textarea#note_description"
+    assert_select "input#note_title"
+  end
+
+  test "a shared note can be copied too" do
+    @note.share
+    get shared_note_url(@note.share_token)
+    assert_select "button.copy-note[data-copy-text=?]", ".shared-note .note-text"
+  end
+
   private
 
   def attach_file(note)

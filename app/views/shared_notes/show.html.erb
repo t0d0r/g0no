@@ -1,7 +1,9 @@
 <% content_for :title, @note.title %>
 <article class="sticky sticky--<%= sticky_color(@note) %> note-window shared-note">
   <header class="sticky__bar">
+    <span class="sticky__box sticky__box--spacer" aria-hidden="true"></span>
     <span class="sticky__caption"><%= t("ui.share.shared_note") %></span>
+    <%= copy_note_box text_selector: ".shared-note .note-text", title_selector: ".shared-note .note-title" %>
   </header>
   <div class="note-window__body">
     <div class="note-head">

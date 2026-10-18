@@ -193,6 +193,9 @@ bg:
         normal: "Нормален"
         big: "Голям"
         extra: "Много голям"
+    copy_note:
+      label: "Копирай текста на бележката"
+      copied: "Копирано в клипборда"
     send_reset_instructions: "Изпрати инструкции за нова парола"
 
   flash:

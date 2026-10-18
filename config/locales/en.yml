@@ -186,6 +186,9 @@ en:
         normal: "Normal"
         big: "Big"
         extra: "Extra big"
+    copy_note:
+      label: "Copy the note's text"
+      copied: "Copied to the clipboard"
     send_reset_instructions: "Send me reset instructions"
 
   flash:

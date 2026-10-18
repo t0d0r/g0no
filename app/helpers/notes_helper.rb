@@ -20,6 +20,16 @@ module NotesHelper
                     filename: attachment.filename.to_s, details: details }
   end
 
+  # Title-strip box that copies the note's text; shown by application.js.
+  def copy_note_box(text_selector:, title_selector:)
+    content_tag(:button, type: "button", class: "sticky__box sticky__box--icon copy-note", hidden: true,
+                title: t("ui.copy_note.label"), aria: { label: t("ui.copy_note.label") },
+                data: { copy_note: true, copy_text: text_selector, copy_title: title_selector,
+                        label: t("ui.copy_note.label"), copied: t("ui.copy_note.copied") }) do
+      icon(:copy, size: 10) + content_tag(:span, icon(:check, size: 10), class: "copy-note__done")
+    end
+  end
+
   # Small inline SVG icons, so the app ships no image or icon font.
   ICONS = {
     clip: '<path d="M10.5 4.5 5.4 9.6a1.8 1.8 0 0 0 2.5 2.5l5.6-5.6a3 3 0 0 0-4.2-4.2L3.6 8a4.2 4.2 0 0 0 6 6l4.4-4.4" />',
@@ -33,6 +43,9 @@ module NotesHelper
     sun: '<circle cx="8" cy="8" r="2.8" /><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6' \
          'M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" />',
     moon: '<path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8z" />',
+    copy: '<rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />' \
+          '<path d="M10.5 3.5V3A1.5 1.5 0 0 0 9 1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" />',
+    check: '<path d="m3.5 8.5 3 3 6-7" />',
     up: '<path d="m4 10 4-4 4 4" />',
     down: '<path d="m4 6 4 4 4-4" />'
   }.freeze
