@@ -124,6 +124,12 @@ upload. All done in one turn:
 - Per-note wide option (notes.wide): title strip box, instant toggle saved
   in the background.
 
+- 2026-10-19: operator asked to push and merge. gitleaks over the 14 new
+  commits found only the Devise generator's commented-out sample key (now a
+  placeholder). master fast-forwarded to rails-8-upgrade and pushed to
+  origin. GitHub's Dependabot alerts at push time referred to the 2011
+  Gemfile.lock; `make audit` on the new lock file is clean.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
