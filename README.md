@@ -5,15 +5,50 @@ of expenses (finance entries with a running total) and file attachments.
 Users sign in with Devise. The UI is in Bulgarian and English and looks like
 macOS Stickies; Turbo Drive makes page changes feel like a single-page app.
 
-Notes can be searched and filtered by colour from the menu bar, recoloured
-from a fixed set, shared by link (optionally with a password), and given
-files by drag and drop; attachments open in a preview dialog. Every change
-is kept in a Time Machine style history from which older versions can be
-restored. Administrators
-manage users and shared links at `/admin`.
-
 Started in 2011 on Rails 3.0 with CouchDB; migrated in 2026 to Rails 8.1 with
 SQLite. The 2011 development notes are in `doc/NOTES-2011.md`.
+
+## Screenshots
+
+The board of notes, newest edits first:
+
+![Board of sticky notes in six colours](doc/screenshots/board.png)
+
+A Markdown note with a task list, opened locked for reading:
+
+![Note window with a task list, expenses, files and sharing](doc/screenshots/note.png)
+
+## Features
+
+- **Notes board** - cards with title, start of the text, age, author, file
+  count, share icon and expense total. Sort by created or edited time,
+  newest or oldest first; cards glide to their new place.
+- **Search and filter** - search title and description from the board
+  header, filter by paper colour, or list the notes with one tag.
+- **Autosave** - no Save button: a note saves itself shortly after typing
+  stops, on focus out and when the page is left. A status line shows when
+  it was saved.
+- **Locked notes** - a saved note opens read-only; double-click (or the
+  padlock) to edit, with the caret where you clicked.
+- **Colours** - six paper colours (yellow, blue, green, pink, purple, gray)
+  and a dice button for a random one.
+- **Markdown** - per-note switch for formatted view, with clickable task
+  lists.
+- **Wide notes** - a zoom box widens a note window to the full desk.
+- **Tags** - space-separated tags on each note.
+- **Expenses** - a list of finance entries per note with a running total.
+- **Attachments** - upload by form or drag and drop; preview images, PDFs,
+  video, audio and text in a dialog with previous/next.
+- **History** - every change to title, text or colour is kept in a Time
+  Machine style view; any older version can be restored.
+- **Sharing** - public read-only link per note, optionally with a password;
+  sharing again replaces the old link.
+- **Admin panel** - at `/admin`: manage users, see stats and all shared
+  links.
+- **Look and feel** - macOS Stickies style, light and dark theme, three
+  text sizes, Bulgarian and English UI, Turbo Drive page changes.
+- **Confirmations** - deleting a note, file, share link or user asks in a
+  dialog that names what will be lost.
 
 ## Requirements
 
@@ -61,18 +96,3 @@ make check    # rubocop, brakeman and the test suite; must pass before a commit
 make audit    # known-vulnerability check for gems
 ```
 
-## Security Note
-
-- Never commit `.env`, `config/master.key` or any credential. Production
-  needs `SECRET_KEY_BASE` from the environment. `.env` is created with mode
-  600 and holds the admin password in plain text; keep it on your machine.
-- The 2011 code committed a session secret, a Devise pepper and a default
-  admin password to git history. They are no longer used by the code, but
-  treat them as public: use a new `SECRET_KEY_BASE`, change the admin
-  password, and set `DEVISE_PEPPER` only while old passwords still need it
-  (see `specs/auth.md`).
-- Anyone can register an account and every signed-in user sees every note.
-  Put the app behind a trusted network or disable registration before
-  exposing it to the internet.
-- Keep `RAILS_FORCE_SSL=true` (the default) whenever the app is reachable
-  over a network; the compose file turns it off only for localhost.
