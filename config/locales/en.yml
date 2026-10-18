@@ -202,6 +202,8 @@ en:
       created_desc: "Newest first"
       updated_desc: "Recently edited"
       updated_asc: "Least recently edited"
+    nav:
+      label: "Sections"
     send_reset_instructions: "Send me reset instructions"
 
   flash:

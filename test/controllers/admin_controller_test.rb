@@ -21,7 +21,10 @@ class AdminControllerTest < ActionDispatch::IntegrationTest
 
     sign_in users(:admin)
     get notes_url
-    assert_select ".menubar a[href=?]", admin_root_path
+    assert_select ".menubar a.nav-link[href=?]:not([aria-current])", admin_root_path
+    assert_select ".menubar a.nav-link[href=?][aria-current=page]", notes_path
+    get admin_root_url
+    assert_select ".menubar a.nav-link[href=?][aria-current=page]", admin_root_path
   end
 
   test "lists users and stats" do

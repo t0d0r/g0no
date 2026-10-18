@@ -2,13 +2,18 @@
 
 Requested by the operator on 2026-10-18: "styling like Apple sticky notes".
 Styles: `app/assets/stylesheets/application.css`. Behaviour:
-`app/assets/javascripts/application.js`. No CSS or JS framework.
+`app/assets/javascripts/application.js`. No CSS framework; Turbo Drive for
+page changes, otherwise plain JavaScript.
 
 ## Look
 
 - **Desk:** neutral warm-grey background (`--desk`), darker in dark mode.
-- **Menu bar:** translucent bar at the top, like the macOS menu bar: app
-  name, "Content" link, and when signed in the user name and logout.
+- **Menu bar:** translucent bar at the top, like the macOS menu bar. Left:
+  the sticky icon (`public/icon.svg`) and "g0No" (icon only under 560px),
+  then the sections as pills, each with a small paper colour square
+  (Content yellow, Admin grey); the current section has a grey pill and
+  bold text (`aria-current="page"`). Right: theme, text size, user name and
+  logout.
 - **Sticky paper:** square corners (3px), soft shadow, a slightly darker
   title strip (`.sticky__bar`) of the same colour. Notes keep their paper
   colours in dark mode, as Stickies does.
@@ -99,6 +104,28 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
 - **Admin:** coloured stat tiles, grey sticky panels with tables.
 - **Shared note:** the note window without boxes or forms, caption "Shared
   note"; password page and "link not available" page as small stickies.
+
+## Turbo Drive
+
+- `application.js` runs once; `setUpPage` runs on every `turbo:load` (and on
+  `DOMContentLoaded` if Turbo did not load). Listeners on `document` or
+  `window` that belong to one page pass `{ signal: pageSignal }`; the
+  signal is aborted when the next page is set up, so nothing piles up.
+  Checked in Chrome: the count of page listeners returns to the same value
+  after each visit.
+- `<meta name="turbo-cache-control" content="no-cache">`: no page snapshots.
+  A back or forward visit always fetches the page, so an old copy of a note
+  can never be shown and then autosaved over newer text, and nothing stays
+  cached after sign-out.
+- Autosave also flushes on `turbo:visit` and `turbo:submit-start`, since a
+  Turbo visit has no `pagehide`. Address changes (new note, history) use
+  `history.replaceState(history.state, ...)` to keep Turbo's restoration
+  data.
+- File downloads (`data-turbo="false"`) and the sort link (no hover
+  prefetch: it sets a cookie) opt out. Assets carry
+  `data-turbo-track="reload"`, so a deploy with new CSS or JS reloads the
+  page. Forms keep their status codes: 422 re-renders, 303/302 redirects.
+- The loading bar (`.turbo-progress-bar`) is 2px in the accent colour.
 
 ## Constraints
 

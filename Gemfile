@@ -11,6 +11,10 @@ gem "puma", ">= 5.0"
 # Authentication
 gem "devise", "~> 5.0"
 
+# Turbo Drive: link clicks and form submits swap the page without a full
+# reload [https://turbo.hotwired.dev]; turbo.min.js is served by Propshaft
+gem "turbo-rails", "~> 2.0"
+
 # Markdown rendering for notes (GitHub flavoured, precompiled native gem)
 gem "commonmarker", "~> 2.10"
 

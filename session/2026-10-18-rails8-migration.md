@@ -112,6 +112,12 @@ upload. All done in one turn:
 - Operator asked about the Rails "single page feel": Hotwire Turbo (was
   Turbolinks). Not adopted; the app stays framework-free unless asked.
 
+- Turbo Drive added (turbo-rails, module script via Propshaft): setUpPage
+  on turbo:load with an AbortController per page, autosave flush on Turbo
+  visits, no page snapshots (stale-note safety), downloads opt out.
+- Menu bar left side redesigned: sticky icon + name, section pills with
+  paper colour squares.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -174,7 +180,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 105 tests
+- `make check` - rubocop, brakeman, 107 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)

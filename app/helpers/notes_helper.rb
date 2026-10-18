@@ -6,16 +6,17 @@ module NotesHelper
   end
 
   def link_to_attachment(note, attachment)
-    link_to attachment.filename.to_s, download_file_note_path(note, attachment_id: attachment)
+    link_to attachment.filename.to_s, download_file_note_path(note, attachment_id: attachment), data: { turbo: false }
   end
 
   # A file name that opens the preview dialog (see application.js). Without
   # JavaScript the link downloads the file.
   def attachment_preview_link(attachment, download_url:, preview_url:)
     details = [ number_to_human_size(attachment.byte_size), attachment.comment.presence ].compact.join(" - ")
+    # data-turbo=false: a file download is not a page Turbo can show.
     link_to attachment.filename.to_s, download_url,
             class: "file-link",
-            data: { preview_item: true, preview_kind: attachment.preview_kind || "none",
+            data: { turbo: false, preview_item: true, preview_kind: attachment.preview_kind || "none",
                     preview_url: (preview_url if attachment.preview_kind),
                     filename: attachment.filename.to_s, details: details }
   end

@@ -1,4 +1,10 @@
-// Page behaviour for g0No. Plain JavaScript, no framework.
+// Page behaviour for g0No. Plain JavaScript plus Turbo Drive (turbo-rails),
+// which swaps the <body> on link clicks and form submits instead of loading
+// a new page. This file runs once; setUpPage runs on every turbo:load.
+// Listeners on document or window that belong to one page pass
+// { signal: pageSignal }, so they are removed when the next page loads.
+let pageAbort = null;
+let pageSignal;
 
 // Text areas grow with their text instead of scrolling. scrollHeight leaves
 // out the border, which with border-box sizing would leave the box a pixel
@@ -16,10 +22,12 @@ function autoGrow(textarea) {
   textarea.addEventListener("input", grow);
   // Sent when a hidden text area is shown again (Markdown notes).
   textarea.addEventListener("autogrow", grow);
-  window.addEventListener("resize", grow);
+  window.addEventListener("resize", grow, { signal: pageSignal });
   document.fonts?.ready.then(grow);
-  // The text size menu changes data-scale on <html>; the wrap changes with it.
-  new MutationObserver(grow).observe(document.documentElement, { attributes: true, attributeFilter: ["data-scale"] });
+  // The text size buttons change data-scale on <html>; the wrap changes with it.
+  const observer = new MutationObserver(grow);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-scale"] });
+  pageSignal.addEventListener("abort", () => observer.disconnect());
   grow();
 }
 
@@ -101,7 +109,7 @@ function setUpNoteForm(form) {
     const method = document.createElement("input");
     Object.assign(method, { type: "hidden", name: "_method", value: "patch" });
     form.prepend(method);
-    history.replaceState(null, "", url);
+    history.replaceState(history.state, "", url); // keeps Turbo's restoration state
   };
 
   const save = async () => {
@@ -161,8 +169,12 @@ function setUpNoteForm(form) {
     fetch(form.action, { method: "POST", body, keepalive: true, headers: { Accept: "application/json" }, credentials: "same-origin" });
     saved = body;
   };
-  window.addEventListener("pagehide", flush);
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(); });
+  window.addEventListener("pagehide", flush, { signal: pageSignal });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(); },
+                            { signal: pageSignal });
+  // A Turbo visit or form submit leaves the page without a pagehide.
+  document.addEventListener("turbo:visit", flush, { signal: pageSignal });
+  document.addEventListener("turbo:submit-start", flush, { signal: pageSignal });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -580,8 +592,8 @@ function setUpDropUpload(form) {
   });
 
   // A file dropped next to the note must not make the browser open it instead.
-  window.addEventListener("dragover", (event) => { if (hasFiles(event)) event.preventDefault(); });
-  window.addEventListener("drop", (event) => { if (hasFiles(event)) event.preventDefault(); });
+  window.addEventListener("dragover", (event) => { if (hasFiles(event)) event.preventDefault(); }, { signal: pageSignal });
+  window.addEventListener("drop", (event) => { if (hasFiles(event)) event.preventDefault(); }, { signal: pageSignal });
 }
 
 // The colour menu of a new note changes the paper right away; the colour is
@@ -636,7 +648,7 @@ function setUpCapsule(capsule) {
     }
     position.textContent = `${selected + 1} / ${cards.length}`;
     const id = cards[selected].id.replace("version-", "");
-    history.replaceState(null, "", `${capsule.dataset.url}?v=${id}`);
+    history.replaceState(history.state, "", `${capsule.dataset.url}?v=${id}`);
   };
 
   ticks.forEach((tick) => {
@@ -659,7 +671,7 @@ function setUpCapsule(capsule) {
     if (event.target.closest("input, textarea, select") || document.querySelector("dialog[open]")) return;
     if (event.key === "ArrowUp") { event.preventDefault(); show(selected - 1); }
     if (event.key === "ArrowDown") { event.preventDefault(); show(selected + 1); }
-  });
+  }, { signal: pageSignal });
   // Mouse wheel over the stack moves through time, one step per notch.
   let wheelLock = false;
   capsule.querySelector("[data-capsule-stack]").addEventListener("wheel", (event) => {
@@ -677,7 +689,18 @@ function setUpCapsule(capsule) {
   show(selected);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+// Close an open filter menu when clicking elsewhere (once, for all pages).
+document.addEventListener("click", (event) => {
+  document.querySelectorAll("[data-filter][open]").forEach((menu) => {
+    if (!menu.contains(event.target)) menu.open = false;
+  });
+});
+
+function setUpPage() {
+  pageAbort?.abort();
+  pageAbort = new AbortController();
+  pageSignal = pageAbort.signal;
+
   document.querySelectorAll("[data-autogrow]").forEach(autoGrow);
   document.querySelectorAll("[data-copy-note]").forEach(setUpCopyNote);
   document.querySelectorAll("form[data-note-form]").forEach(setUpNoteForm);
@@ -706,16 +729,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Picking a colour in the menu bar filter searches right away.
+  // Picking a colour in the filter searches right away.
   document.querySelectorAll("[data-filter-choice]").forEach((input) => {
     input.addEventListener("change", () => input.form.requestSubmit());
-  });
-
-  // Close the filter menu when clicking elsewhere.
-  document.addEventListener("click", (event) => {
-    document.querySelectorAll("[data-filter][open]").forEach((menu) => {
-      if (!menu.contains(event.target)) menu.open = false;
-    });
   });
 
   // Clearing the search field (the field's own x button) shows all notes again.
@@ -756,4 +772,11 @@ document.addEventListener("DOMContentLoaded", () => {
     flash.addEventListener("focusin", pause);
     flash.addEventListener("focusout", resume);
   });
+}
+
+// Turbo fires turbo:load after the first page and after every visit. If
+// Turbo did not load (old browser, blocked module), set up the page once.
+document.addEventListener("turbo:load", setUpPage);
+document.addEventListener("DOMContentLoaded", () => {
+  if (!window.Turbo) setUpPage();
 });

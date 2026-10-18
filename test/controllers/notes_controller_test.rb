@@ -532,6 +532,23 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".desk__header form.board-search[action=?]", notes_path
   end
 
+
+  test "pages load Turbo Drive without page snapshots" do
+    sign_in users(:admin)
+    get notes_url
+    assert_select "head script[type=module][src*=turbo][data-turbo-track=reload]"
+    assert_select "head meta[name=turbo-cache-control][content=no-cache]"
+    assert_select "a.sort-button[data-turbo-prefetch=false]"
+  end
+
+  test "file links bypass Turbo" do
+    sign_in users(:admin)
+    attach_file(@note)
+    get note_url(@note)
+    assert_select "a.file-link[data-turbo=false]"
+    assert_select "a[data-preview-download][data-turbo=false]"
+  end
+
   private
 
   def attach_file(note)

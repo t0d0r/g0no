@@ -38,6 +38,11 @@ couchrest_model and users in SQLite. Decisions made while moving to Rails 8.1:
   plain JavaScript (`app/assets/javascripts/application.js`) and a native
   `<input type="date">`. Delete buttons are `button_to` forms with a
   `data-confirm` prompt handled by that script.
+- **Turbo Drive** (added 2026-10-19 at the operator's request: "add turbo
+  drive"). The `turbo-rails` gem serves `turbo.min.js` through Propshaft (no
+  build step, no importmap); link clicks and form submits swap the page
+  body instead of reloading it. Only Turbo Drive is used, not Frames or
+  Streams, and no Stimulus. See ui.md, Turbo Drive.
 - **Plain CSS.** The committed CSS was a Sass syntax error dump (tabs mixed
   with spaces). The styles now live in `app/assets/stylesheets/application.css`
   with no Sass build step.

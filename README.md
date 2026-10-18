@@ -3,7 +3,7 @@
 A small notes application: each note has a title, a description, tags, a list
 of expenses (finance entries with a running total) and file attachments.
 Users sign in with Devise. The UI is in Bulgarian and English and looks like
-macOS Stickies.
+macOS Stickies; Turbo Drive makes page changes feel like a single-page app.
 
 Notes can be searched and filtered by colour from the menu bar, recoloured
 from a fixed set, shared by link (optionally with a password), and given

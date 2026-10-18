@@ -166,23 +166,69 @@ form.button_to {
   text-decoration: none;
 }
 
+/* Brand: the sticky icon (public/icon.svg) and the name. */
 .menubar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
+.menubar__brand img {
+  display: block;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
+}
+
+.menubar__brand:hover img {
+  transform: rotate(-6deg);
+  transition: transform 0.15s ease;
+}
+
+/* Sections: pills like the board tools, with a paper colour square. */
 .menubar__nav {
   display: flex;
-  gap: 14px;
+  gap: 2px;
 }
 
-.menubar__nav a:hover,
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 6px;
+  opacity: 0.78;
+}
+
+.nav-link:hover {
+  background: var(--tool-hover);
+  opacity: 1;
+}
+
+.nav-link[aria-current] {
+  background: var(--tool-hover);
+  font-weight: 600;
+  opacity: 1;
+}
+
+.nav-link:focus-visible {
+  outline: 3px solid var(--accent-ring);
+}
+
+.nav-link__dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgba(0, 0, 0, 0.28);
+  border-radius: 2px;
+  background: var(--paper);
+  box-shadow: inset 0 2px 0 var(--bar);
+}
+
 .menubar__button:hover {
   text-decoration: underline;
-}
-
-.menubar__nav .current {
-  font-weight: 600;
 }
 
 .menubar__right {
@@ -436,6 +482,12 @@ form.button_to {
 
 :root[data-scale="extra"] body {
   zoom: 1.3;
+}
+
+/* Turbo Drive's loading bar, shown when a visit takes a moment. */
+.turbo-progress-bar {
+  height: 2px;
+  background: var(--accent);
 }
 
 /* ---------- desk ---------- */
@@ -2000,8 +2052,13 @@ body.time-capsule {
     flex: 1 1 8em;
   }
 
-  .menubar__user {
+  .menubar__user,
+  .menubar__name {
     display: none;
+  }
+
+  .nav-link {
+    padding: 0 7px;
   }
 
   .menubar {
