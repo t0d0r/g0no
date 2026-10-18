@@ -72,6 +72,17 @@ upload. All done in one turn:
 - Flash messages restyled as small stickies at the top right (yellow
   notice that fades after 6 s, pink alert that stays), on operator request.
 
+### 2026-10-19: autosave, theme, text size
+
+- Notes save themselves (debounced input, blur, pagehide with keepalive);
+  Save/Cancel removed. New notes are created on the first save with a
+  title. Found in the browser: per-form CSRF tokens broke the first update
+  after creation; the script now sends the meta csrf token.
+- History groups edits by the same author within 10 minutes.
+- Sun/moon theme switch and Normal/Big/Extra big text size, in cookies,
+  `PreferencesController` as no-JS fallback. Dark colours moved to CSS
+  variables so both the system setting and the switch drive them.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -98,6 +109,11 @@ off, no JS framework, secrets only from the environment.
   user were deleted.
 
 ## Files touched
+
+2026-10-19: app/views/notes/_form.html.erb, partials/_preferences,
+app/controllers/preferences_controller.rb, notes_controller (JSON),
+note_version.rb (grouping), application.js/css, layout, helpers, locales,
+test/controllers/preferences_controller_test.rb, specs.
 
 Late evening: db/migrate/20261019090001, app/models (current,
 note_version, text_diff, note, note_attachment, finance_entry),
@@ -129,7 +145,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 81 tests
+- `make check` - rubocop, brakeman, 89 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)

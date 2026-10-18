@@ -71,7 +71,8 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".table-finance tr", 2
     assert_select ".note-total__value", text: /3.75/
-    assert_select "[data-note-actions][hidden]"
+    assert_select "form[data-note-form] [data-autosave-status]"
+    assert_select "form[data-note-form] noscript input[type=submit]"
   end
 
   test "updates title and description" do
@@ -394,6 +395,35 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     end
     get new_note_url
     assert_select ".color-menu button.swatch--random[data-color-random][type=button]"
+  end
+
+
+  test "autosave updates a note and answers with JSON" do
+    sign_in users(:admin)
+    patch note_url(@note), params: { note: { title: "Groceries", description: "typed" } }, as: :json
+    assert_response :success
+    assert_equal note_path(@note), response.parsed_body["url"]
+    assert_match(/\A\d\d:\d\d\z/, response.parsed_body["saved_at"])
+    assert_equal "typed", @note.reload.description
+  end
+
+  test "autosave reports a validation error as JSON" do
+    sign_in users(:admin)
+    patch note_url(@note), params: { note: { title: "Trip" } }, as: :json
+    assert_response :unprocessable_content
+    assert_match "already", response.parsed_body["error"]
+    assert_equal "Groceries", @note.reload.title
+  end
+
+  test "autosave creates a new note once it has a title" do
+    sign_in users(:admin)
+    assert_difference("Note.count") do
+      post notes_url, params: { note: { title: "Typed in", description: "first words", color: "green" } }, as: :json
+    end
+    assert_response :created
+    note = Note.find_by!(title: "Typed in")
+    assert_equal note_path(note), response.parsed_body["url"]
+    assert_equal "green", note.color
   end
 
   private

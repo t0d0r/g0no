@@ -26,20 +26,61 @@
   --shadow: 0 1px 1px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.13);
   --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.08), 0 14px 30px rgba(0, 0, 0, 0.2);
 
+  --menu-bg: rgba(250, 249, 246, 0.97);
+  --menu-ink: #1d1d1f;
+  --menu-ink-soft: rgba(0, 0, 0, 0.5);
+  --search-bg: rgba(0, 0, 0, 0.06);
+  --search-bg-focus: rgba(255, 255, 255, 0.9);
+  --tool-hover: rgba(0, 0, 0, 0.08);
+  --new-card-border: rgba(0, 0, 0, 0.18);
+  --new-card-hover: rgba(255, 255, 255, 0.35);
+
+  color-scheme: light;
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+/* Dark desk: follows the system unless the sun/moon switch chose a theme
+   (data-theme on <html>, from the "theme" cookie). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --desk: #2a2a2c;
     --desk-ink: #ecebe8;
     --desk-ink-soft: #a7a5a0;
     --menubar-bg: rgba(40, 40, 42, 0.78);
     --menubar-border: rgba(255, 255, 255, 0.08);
     --menubar-ink: #f2f2f2;
+    --menu-bg: rgba(44, 44, 46, 0.97);
+    --menu-ink: #f2f2f2;
+    --menu-ink-soft: rgba(255, 255, 255, 0.55);
+    --search-bg: rgba(255, 255, 255, 0.1);
+    --search-bg-focus: rgba(255, 255, 255, 0.16);
+    --tool-hover: rgba(255, 255, 255, 0.12);
+    --new-card-border: rgba(255, 255, 255, 0.22);
+    --new-card-hover: rgba(255, 255, 255, 0.06);
     --shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.45);
     --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 16px 34px rgba(0, 0, 0, 0.55);
+    color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --desk: #2a2a2c;
+  --desk-ink: #ecebe8;
+  --desk-ink-soft: #a7a5a0;
+  --menubar-bg: rgba(40, 40, 42, 0.78);
+  --menubar-border: rgba(255, 255, 255, 0.08);
+  --menubar-ink: #f2f2f2;
+  --menu-bg: rgba(44, 44, 46, 0.97);
+  --menu-ink: #f2f2f2;
+  --menu-ink-soft: rgba(255, 255, 255, 0.55);
+  --search-bg: rgba(255, 255, 255, 0.1);
+  --search-bg-focus: rgba(255, 255, 255, 0.16);
+  --tool-hover: rgba(255, 255, 255, 0.12);
+  --new-card-border: rgba(255, 255, 255, 0.22);
+  --new-card-hover: rgba(255, 255, 255, 0.06);
+  --shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 16px 34px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
 }
 
 /* Paper colours, as in Stickies' Color menu. Notes keep them in dark mode. */
@@ -187,12 +228,12 @@ form.button_to {
   height: 24px;
   padding: 0 8px;
   border-radius: 6px;
-  background: rgba(0, 0, 0, 0.06);
+  background: var(--search-bg);
   color: var(--desk-ink-soft);
 }
 
 .search-field:focus-within {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--search-bg-focus);
   box-shadow: 0 0 0 3px var(--accent-ring);
 }
 
@@ -233,7 +274,7 @@ form.button_to {
 
 .filter__toggle:hover,
 .filter[open] .filter__toggle {
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--tool-hover);
 }
 
 .filter__toggle:focus-visible {
@@ -274,16 +315,16 @@ form.button_to {
   padding: 6px;
   border: 1px solid var(--menubar-border);
   border-radius: 8px;
-  background: rgba(250, 249, 246, 0.97);
+  background: var(--menu-bg);
   box-shadow: var(--shadow-lift);
-  color: #1d1d1f;
+  color: var(--menu-ink);
 }
 
 .filter__legend {
   float: left;
   width: 100%;
   padding: 2px 8px 6px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--menu-ink-soft);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -319,19 +360,99 @@ form.button_to {
   margin: 6px 8px 2px;
 }
 
+/* Sun/moon switch and text size menu. */
+.prefs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+}
+
+.tool-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  list-style: none;
+  cursor: pointer;
+}
+
+.tool-button::-webkit-details-marker {
+  display: none;
+}
+
+.tool-button:hover,
+.filter[open] > .tool-button {
+  background: var(--tool-hover);
+}
+
+.tool-button:focus-visible {
+  outline: 3px solid var(--accent-ring);
+}
+
+/* Show the moon in light mode, the sun in dark mode. */
+.theme-toggle--to-light {
+  display: none;
+}
+
 @media (prefers-color-scheme: dark) {
-  .search-field {
-    background: rgba(255, 255, 255, 0.1);
+  :root:not([data-theme="light"]) .theme-toggle--to-light {
+    display: inline-flex;
   }
 
-  .search-field:focus-within {
-    background: rgba(255, 255, 255, 0.16);
+  :root:not([data-theme="light"]) .theme-toggle--to-dark {
+    display: none;
   }
+}
 
-  .filter__toggle:hover,
-  .filter[open] .filter__toggle {
-    background: rgba(255, 255, 255, 0.12);
-  }
+:root[data-theme="dark"] .theme-toggle--to-light {
+  display: inline-flex;
+}
+
+:root[data-theme="dark"] .theme-toggle--to-dark {
+  display: none;
+}
+
+.scale-menu__glyph {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.scale-menu__glyph small {
+  font-size: 0.75em;
+}
+
+.scale-option {
+  width: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.scale-option--big { font-size: 15px; }
+.scale-option--extra { font-size: 17px; }
+
+.scale-option[aria-pressed="true"] {
+  background: rgba(10, 100, 214, 0.12);
+  font-weight: 600;
+}
+
+/* Text size: the whole page scales, like a larger text setting. */
+:root[data-scale="big"] body {
+  zoom: 1.15;
+}
+
+:root[data-scale="extra"] body {
+  zoom: 1.3;
 }
 
 /* ---------- desk ---------- */
@@ -628,7 +749,7 @@ form.button_to {
   justify-content: center;
   gap: 4px;
   min-height: 210px;
-  border: 2px dashed rgba(0, 0, 0, 0.18);
+  border: 2px dashed var(--new-card-border);
   border-radius: 3px;
   color: var(--desk-ink-soft);
   font-size: 14px;
@@ -638,7 +759,7 @@ form.button_to {
 
 .card--new:hover {
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--new-card-hover);
   color: var(--desk-ink);
 }
 
@@ -646,16 +767,6 @@ form.button_to {
   font-size: 44px;
   font-weight: 200;
   line-height: 1;
-}
-
-@media (prefers-color-scheme: dark) {
-  .card--new {
-    border-color: rgba(255, 255, 255, 0.22);
-  }
-
-  .card--new:hover {
-    background: rgba(255, 255, 255, 0.06);
-  }
 }
 
 .empty {
@@ -755,6 +866,24 @@ form.button_to {
   font: 15px/1.55 var(--font);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.note-autosave {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-height: 20px;
+  margin-top: 6px;
+}
+
+.note-autosave__status {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.note-autosave__status--failed {
+  color: var(--danger);
 }
 
 .form-errors {

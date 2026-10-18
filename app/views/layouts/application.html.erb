@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>">
+<html lang="<%= I18n.locale %>" data-theme="<%= theme_preference %>" data-scale="<%= scale_preference %>">
 <head>
   <title><%= ["g0No", content_for(:title)].compact_blank.join(" - ") %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -19,11 +19,14 @@
         <% end %>
       </nav>
       <%= render "partials/search" %>
-      <div class="menubar__right">
+    <% end %>
+    <div class="menubar__right">
+      <%= render "partials/preferences" %>
+      <% if user_signed_in? %>
         <span class="menubar__user"><%= current_user.display_name %></span>
         <%= button_to t("logout"), destroy_user_session_path, method: :delete, class: "menubar__button" %>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </header>
 
   <main class="desk">

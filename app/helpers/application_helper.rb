@@ -7,6 +7,15 @@ module ApplicationHelper
     "%5.2f" % [ amount ]
   end
 
+  # Cookie values set by the sun/moon switch and the text size menu.
+  def theme_preference
+    cookies[:theme].presence_in(PreferencesController::THEMES)
+  end
+
+  def scale_preference
+    cookies[:scale].presence_in(PreferencesController::SCALES) || "normal"
+  end
+
   # data-* attributes for a form that asks before submitting; the confirm
   # dialog (partials/_confirm_dialog) shows the title, message and button.
   def confirm_data(title:, body:, button:)

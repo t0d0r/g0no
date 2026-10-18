@@ -1,4 +1,8 @@
-<%= form_with model: note, id: "note_form", class: "note-form", data: { note_form: true } do |f| %>
+<%# Saves itself (application.js): after a pause in typing, when a field loses
+    focus, and when the page is left. The Save button is for browsers without JavaScript. %>
+<%= form_with model: note, id: "note_form", class: "note-form",
+              data: { note_form: true, saving: t("ui.autosave.saving"), saved: t("ui.autosave.saved"),
+                      failed: t("ui.autosave.failed"), needs_title: t("ui.autosave.needs_title") } do |f| %>
   <% if note.errors.any? %>
     <div class="form-errors" role="alert">
       <ul>
@@ -22,12 +26,10 @@
   <%= f.label :description, t(:description), class: "sr-only" %>
   <%= f.text_area :description, class: "note-description", rows: 4,
                   placeholder: t(:description).capitalize, autocomplete: :off, data: { autogrow: true } %>
-  <div class="note-actions" data-note-actions <%= "hidden" if note.persisted? && note.errors.none? %>>
-    <% if note.persisted? %>
-      <%= f.button t("ui.cancel"), type: "reset", class: "btn", data: { note_reset: true } %>
-    <% else %>
-      <%= link_to t("ui.cancel"), notes_path, class: "btn" %>
-    <% end %>
-    <%= f.submit t("ui.save"), class: "btn btn--primary" %>
+  <div class="note-autosave">
+    <span class="note-autosave__status" data-autosave-status role="status" aria-live="polite">
+      <%= t("ui.autosave.hint") if note.new_record? %>
+    </span>
+    <noscript><%= f.submit t("ui.save"), class: "btn btn--primary" %></noscript>
   </div>
 <% end %>

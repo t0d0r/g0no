@@ -35,10 +35,9 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   Hovering a card lifts it slightly.
 - **Note window** (show, new, edit): one sticky, max 760px wide. Title strip
   with a close box (back to the list), a caption ("edited ... ago" or "New
-  note") and a delete box. Title and description are borderless fields on
-  the paper; the description grows with its content. For an existing note
-  the Save/Cancel bar is hidden until the title or description changes;
-  Cancel restores the saved text. Expenses and files are sections below,
+  note"), the colour menu, the history box and a delete box. Title and
+  description are borderless fields on the paper; the description grows
+  with its content. Changes save themselves (features.md, Autosave). Expenses and files are sections below,
   each with a one-line form.
 - **Account pages** (sign in, sign up, password reset): a small yellow
   sticky centred on the desk.
@@ -64,6 +63,14 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   question, a sentence on what will happen, Cancel and a red action button.
 - **Drop overlay:** dashed blue border and "Drop files to attach them to
   this note" over the note window while files are dragged onto it.
+- **Menu bar tools:** sun/moon theme button and an "Aa" text size menu
+  (Normal / Big / Extra big), styled like the colour filter menu. In dark
+  theme the desk, menu bar and menus darken; notes keep their paper colours.
+  Dark colours are CSS variables, redefined under
+  `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and
+  `:root[data-theme="dark"]`.
+- **Autosave status:** small grey text under the description, red when a
+  save fails.
 - **Colour menu dice:** a small five-dot die after the swatches; it turns a
   little on hover.
 - **History:** night-sky page; versions stacked like Time Machine windows,

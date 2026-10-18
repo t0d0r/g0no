@@ -26,6 +26,11 @@ on its own (no chain of diffs to replay).
 - Files and expenses saved together with a new note are part of its
   "created" entry (so an import does not add one entry per file).
 - Changes that are not content (sharing, visited_on) are not recorded.
+- Edits are grouped: an "edited" save by the same author less than 10
+  minutes after the previous "edited" entry updates that entry (content and
+  time) instead of adding one, so autosave does not create a version per
+  pause. A pause of 10 minutes, another author, or any other event starts a
+  new entry. The state before the editing session is the previous entry.
 - Deleting a note deletes its history. There is no limit on stored versions;
   the page shows the latest 200.
 

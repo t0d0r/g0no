@@ -60,4 +60,29 @@ class NoteVersionTest < ActiveSupport::TestCase
     @note.update!(description: "x")
     assert_difference("NoteVersion.count", -@note.versions.count) { @note.destroy }
   end
+
+  test "automatic saves while typing are merged into one edited entry" do
+    Current.user = users(:admin)
+    @note.update!(description: "a")
+    assert_no_difference("@note.versions.count") do
+      @note.update!(description: "ab")
+      @note.update!(description: "abc")
+    end
+    assert_equal "abc", @note.versions.last.description
+
+    travel NoteVersion::EDIT_SESSION + 1.minute do
+      assert_difference("@note.versions.count") { @note.update!(description: "abcd") }
+    end
+  ensure
+    Current.reset
+  end
+
+  test "edits by another person start a new entry" do
+    Current.user = users(:admin)
+    @note.update!(description: "mine")
+    Current.user = users(:bob)
+    assert_difference("@note.versions.count") { @note.update!(description: "theirs") }
+  ensure
+    Current.reset
+  end
 end

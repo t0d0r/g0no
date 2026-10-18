@@ -9,33 +9,113 @@ function autoGrow(textarea) {
   grow();
 }
 
-// The save/cancel bar of an existing note stays hidden until the title or
-// description changes, like editing a sticky in place.
+// Notes save themselves, like Stickies: shortly after typing stops, when a
+// field loses focus, and when the page is left. A new note is created once
+// it has a title; after that the form updates it.
 function setUpNoteForm(form) {
-  const actions = form.querySelector("[data-note-actions]");
   const title = form.querySelector(".note-title");
-  const show = () => { if (actions) actions.hidden = false; };
+  const status = form.querySelector("[data-autosave-status]");
+  const fields = form.querySelectorAll(".note-title, .note-description, [data-color-choice]");
+  let saved = new FormData(form);
+  let timer = null;
+  let saving = false;
+  let again = false;
 
-  form.querySelectorAll(".note-title, .note-description").forEach((field) => {
-    field.addEventListener("input", show);
+  const say = (text, failed = false) => {
+    if (!status) return;
+    status.textContent = text;
+    status.classList.toggle("note-autosave__status--failed", failed);
+  };
+  const dirty = () => {
+    const now = new FormData(form);
+    return ["note[title]", "note[description]", "note[color]"].some((key) => now.get(key) !== saved.get(key));
+  };
+  const isNew = () => !form.querySelector("input[name=_method]");
+
+  // The form's own token is bound to its original action (Rails per-form
+  // tokens), which changes once a new note is created; the page-wide token
+  // from the csrf-token meta tag is valid for any action.
+  const formData = () => {
+    const body = new FormData(form);
+    const token = document.querySelector("meta[name=csrf-token]");
+    if (token) body.set("authenticity_token", token.content);
+    return body;
+  };
+
+  // A created note continues as an update of that note.
+  const becomeExisting = (url) => {
+    form.action = url;
+    const method = document.createElement("input");
+    Object.assign(method, { type: "hidden", name: "_method", value: "patch" });
+    form.prepend(method);
+    history.replaceState(null, "", url);
+  };
+
+  const save = async () => {
+    clearTimeout(timer);
+    if (!dirty()) return;
+    if (!title.value.trim()) {
+      say(form.dataset.needsTitle, true);
+      return;
+    }
+    if (saving) {
+      again = true;
+      return;
+    }
+    saving = true;
+    const body = formData();
+    say(form.dataset.saving);
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body,
+        headers: { Accept: "application/json" },
+        credentials: "same-origin"
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || response.statusText);
+      saved = body;
+      if (isNew()) becomeExisting(data.url);
+      say(`${form.dataset.saved} ${data.saved_at}`);
+    } catch (error) {
+      say(`${form.dataset.failed} ${error.message}`, true);
+    } finally {
+      saving = false;
+      if (again) {
+        again = false;
+        save();
+      }
+    }
+  };
+
+  fields.forEach((field) => {
+    field.addEventListener("input", () => {
+      clearTimeout(timer);
+      timer = setTimeout(save, 1200);
+    });
+    field.addEventListener("change", save);
+    field.addEventListener("blur", save);
   });
 
-  if (title) {
-    title.addEventListener("input", () => {
-      document.title = title.value ? `g0No - ${title.value}` : "g0No";
-    });
-  }
+  // Leaving the page (a link, the colour menu, closing the tab): send what is
+  // left with keepalive so the request outlives the page.
+  const flush = () => {
+    if (!dirty() || !title.value.trim()) return;
+    const body = formData();
+    fetch(form.action, { method: "POST", body, keepalive: true, headers: { Accept: "application/json" }, credentials: "same-origin" });
+    saved = body;
+  };
+  window.addEventListener("pagehide", flush);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(); });
 
-  const reset = form.querySelector("[data-note-reset]");
-  if (reset) {
-    form.addEventListener("reset", () => {
-      // Let the browser restore the values first, then resize and hide.
-      setTimeout(() => {
-        form.querySelectorAll("[data-autogrow]").forEach((el) => el.dispatchEvent(new Event("input")));
-        if (actions) actions.hidden = true;
-      });
-    });
-  }
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    save();
+  });
+
+  title.addEventListener("input", () => {
+    document.title = title.value ? `g0No - ${title.value}` : "g0No";
+  });
 }
 
 // Attachment preview: one <dialog> per page, filled from the clicked
@@ -315,6 +395,23 @@ document.addEventListener("DOMContentLoaded", () => {
   setUpColorChoices();
   document.querySelectorAll("[data-capsule]").forEach(setUpCapsule);
   document.querySelectorAll("form[data-drop-upload]").forEach(setUpDropUpload);
+
+  // Theme and text size apply at once; the cookie keeps them for the next page.
+  document.querySelectorAll("form[data-preference]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      const button = event.submitter;
+      if (!button || !button.name) return;
+      event.preventDefault();
+      document.cookie = `${button.name}=${button.value}; path=/; max-age=31536000; samesite=lax`;
+      document.documentElement.dataset[button.name] = button.value;
+      if (button.name === "scale") {
+        form.querySelectorAll("button[name=scale]").forEach((option) => {
+          option.setAttribute("aria-pressed", option === button);
+        });
+        button.closest("details").open = false;
+      }
+    });
+  });
 
   // Picking a colour in the menu bar filter searches right away.
   document.querySelectorAll("[data-filter-choice]").forEach((input) => {

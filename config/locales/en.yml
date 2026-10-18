@@ -172,6 +172,20 @@ en:
     flash:
       notice: "Notice"
       alert: "Attention"
+    autosave:
+      hint: "Notes save themselves once they have a title."
+      saving: "Saving..."
+      saved: "Saved at"
+      failed: "Not saved:"
+      needs_title: "Add a title to save this note."
+    prefs:
+      dark: "Dark theme"
+      light: "Light theme"
+      text_size: "Text size"
+      scales:
+        normal: "Normal"
+        big: "Big"
+        extra: "Extra big"
     send_reset_instructions: "Send me reset instructions"
 
   flash:

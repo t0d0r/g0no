@@ -22,10 +22,14 @@ class NotesController < ApplicationController
 
   def create
     @note = Note.new(note_params.merge(author: current_user.display_name))
-    if @note.save
-      redirect_to notes_path, notice: t("flash.note_created")
-    else
-      render :new, status: :unprocessable_content
+    respond_to do |format|
+      if @note.save
+        format.html { redirect_to notes_path, notice: t("flash.note_created") }
+        format.json { render json: autosave_json, status: :created }
+      else
+        format.html { render :new, status: :unprocessable_content }
+        format.json { render json: { error: @note.errors.full_messages.to_sentence }, status: :unprocessable_content }
+      end
     end
   end
 
@@ -44,11 +48,17 @@ class NotesController < ApplicationController
       @note.note_attachments.build(file: file, comment: params.dig(:note, :attachment_comment))
     end
 
-    if @note.save
-      redirect_to note_url(@note)
-    else
-      flash.now[:alert] = errors_for(@note).to_sentence
-      render :show, status: :unprocessable_content
+    respond_to do |format|
+      if @note.save
+        format.html { redirect_to note_url(@note) }
+        format.json { render json: autosave_json }
+      else
+        format.html do
+          flash.now[:alert] = errors_for(@note).to_sentence
+          render :show, status: :unprocessable_content
+        end
+        format.json { render json: { error: errors_for(@note).to_sentence }, status: :unprocessable_content }
+      end
     end
   end
 
@@ -122,6 +132,11 @@ class NotesController < ApplicationController
 
   def finance_params
     params.expect(finance: %i[date amount comment])
+  end
+
+  # Answer to the note form's automatic saves (application.js).
+  def autosave_json
+    { url: note_path(@note), saved_at: l(@note.updated_at, format: "%H:%M") }
   end
 
   def errors_for(note)

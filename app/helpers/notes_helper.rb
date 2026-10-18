@@ -30,6 +30,9 @@ module NotesHelper
     dice: '<rect x="2" y="2" width="12" height="12" rx="3" /><g fill="currentColor" stroke="none">' \
           '<circle cx="5.5" cy="5.5" r="1.2" /><circle cx="10.5" cy="5.5" r="1.2" /><circle cx="8" cy="8" r="1.2" />' \
           '<circle cx="5.5" cy="10.5" r="1.2" /><circle cx="10.5" cy="10.5" r="1.2" /></g>',
+    sun: '<circle cx="8" cy="8" r="2.8" /><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6' \
+         'M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" />',
+    moon: '<path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8z" />',
     up: '<path d="m4 10 4-4 4 4" />',
     down: '<path d="m4 6 4 4 4-4" />'
   }.freeze

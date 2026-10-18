@@ -28,6 +28,8 @@ Rails.application.routes.draw do
     resources :shares, only: :destroy
   end
 
+  patch "preferences" => "preferences#update", as: :preferences
+
   # Health check for load balancers and container orchestrators.
   get "up" => "rails/health#show", as: :rails_health_check
 
