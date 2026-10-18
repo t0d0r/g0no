@@ -189,6 +189,10 @@ en:
     copy_note:
       label: "Copy the note's text"
       copied: "Copied to the clipboard"
+    lock:
+      hint: "Double-click the note to edit it."
+      lock: "Lock the note (stop editing)"
+      unlock: "Unlock the note to edit it"
     send_reset_instructions: "Send me reset instructions"
 
   flash:

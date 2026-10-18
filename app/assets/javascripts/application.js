@@ -162,9 +162,91 @@ function setUpNoteForm(form) {
     save();
   });
 
+  setUpNoteLock(form, { save, say });
+
   title.addEventListener("input", () => {
     document.title = title.value ? `g0No - ${title.value}` : "g0No";
   });
+}
+
+// A saved note opens locked: its text can be selected and copied, but a
+// single click does not edit it. A double-click (or the padlock box, or
+// Enter on a locked field) unlocks it; leaving the fields or pressing Escape
+// saves and locks it again.
+function setUpNoteLock(form, { save, say }) {
+  if (form.dataset.lockable !== "true") return;
+  const fields = [...form.querySelectorAll(".note-title, .note-description")];
+  const windowEl = form.closest(".note-window");
+  const box = windowEl?.querySelector("[data-lock-box]");
+  let locked = false;
+
+  const show = () => {
+    windowEl?.classList.toggle("is-editing", !locked);
+    form.classList.toggle("is-locked", locked);
+    if (box) {
+      box.hidden = false;
+      box.classList.toggle("is-locked", locked);
+      box.title = locked ? box.dataset.unlockLabel : box.dataset.lockLabel;
+      box.setAttribute("aria-label", box.title);
+      box.setAttribute("aria-pressed", String(!locked));
+    }
+  };
+
+  const lock = () => {
+    locked = true;
+    fields.forEach((field) => { field.readOnly = true; });
+    show();
+    say(form.dataset.lockedHint);
+  };
+
+  // The padlock opens the text, with the caret at its end.
+  const unlock = (field = fields[fields.length - 1], caretAtSelectionEnd = false) => {
+    locked = false;
+    fields.forEach((f) => { f.readOnly = false; });
+    show();
+    say("");
+    field.focus();
+    // A double-click selects a word; typing would replace it, so put the
+    // caret at its end instead.
+    if (caretAtSelectionEnd) {
+      field.setSelectionRange(field.selectionEnd, field.selectionEnd);
+    } else if (field === fields[fields.length - 1]) {
+      field.setSelectionRange(field.value.length, field.value.length);
+    }
+  };
+
+  fields.forEach((field) => {
+    field.addEventListener("dblclick", () => { if (locked) unlock(field, true); });
+    field.addEventListener("keydown", (event) => {
+      if (locked && event.key === "Enter") {
+        event.preventDefault();
+        unlock(field);
+      } else if (!locked && event.key === "Escape") {
+        field.blur();
+      }
+    });
+  });
+
+  // Lock again once focus leaves both fields (after the blur save).
+  form.addEventListener("focusout", (event) => {
+    if (locked || fields.includes(event.relatedTarget)) return;
+    save();
+    lock();
+  });
+
+  // Keep focus in the field when the box is pressed, so the box (not the
+  // focusout above) decides; Safari does not focus buttons on click.
+  box?.addEventListener("mousedown", (event) => event.preventDefault());
+  box?.addEventListener("click", () => {
+    if (locked) {
+      unlock();
+    } else {
+      save();
+      lock();
+    }
+  });
+
+  lock();
 }
 
 // Attachment preview: one <dialog> per page, filled from the clicked

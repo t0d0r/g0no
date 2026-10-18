@@ -648,6 +648,30 @@ form.button_to {
   vertical-align: 0;
 }
 
+/* Lock box and locked note text (application.js, setUpNoteLock). */
+.lock-box__unlocked {
+  display: none;
+}
+
+.lock-box:not(.is-locked) .lock-box__locked {
+  display: none;
+}
+
+.lock-box:not(.is-locked) .lock-box__unlocked {
+  display: inline-flex;
+}
+
+.note-form.is-locked .note-title,
+.note-form.is-locked .note-description {
+  cursor: default;
+}
+
+/* While editing, the fields show their dashed rule even without focus. */
+.note-window.is-editing .note-title,
+.note-window.is-editing .note-description {
+  border-bottom-color: var(--rule);
+}
+
 /* Copy box: the copy icon turns into a check mark for a moment. */
 .copy-note__done,
 .copy-note.is-copied > .icon {

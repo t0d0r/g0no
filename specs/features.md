@@ -44,6 +44,25 @@ exists only inside `<noscript>`).
 - Several saves by the same person within 10 minutes of each other form one
   "edited" history entry (history.md).
 
+## Locked notes
+
+Operator, 2026-10-19: "make note to be locked from editing if just click,
+unlock it if dbl click".
+
+- A saved note opens locked: title and description are read-only (text can
+  still be selected and copied); the status line says "Double-click the note
+  to edit it".
+- Double-click on the title or description unlocks both and puts the caret
+  where the double-click was (at the end of the selected word, so typing
+  does not replace it).
+- Keyboard and touch: Enter on a locked field unlocks it; the padlock box in
+  the title strip toggles the lock (unlocking puts the caret at the end of
+  the description).
+- When focus leaves both fields, or on Escape, or with the padlock, the note
+  saves (autosave) and locks again.
+- New notes are not locked. Expenses, files, colour and sharing are not
+  affected by the lock. Without JavaScript nothing is locked.
+
 ## Theme and text size
 
 A sun/moon button in the menu bar switches between light and dark desk (the

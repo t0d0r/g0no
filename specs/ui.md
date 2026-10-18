@@ -73,6 +73,9 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   (the height includes the border; it is measured again on resize, when
   fonts load and when the text size changes). Without JavaScript it keeps a
   normal scroll bar so no text is hidden.
+- **Lock:** padlock box in the title strip (closed when locked, open while
+  editing). While editing, the title and description show their dashed
+  rules; locked fields have a default cursor.
 - **Copy box:** a small copy icon in the note's title strip (and on shared
   notes) puts the note's text on the clipboard, or the title when there is
   no text; it shows a green check mark for 1.5 seconds. Falls back to

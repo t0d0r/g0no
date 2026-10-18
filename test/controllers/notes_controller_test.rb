@@ -441,6 +441,18 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_select "button.copy-note[data-copy-text=?]", ".shared-note .note-text"
   end
 
+
+  test "saved notes can be locked; new notes cannot" do
+    sign_in users(:admin)
+    get note_url(@note)
+    assert_select "form[data-note-form][data-lockable=true][data-locked-hint]"
+    assert_select "button.lock-box[hidden][data-lock-box]"
+    assert_select "#note_title[readonly]", 0
+    get new_note_url
+    assert_select "form[data-note-form][data-lockable=false]"
+    assert_select "button.lock-box", 0
+  end
+
   private
 
   def attach_file(note)

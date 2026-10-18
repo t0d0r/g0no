@@ -23,6 +23,7 @@
 - [x] light / dark theme switch and three text sizes (specs/features.md)
 - [x] description grows without a scroll bar; copy box for the note's text (specs/ui.md)
 - [x] yellow sticky site icon (specs/ui.md)
+- [x] notes locked on single click, unlocked by double-click (specs/features.md)
 - [ ] run `make import` against the real CouchDB and check the notes (specs/couchdb-import.md)
 - [ ] move the old users database to storage/ and migrate it, or recreate users (specs/auth.md)
 - [ ] decide whether registration stays open; restrict it if the app is public (specs/auth.md)

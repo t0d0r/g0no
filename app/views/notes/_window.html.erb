@@ -5,6 +5,14 @@
       <%= note.persisted? ? t("ui.edited", time: time_ago_in_words(note.updated_at)) : t("ui.new_note") %>
     </span>
     <%= render "color_menu", note: note %>
+    <% if note.persisted? %>
+      <%# Shown and driven by application.js; without JavaScript notes are never locked. %>
+      <button type="button" class="sticky__box sticky__box--icon lock-box" hidden data-lock-box
+              data-lock-label="<%= t("ui.lock.lock") %>" data-unlock-label="<%= t("ui.lock.unlock") %>">
+        <span class="lock-box__locked"><%= icon :lock, size: 10 %></span>
+        <span class="lock-box__unlocked"><%= icon :unlock, size: 10 %></span>
+      </button>
+    <% end %>
     <%= copy_note_box text_selector: "#note_description", title_selector: "#note_title" %>
     <% if note.persisted? %>
       <%= link_to history_note_path(note), class: "sticky__box sticky__box--icon",

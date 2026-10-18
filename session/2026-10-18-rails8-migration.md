@@ -87,6 +87,9 @@ upload. All done in one turn:
   fixed, plus a copy-to-clipboard box in the title strip and a new yellow
   sticky favicon / touch icon.
 
+- Notes open locked (read-only); double-click, Enter or the padlock box
+  unlocks; leaving the fields or Escape saves and locks again.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -149,7 +152,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 91 tests
+- `make check` - rubocop, brakeman, 92 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)

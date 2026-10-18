@@ -1,7 +1,8 @@
 <%# Saves itself (application.js): after a pause in typing, when a field loses
     focus, and when the page is left. The Save button is for browsers without JavaScript. %>
 <%= form_with model: note, id: "note_form", class: "note-form",
-              data: { note_form: true, saving: t("ui.autosave.saving"), saved: t("ui.autosave.saved"),
+              data: { note_form: true, lockable: note.persisted?, locked_hint: t("ui.lock.hint"),
+                      saving: t("ui.autosave.saving"), saved: t("ui.autosave.saved"),
                       failed: t("ui.autosave.failed"), needs_title: t("ui.autosave.needs_title") } do |f| %>
   <% if note.errors.any? %>
     <div class="form-errors" role="alert">

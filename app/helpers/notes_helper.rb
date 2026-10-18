@@ -35,6 +35,7 @@ module NotesHelper
     clip: '<path d="M10.5 4.5 5.4 9.6a1.8 1.8 0 0 0 2.5 2.5l5.6-5.6a3 3 0 0 0-4.2-4.2L3.6 8a4.2 4.2 0 0 0 6 6l4.4-4.4" />',
     link: '<path d="M7 9.5a2.8 2.8 0 0 0 4 0l2.4-2.4a2.8 2.8 0 0 0-4-4L8.2 4.3" /><path d="M9 6.5a2.8 2.8 0 0 0-4 0L2.6 8.9a2.8 2.8 0 0 0 4 4l1.2-1.2" />',
     lock: '<rect x="3.5" y="7" width="9" height="6.5" rx="1.2" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />',
+    unlock: '<rect x="3.5" y="7" width="9" height="6.5" rx="1.2" /><path d="M5.5 7V5a2.5 2.5 0 0 1 4.9-.7" />',
     search: '<circle cx="7" cy="7" r="4.2" /><path d="m10.2 10.2 3.3 3.3" />',
     clock: '<circle cx="8" cy="8" r="6" /><path d="M8 4.6V8l2.4 1.6" />',
     dice: '<rect x="2" y="2" width="12" height="12" rx="3" /><g fill="currentColor" stroke="none">' \
