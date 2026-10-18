@@ -224,6 +224,7 @@ en:
     user_deleted: "User %{name} deleted."
     user_self_delete: "You cannot delete your own account here."
     version_restored: "Restored the version from %{time}."
+    registration_closed: "Sign-up is closed. Ask an administrator for an account."
 
   activerecord:
     attributes:

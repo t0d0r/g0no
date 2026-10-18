@@ -4,7 +4,7 @@
 
 IMAGE ?= g0no:latest
 
-.PHONY: help deps build test lint audit check run clean import docker-build docker-up docker-down docker-logs docker-import
+.PHONY: help deps build test lint audit check run clean import docker-build docker-up docker-down docker-logs docker-import deploy
 
 help: ## list the targets
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  %-14s %s\n", $$1, $$2}'
@@ -56,3 +56,7 @@ docker-logs: ## follow the docker compose app logs
 docker-import: ## import from the legacy CouchDB inside the container (COUCHDB_URL in .env)
 	@bin/setup-env
 	docker compose run --rm web sh -c "bin/rails db:prepare && bin/rails couchdb:import"
+
+deploy: ## build and restart the app on the server $(DEPLOY_HOST) (setup: specs/deploy.md)
+	@test -n "$(DEPLOY_HOST)" || { echo "DEPLOY_HOST is not set, e.g. DEPLOY_HOST=myserver make deploy"; exit 1; }
+	bin/deploy

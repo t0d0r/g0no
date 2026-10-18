@@ -53,6 +53,12 @@ migration has the same version as in 2011 and is skipped; the next one adds
 
 ## Security Note
 
-Registration is open: anyone who can reach the app can create an account and
-read all notes. Password reset emails need SMTP settings, which are not
+Sign-up (Devise registrations) is controlled by `REGISTRATION_OPEN`: open
+by default in development and test, closed by default in production
+(operator, 2026-10-19, before the public deployment). When closed, the
+sign-up link is hidden and `GET /users/sign_up` and `POST /users` redirect
+to sign-in with "Sign-up is closed. Ask an administrator for an account.";
+administrators create users at `/admin`. Signed-in users can still edit
+their own account. Every signed-in user can read all notes, so keep sign-up
+closed on a public host. Password reset emails need SMTP settings, which are not
 configured yet (see todo).

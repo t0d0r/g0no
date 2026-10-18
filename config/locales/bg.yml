@@ -231,6 +231,7 @@ bg:
     user_deleted: "Потребител %{name} е изтрит."
     user_self_delete: "Не можете да изтриете собствения си акаунт оттук."
     version_restored: "Възстановена е версията от %{time}."
+    registration_closed: "Регистрацията е затворена. Помолете администратор за акаунт."
 
   date:
     formats:

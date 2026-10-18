@@ -1,0 +1,27 @@
+# Rootless Podman quadlet for the g0no system user (see specs/deploy.md).
+# Installed as ~g0no/.config/containers/systemd/g0no.container; systemd
+# generates the user service g0no.service from it.
+[Unit]
+Description=g0no notes app
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=localhost/g0no:latest
+ContainerName=g0no
+EnvironmentFile=%h/g0no.env
+Volume=%h/storage:/rails/storage:Z
+# Only Apache on the same host talks to the app.
+PublishPort=127.0.0.1:3182:80
+# The image's user rails (1000) is the g0no user on the host, so the
+# databases and uploads in ~g0no/storage belong to g0no.
+UserNS=keep-id:uid=1000,gid=1000
+NoNewPrivileges=true
+DropCapability=all
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target

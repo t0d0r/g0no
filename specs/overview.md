@@ -60,6 +60,6 @@ couchrest_model and users in SQLite. Decisions made while moving to Rails 8.1:
 
 ## Security Note
 
-All signed-in users can read, change and delete every note, and registration
-is open. This matches the 2011 behaviour; restrict it before exposing the app
-publicly (see todo).
+All signed-in users can read, change and delete every note. Sign-up is closed
+in production unless `REGISTRATION_OPEN=true` (auth.md); keep it closed on a
+public host.

@@ -1,0 +1,32 @@
+#!/bin/bash -e
+
+# Ships the committed HEAD to $DEPLOY_HOST, builds the image there as the
+# g0no user and restarts the app. One-time server setup: specs/deploy.md.
+
+: "${DEPLOY_HOST:?set DEPLOY_HOST to the ssh host of the server, e.g. DEPLOY_HOST=myserver make deploy}"
+
+if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+  echo "Uncommitted changes are not deployed; only HEAD is shipped." >&2
+fi
+rev=$(git rev-parse --short HEAD)
+echo "Deploying $rev to $DEPLOY_HOST"
+
+git archive --format=tar HEAD |
+  ssh "$DEPLOY_HOST" 'sudo runuser -l g0no -s /bin/bash -c "rm -rf ~/src && mkdir ~/src && tar -x -C ~/src"'
+
+ssh "$DEPLOY_HOST" "sudo runuser -l g0no -s /bin/bash -c 'bash -s $rev'" <<'REMOTE'
+set -e
+rev=$1
+cd ~
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+podman build --quiet -t localhost/g0no:$rev -t localhost/g0no:latest src
+systemctl --user daemon-reload
+systemctl --user restart g0no
+for _ in $(seq 60); do
+  curl -fsS -o /dev/null http://127.0.0.1:3182/up && break
+  sleep 2
+done
+curl -fsS -o /dev/null http://127.0.0.1:3182/up || { echo "app did not answer /up"; journalctl --user -u g0no -n 40 --no-pager; exit 1; }
+podman image prune -f >/dev/null
+echo "g0no $rev is up"
+REMOTE

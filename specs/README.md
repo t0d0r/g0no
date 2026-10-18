@@ -13,6 +13,7 @@
 | [auth.md](auth.md) | Devise setup, sign-in by username or email, legacy password hashes |
 | [couchdb-import.md](couchdb-import.md) | one-off import of the 2011 CouchDB data |
 | [docker.md](docker.md) | Docker image, compose file and environment variables |
+| [deploy.md](deploy.md) | production on a server: rootless Podman under its own user, Apache, certbot |
 
 ## Security Note
 

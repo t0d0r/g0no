@@ -48,5 +48,10 @@ module G0no
     config.active_storage.draw_routes = false
     # Attachments are downloaded as-is; no image variants are generated.
     config.active_storage.variant_processor = :disabled
+
+    # Sign-up by anyone (Devise registrations). Closed in production unless
+    # REGISTRATION_OPEN=true; administrators create users at /admin.
+    config.x.registration_open =
+      ENV.fetch("REGISTRATION_OPEN") { Rails.env.production? ? "false" : "true" } == "true"
   end
 end

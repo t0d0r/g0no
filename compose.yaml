@@ -17,6 +17,7 @@ services:
       RAILS_ASSUME_SSL: ${RAILS_ASSUME_SSL:-false}
       APP_HOST: ${APP_HOST:-localhost}
       MAILER_SENDER: ${MAILER_SENDER:-no-reply@localhost}
+      REGISTRATION_OPEN: ${REGISTRATION_OPEN:-false}
       DEVISE_PEPPER: ${DEVISE_PEPPER:-}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
