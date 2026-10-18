@@ -52,7 +52,8 @@ Production starts with an empty database and only the admin user (operator,
    OCI format would drop the image's `HEALTHCHECK`) tags
    `localhost/g0no:<rev>` and `:latest`, `systemctl --user daemon-reload`
    and `restart g0no`,
-   wait up to two minutes for `/up` on `127.0.0.1:3182`, prune old images.
+   wait up to two minutes for `/up` on `127.0.0.1:3182`, keep the three
+   newest revision images and prune the rest.
 3. The container entrypoint migrates the database and runs the seed.
 
 The ssh user needs passwordless sudo to root; `sudo -u g0no` is not used
@@ -77,6 +78,14 @@ As root on the server, with `<host>` the public host name:
    reload; `certbot certonly --webroot -w <acme webroot> -d <host>`; then
    the full file, configtest, reload.
 
+## Operating
+
+- Status: `sudo runuser -l g0no -s /bin/bash -c 'XDG_RUNTIME_DIR=/run/user/$(id -u) podman ps'`
+- Logs: `sudo journalctl _UID=<g0no uid>`; the server mounts `/proc` with
+  `hidepid`, so other users do not see the app's processes.
+- Rollback: tag an older `localhost/g0no:<rev>` as `latest` and restart
+  the service as `g0no`.
+
 ## Acceptance
 
 - `https://<host>/up` returns 200; `http://` redirects to `https://`.
@@ -84,6 +93,17 @@ As root on the server, with `<host>` the public host name:
   `/users/sign_up` redirects to sign-in.
 - After a server reboot the app comes back without anyone logging in.
 - `ps` on the server shows the app's processes owned by `g0no`.
+
+## Verified
+
+2026-10-19, on the server: `/up` 200 over HTTPS, HTTP redirects to HTTPS,
+certificate valid, HSTS and secure session cookie set, sign-up URL
+redirects to sign-in and the link is hidden, admin sign-in reaches the
+board and `/admin`, container healthy, Puma, Thruster, conmon and pasta
+run as `g0no`, data files in `~g0no/storage` belong to `g0no`, a second
+`make deploy` replaced the running revision. Not yet verified: a server
+reboot, file uploads through Apache (mod_security is loaded on the
+server).
 
 ## Security Note
 

@@ -23,10 +23,16 @@ podman build --quiet --format docker -t localhost/g0no:$rev -t localhost/g0no:la
 systemctl --user daemon-reload
 systemctl --user restart g0no
 for _ in $(seq 60); do
-  curl -fsS -o /dev/null http://127.0.0.1:3182/up && break
+  curl -fs -o /dev/null http://127.0.0.1:3182/up && break
   sleep 2
 done
-curl -fsS -o /dev/null http://127.0.0.1:3182/up || { echo "app did not answer /up"; journalctl --user -u g0no -n 40 --no-pager; exit 1; }
+curl -fsS -o /dev/null http://127.0.0.1:3182/up || {
+  echo "app did not answer /up; logs: sudo journalctl _UID=$(id -u) -n 50"
+  exit 1
+}
+# Keep the three newest revisions for a rollback.
+podman images --format '{{.Tag}}' localhost/g0no | grep -vx latest | tail -n +4 |
+  xargs -r -I{} podman rmi localhost/g0no:{} >/dev/null
 podman image prune -f >/dev/null
 echo "g0no $rev is up"
 REMOTE
