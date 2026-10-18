@@ -1,21 +1,28 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
+# Creates the first user. Credentials come from the environment so they are
+# never committed:
 #
-# Examples:
+#   ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=... [ADMIN_USERNAME=admin] bin/rails db:seed
 #
-#   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
-#   Mayor.create(:name => 'Daley', :city => cities.first)
+# Without them the seed is skipped (db:prepare runs seeds on a fresh database,
+# including on the first start of the Docker container).
 
 def create_admin_user
-  count =  User.count
-  if count < 1
-    puts "create_admin_user: email: admin@bstconsult.com, password: 123456"
-    User.create!( :email => 'admin@bstconsult.com', 
-                 :password => '123456', :password_confirmation => '123456', 
-                 :username => 'admin' )
-  else 
+  count = User.count
+  if count.positive?
     puts "create_admin_user: You already have #{count} user(s) in database."
+    return
   end
+
+  email = ENV["ADMIN_EMAIL"].presence
+  password = ENV["ADMIN_PASSWORD"].presence
+  unless email && password
+    puts "create_admin_user: skipped, set ADMIN_EMAIL and ADMIN_PASSWORD to create the first user."
+    return
+  end
+
+  User.create!(email: email, password: password, password_confirmation: password,
+               username: ENV.fetch("ADMIN_USERNAME", "admin"))
+  puts "create_admin_user: created #{email}"
 end
 
 create_admin_user

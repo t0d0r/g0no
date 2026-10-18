@@ -1,15 +1,16 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   # Include default devise modules. Others available are:
-  # :token_authenticatable, :confirmable, :lockable and :timeoutable
+  # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me
-
+  # The sign-in form has one field, which may hold the username or the email.
   def self.find_for_database_authentication(conditions)
-    value = conditions[authentication_keys.first]
-    where(["username = :value OR email = :value", { :value => value }]).first
+    value = conditions[authentication_keys.first].to_s.strip.downcase
+    where("lower(username) = :value OR lower(email) = :value", value: value).first
   end
 
+  def display_name
+    username.presence || email
+  end
 end

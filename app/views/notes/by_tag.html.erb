@@ -3,5 +3,5 @@
 <% @notes.each do |note| %>
   <h2><%= link_to note.title, note_path(note) %></h2>
   <p><%= note.description %></p>
-  <small><em><%= t "tags" %>:</em> <%= note.tags.join(", ") %></small>
+  <small><em><%= t "tags" %>:</em> <%= note.tags.map(&:name).join(", ") %></small>
 <% end %>

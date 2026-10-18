@@ -1,0 +1,30 @@
+# Runs the production image locally on http://localhost:3000.
+#
+#   cp .env.example .env    # then set SECRET_KEY_BASE (bin/rails secret)
+#   make docker-up
+#
+# The SQLite databases and uploaded files are kept in the "storage" volume.
+services:
+  web:
+    build: .
+    image: g0no:latest
+    ports:
+      - "${PORT:-3000}:80"
+    environment:
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:?set SECRET_KEY_BASE in .env (bin/rails secret)}
+      # Plain HTTP on localhost. Set both to true behind a TLS-terminating proxy.
+      RAILS_FORCE_SSL: ${RAILS_FORCE_SSL:-false}
+      RAILS_ASSUME_SSL: ${RAILS_ASSUME_SSL:-false}
+      APP_HOST: ${APP_HOST:-localhost}
+      MAILER_SENDER: ${MAILER_SENDER:-no-reply@localhost}
+      DEVISE_PEPPER: ${DEVISE_PEPPER:-}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      COUCHDB_URL: ${COUCHDB_URL:-}
+    volumes:
+      - storage:/rails/storage
+    restart: unless-stopped
+
+volumes:
+  storage:

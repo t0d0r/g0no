@@ -1,0 +1,54 @@
+# Data model
+
+Schema source of truth: `db/schema.rb`. Migrations live in `db/migrate/`.
+
+## notes
+
+| column | type | notes |
+|--------|------|-------|
+| title | string, not null, unique | required |
+| description | text | |
+| visited_on | date | defaults to today |
+| active | boolean, default true | kept from 2011, not shown in the UI |
+| closed | boolean, default false | kept from 2011, not shown in the UI |
+| author | string | display name of the creator (username, else email) |
+| updated_from | string | display name of the last editor |
+| couchdb_id | string, unique | `_id` of the CouchDB document it was imported from |
+
+## tags and taggings
+
+`tags.name` is unique. `taggings` joins notes and tags (unique per pair).
+`Note#tag_list` reads and writes the tags as one space-separated string.
+
+## finance_entries
+
+Belong to a note. `date` (date), `amount` (decimal 12,2, required, numeric),
+`comment`, `author`. Listed newest first. `Note#finance_total` is the sum of
+saved entries; it is computed, not stored (CouchDB kept a running total that
+could drift).
+
+## note_attachments
+
+Belong to a note. `comment` (string) plus one Active Storage file (`file`,
+required). Deleting the record purges the file.
+
+## users
+
+Devise columns (see auth.md) plus `username`.
+
+## Mapping from the 2011 CouchDB document
+
+| CouchDB field | new location |
+|---------------|--------------|
+| `_id` | notes.couchdb_id |
+| title, description, active, closed, author, updated_from | same-named notes columns |
+| visited_on, created_at, updated_at | parsed into date / datetime columns |
+| tags[] | tags + taggings |
+| finance[] {date, amount, comment, author, created_at} | finance_entries |
+| finance_total | dropped (computed) |
+| _attachments{md5: ...} + attachments_nfo{md5: {filename, comment}} | note_attachments + Active Storage |
+
+## Security Note
+
+Uploaded files are stored unscanned in `storage/` and served only with
+`Content-Disposition: attachment`, so a browser never renders them inline.

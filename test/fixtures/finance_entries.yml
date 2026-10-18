@@ -1,0 +1,13 @@
+bread:
+  note: groceries
+  date: 2026-10-01
+  amount: 2.50
+  comment: bread
+  author: admin
+
+milk:
+  note: groceries
+  date: 2026-10-02
+  amount: 1.25
+  comment: milk
+  author: admin

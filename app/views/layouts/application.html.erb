@@ -1,35 +1,25 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
 <head>
   <title>g0No: <%= controller.action_name %></title>
-  <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag "jquery-1.5.1.min" %>
-  <%= javascript_include_tag "jquery-ui-1.8.13.min" %> 
-  <%= javascript_include_tag "jquery-autogrowtextarea" %>
-  <%# javascript_include_tag "jquery.hint" %>
-  <%= javascript_include_tag "label_over" %>
-  <%= javascript_include_tag "application" %> 
-  <%= javascript_include_tag "rails" %>
-  <%# javascript_include_tag "fileuploader" %>
-  <%= javascript_include_tag "datepicker" %>
-  <%= csrf_meta_tag %>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application" %>
+  <%= javascript_include_tag "application", defer: true %>
 </head>
 <body>
-  <div id="top-bar" width="100%">
+  <div id="top-bar">
     <div id="nbar"></div>
     <div id="nuser">
-      <%- if controller_name != 'sessions' %>
-        <%= link_to t("logout"), destroy_user_session_path %>
-      <% end -%>
+      <% if user_signed_in? %>
+        <%= button_to t("logout"), destroy_user_session_path, method: :delete %>
+      <% end %>
     </div>
   </div>
   <div id="flash">
-    <% [ :error, :warning, :notice ].each do |condition| %>
-    <%# javascript_tag "$('#error').effect('highlight',{},1000);" %>
-    <%= render :partial => "partials/flash", :locals => {:condition => condition, :flash => flash } if flash.has_key?(condition) %>
-    <%= javascript_tag  "$('#{condition.to_s}').hide();$('#{condition.to_s}').appear()" %>
+    <% flash.each do |type, message| %>
+      <%= render "partials/flash", type: type, message: message %>
     <% end %>
   </div>
   <div id="container">
@@ -43,10 +33,10 @@
       <%= show_add_remove_buttons?(controller) %>
     </div>
     <div style="clear: both;">
-    <%= yield  %>  
+    <%= yield %>
     </div>
-    <div style="display:block clear: both;height: 3em;">
+    <div style="display: block; clear: both; height: 3em;">
     </div>
   </div>
-  </body>
+</body>
 </html>

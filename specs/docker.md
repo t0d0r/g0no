@@ -1,0 +1,48 @@
+# Docker
+
+## Image (`Dockerfile`)
+
+Production image based on `ruby:4.0.7-slim`, built in two stages:
+
+- gems installed with `BUNDLE_DEPLOYMENT=1`, without the development group
+- assets precompiled at build time with a dummy secret
+- runs as the non-root user `rails` (uid 1000)
+- `bin/docker-entrypoint` runs `bin/rails db:prepare` (create, migrate, seed
+  on a fresh database) before starting the server
+- Thruster on port 80 in front of Puma (port 3000)
+- `HEALTHCHECK` calls `/up`
+- `/rails/storage` holds the SQLite databases and uploaded files; mount a
+  volume there
+
+## Local run (`compose.yaml`)
+
+One service, `web`, published on `${PORT:-3000}`, with a named volume
+`storage`. Configuration comes from `.env` (template: `.env.example`).
+Targets: `make docker-up`, `docker-down`, `docker-logs`, `docker-import`,
+`docker-build`.
+
+## Environment variables
+
+| variable | required | purpose |
+|----------|----------|---------|
+| SECRET_KEY_BASE | yes | signs sessions and cookies; generate with `bin/rails secret` |
+| RAILS_FORCE_SSL | no, default true | redirect to HTTPS, HSTS, secure cookies (compose sets false for localhost) |
+| RAILS_ASSUME_SSL | no, default true | trust that a proxy terminates TLS (compose sets false for localhost) |
+| APP_HOST | no | host for links in emails |
+| MAILER_SENDER | no | From address of Devise emails |
+| ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_USERNAME | no | first user on a fresh database |
+| DEVISE_PEPPER | no | only for 2011 password hashes (auth.md) |
+| COUCHDB_URL | no | only for the import |
+| RAILS_LOG_LEVEL | no, default info | log level |
+
+## Verified
+
+On 2026-10-18 the image built and ran: `/up` returned 200, the container
+reported healthy, sign-in, the note pages, assets and attachment download
+worked over plain HTTP with SSL turned off.
+
+## Security Note
+
+`.env` is ignored by git and by the Docker build context; keep it that way.
+Behind a public address, terminate TLS in a proxy and keep both SSL
+variables at their default `true`.

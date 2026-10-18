@@ -1,0 +1,9 @@
+groceries:
+  title: Groceries
+  description: Weekly shopping
+  author: admin
+
+trip:
+  title: Trip
+  description: Summer holiday
+  author: admin

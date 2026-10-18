@@ -1,104 +1,91 @@
-require 'open-uri'
-
 class NotesController < ApplicationController
+  before_action :set_note, only: %i[show edit update destroy download_file delete_file]
 
   def index
-    flash[:notice] = "This is notice."
-    flash[:warning] = "This is warning."
-    flash[:info] = "This is info."
-    @notes = Note.all
+    @notes = Note.includes(:finance_entries).order(:created_at)
   end
-  
+
   def show
-    if params[:filename]
-      @note = Note.find(params[:id])
-      send_data @note.fetch_attachment(params[:filename]), :filename => @note.real_filename(params[:filename])
-    else
-      @note = Note.find(params[:id])
-    end
   end
-  
+
   def new
     @note = Note.new
   end
-  
+
   def create
-    params[:note][:author] = current_user.username || current_user.email
-    if Note.create params[:note]
-      flash[:success] = "Success !"
+    @note = Note.new(note_params.merge(author: current_user.display_name))
+    if @note.save
+      redirect_to notes_path, notice: "Success !"
     else
-      flash[:error] = "Fail !"
+      render :new, status: :unprocessable_content
     end
-    redirect_to notes_path
   end
-  
+
   def edit
-    MarkItUp.skin = "simple"
-    @note = Note.find(params[:id])
   end
-  
+
+  # The show page has three forms that all submit here: title and description,
+  # a finance entry (params[:finance]), and file uploads (note[attachments][]).
   def update
-    params[:note][:updated_from] = current_user.username || current_user.email
-    @note = Note.find(params[:id])
-    tags = params[:note][:tags]
-    params[:note][:tags] = tags.split(/\s+/) if params[:note][:tags]
-    if params[:note][:attachments]
-      params[:note][:attachments].each { |attachment|
-        @note.attach_comments_to_filename(attachment.original_filename, params[:note][:attachment_comment])
-      }
-    end
+    @note.assign_attributes(note_params.merge(updated_from: current_user.display_name))
     if params[:finance]
-      params[:finance][:author] = current_user.username || current_user.email
-      @note.add_finance = params[:finance]
+      @note.finance_entries.build(finance_params.merge(author: current_user.display_name))
     end
-    @note.update_attributes(params[:note])
-    
-    respond_to do |wants|
-      wants.html { redirect_to note_url(@note) }
+    Array(params.dig(:note, :attachments)).compact_blank.each do |file|
+      @note.note_attachments.build(file: file, comment: params.dig(:note, :attachment_comment))
+    end
+
+    if @note.save
+      redirect_to note_url(@note)
+    else
+      flash.now[:alert] = errors_for(@note).to_sentence
+      render :show, status: :unprocessable_content
     end
   end
 
   def by_tag
-    @tag = params[:id]                         if params[:id]
-    @notes = Note.by_tags :key => params[:id]  if params[:id]
+    @tag = params[:id]
+    @notes = Note.tagged_with(@tag).order(:title)
+  end
+
+  # Attachments are streamed through this action, not Active Storage's public
+  # routes, so downloading a file requires a signed-in user.
+  def download_file
+    attachment = @note.note_attachments.find(params[:attachment_id])
+    send_data attachment.file.download,
+              filename: attachment.filename.to_s,
+              type: attachment.content_type,
+              disposition: "attachment"
   end
 
   def delete_file
-    filename = params[:filename]
-    begin
-      @note = Note.find(params[:id])
-      flash[:notice] = "file #{@note.real_filename(filename)} was deleted!"
-      @note.delete_attachment(filename)
-      @note.save
-    rescue 
-      flash[:notice] = "file #{@note.real_filename(filename)} is still here!"
-    end
-
-    respond_to do |wants|
-      wants.html { redirect_to note_url(@note) }
-    end
+    attachment = @note.note_attachments.find(params[:attachment_id])
+    attachment.destroy
+    redirect_to note_url(@note), notice: "file #{attachment.filename} was deleted!"
   end
-  
+
   def destroy
-    @note = Note.find(params[:id])
-    if @note.destroy
-      flash[:notice] = "Документ със заглавие '#{@note.title}' беше изтрит успешно"
-    end
-    redirect_to :action => "index"
+    @note.destroy
+    redirect_to notes_path, notice: "Документ със заглавие '#{@note.title}' беше изтрит успешно"
   end
 
   private
 
-  def attach_comments_to_filenames(note, filename)
-    comment = params[:note][:attachment_comment]
-    key = note.attachment_hash(filename)
-    if note.attachments_nfo.has_key?(key)
-      note.attachments_nfo[key].merge( { :comment => comment } )
-    else
-      note.attachments_nfo[key] =  { :comment => comment } 
-    end
-    note
+  def set_note
+    @note = Note.find(params[:id])
   end
 
+  def note_params
+    params.fetch(:note, {}).permit(:title, :description, :tag_list, :visited_on)
+  end
 
+  def finance_params
+    params.expect(finance: %i[date amount comment])
+  end
+
+  def errors_for(note)
+    note.errors.full_messages +
+      note.finance_entries.flat_map { |entry| entry.errors.full_messages } +
+      note.note_attachments.flat_map { |attachment| attachment.errors.full_messages }
+  end
 end

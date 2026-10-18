@@ -1,8 +1,36 @@
-.hg/*
-.bundle
-tmp/
-db/*.sqlite3
-log/
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+/config/master.key
+/config/credentials/*.key
+
+# Bundler
+/.bundle
+/vendor/bundle
+
+# Logs, temp files, pids
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
+# SQLite databases and uploaded files
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
+
+# Compiled assets
+/public/assets
+
 *.swp
 *.swo
 *~
+.DS_Store

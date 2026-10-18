@@ -1,31 +1,30 @@
 <div class="form">
-<%= render :partial => "form" %>
+<%= render "form" %>
 </div>
 
-<% unless @note.finance.empty? %>
+<% finance_entries = @note.finance_entries.select(&:persisted?) %>
+<% unless finance_entries.empty? %>
   <table width="100%" cellspacing="0" cellpadding="0" class="table-finance">
-    <%= render :partial => 'finance', :collection => @note.finance.sort_by { |finance| finance['created_at'] }.reverse  %>
+    <%= render partial: "finance", collection: finance_entries %>
   </table>
 <div class="empty_line"></div>
 <% end %>
 <div id="finance">
-  <%= form_for @note do |f| %>
-    <%= couchdb_rev_field f, @note %>
-    <div id="add_finance" >
+  <%= form_with model: @note do |f| %>
+    <div id="add_finance">
         <div class="label finance_date">
-          <%= label :finance, :date, t(:Date),  { :class => :finance_date }%>
-          <%= unobtrusive_date_text_picker :finance, :date, { :value => Time.now, :divider => '.', :format => 'd-m-y', :no_transparency => true }, { :size => 10, :value => f_date(Time.now)  }  %>
+          <%= label :finance, :date, t(:Date), class: :finance_date %>
+          <%= date_field :finance, :date, value: Date.current %>
         </div>
         <div class="label finance_amount">
-          <%= label :finance, :amount, t(:amount),  { :class => :finance_amount }%>
-          <%= text_field :finance, :amount, { :size => 5, :autocomplete => :off  } %>
+          <%= label :finance, :amount, t(:amount), class: :finance_amount %>
+          <%= text_field :finance, :amount, size: 5, autocomplete: :off, inputmode: :decimal %>
         </div>
         <div class="label finance_comment">
-          <%= label :finance, :comment,  t(:comment),  { :class => :finance_comment }%>
-          <%= text_field :finance, :comment, { :autocomplete => :off } %>
+          <%= label :finance, :comment, t(:comment), class: :finance_comment %>
+          <%= text_field :finance, :comment, autocomplete: :off %>
         </div>
-        <%# collection_select :finance, :type, { 1 => "Приход", 2 => "Разход"}, :first, :last %>
-        <%= f.submit t("Add"), { :id => 'submit_finance'} %>
+        <%= f.submit t("Add"), id: "submit_finance" %>
     </div>
   <% end %>
 </div>
@@ -33,27 +32,29 @@
 
 <div class="add_bar" style="clear: both">
   <ul>
-    <li><%= link_to "+ Добави приход/разход", {}, :id => "finance_switch" %></li>
-    <li><%= link_to "+ Добави файл", {}, :id => "upload_file_switch" %></li>
+    <li><%= link_to "+ Добави приход/разход", "#", id: "finance_switch" %></li>
+    <li><%= link_to "+ Добави файл", "#", id: "upload_file_switch" %></li>
   </ul>
 </div>
 
-<% unless @note.attachments.empty? %>
+<% attachments = @note.note_attachments.select(&:persisted?) %>
+<% unless attachments.empty? %>
   <div style="width: 100%;">
     <table width="100%" cellspacing="0" cellpadding="0" class="table-files">
-      <% @note.attachments.each_with_index do | (attachment_name, attachment_attributes), idx| %>
+      <% attachments.each_with_index do |attachment, idx| %>
         <tr class="<%= odd_or_even(idx) %>">
           <td width="20%">
-            <%= link_to_filename @note, attachment_name %>
+            <%= link_to_attachment @note, attachment %>
           </td>
           <td width="10%" align="right">
-            <%= number_to_human_size(attachment_attributes['length']) %>
+            <%= number_to_human_size(attachment.byte_size) %>
           </td>
           <td align="left" width="65%">
-            <%= @note.attachments_nfo[attachment_name]['comment'] %>
+            <%= attachment.comment %>
           </td>
           <td align="right" width="5%">
-            <%= link_to t("delete"), delete_file_note_path(:id => @note, :filename => attachment_name), :method => :delete, :confirm => t("Are You sure?") %> 
+            <%= button_to t("delete"), delete_file_note_path(@note, attachment_id: attachment), method: :delete,
+                          form: { data: { confirm: t("Are You sure?") } } %>
           </td>
         </tr>
       <% end %>
@@ -61,15 +62,15 @@
   </div>
   <div class="empty_line"></div>
 <% end %>
-<%= form_for @note, :html => {:multipart => true} do |f| %>
-  <div id="upload_file_div" >
+<%= form_with model: @note, multipart: true do |f| %>
+  <div id="upload_file_div">
     <div class="upload-filename">
-      <%= file_field_tag("note[attachments][]") %>  
+      <%= file_field_tag "note[attachments][]", multiple: true, id: "note_attachments_" %>
     </div>
     <div class="label attachment">
-      <%= label :note, :attachment_comment,  t(:comment),  { :class => :note_attachment_comment }%>
-      <%= text_field_tag("note[attachment_comment]", {}, { :autocomplete => :off }) %>
+      <%= label :note, :attachment_comment, t(:comment), class: :note_attachment_comment %>
+      <%= text_field_tag "note[attachment_comment]", nil, autocomplete: :off %>
     </div>
-    <%= f.submit t("Add"), { :id => 'submit_attachment', :class => :button } %>
+    <%= f.submit t("Add"), id: "submit_attachment", class: :button %>
   </div>
 <% end %>

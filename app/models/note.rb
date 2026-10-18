@@ -1,83 +1,28 @@
-require 'md5'
-class Note < CouchRest::Model::Base
+class Note < ApplicationRecord
+  has_many :taggings, dependent: :destroy
+  has_many :tags, through: :taggings
+  has_many :finance_entries, -> { order(created_at: :desc) }, dependent: :destroy
+  has_many :note_attachments, -> { order(:created_at) }, dependent: :destroy
 
-  use_database CouchServer.default_database
+  attribute :visited_on, :date, default: -> { Date.current }
 
-  property :title,        String,     :default => nil
-  property :description,  String,     :default => nil
-  property :tags ,        [String],   :default => []
-  property :visited_on,   Time,       :default => Time.now.strftime('%Y/%m/%d')
-  property :active,       TrueClass,  :default => true  # this create note.active? getter 
-  property :closed,       TrueClass,  :default => false # same as active
-  property :author,       String,     :default => nil 
-  property :updated_from, String,     :default => nil 
-  property :attachments_nfo, Hash,    :default => {}
-  property :finance,      [Hash],     :default => []
-  property :finance_total, Float,    :default => 0.0
+  validates :title, presence: true, uniqueness: true
 
-  timestamps!
+  scope :tagged_with, ->(name) { joins(:tags).where(tags: { name: name }) }
 
-#  view_by :all
-#  view_by :title
-#  view_by :visited_on
-#  view_by :visited_on, :title
-  view_by :tags,
-    :map =>
-      "function(doc) {
-        if (doc['couchrest-type'] == 'Note' && doc.tags) {
-          doc.tags.forEach(function(tag) {
-              emit(tag, null);
-          });
-        }
-      }"
-
-  validates_uniqueness_of :title
-
-  def attachments=(attachments)
-    attachments.each do |attachment|
-      filename_key = attachment_hash(attachment.original_filename)
-      self.create_attachment(:file => attachment, :name => filename_key)
-      if self.attachments_nfo.has_key?(filename_key)
-        self.attachments_nfo[filename_key].merge({ :filename => attachment.original_filename }) 
-      else
-        self.attachments_nfo[filename_key] = { :filename => attachment.original_filename }
-      end
-    end
-  end
-  
-  def add_finance=(arg)
-    self.finance << { :date => arg[:date], :comment => arg[:comment], :amount => arg[:amount], 
-                      :created_at => Time.now, :author => arg[:author] }
-    self.finance_total += arg[:amount].to_f
+  # Tags are entered as one space-separated string.
+  def tag_list
+    tags.map(&:name).join(" ")
   end
 
-  def self.create(arg)
-    arg[:tags] = arg[:tags].split(/\s+/).uniq if arg[:tags].is_a?(String)
-    super arg
+  def tag_list=(value)
+    names = value.to_s.split(/\s+/).compact_blank.uniq
+    self.tags = names.map { |name| Tag.find_or_initialize_by(name: name) }
   end
 
-  def real_filename(key)
-    self.attachments_nfo.has_key?(key) ? self.attachments_nfo[key]["filename"] : "UNKNOWN"
+  # Sums in Ruby so a preloaded association does not trigger a query.
+  # Entries built but not yet saved (for example an invalid amount) are skipped.
+  def finance_total
+    finance_entries.select(&:persisted?).sum(BigDecimal("0"), &:amount)
   end
-
-  def delete_attachment(arg)
-    attachments_nfo.delete(arg) if attachments_nfo.has_key?(arg)
-    super arg
-  end
-
-  def attach_comments_to_filename(filename, comment)
-    key = attachment_hash(filename)
-    if attachments_nfo.has_key?(key)
-      self.attachments_nfo[key].merge( { :filename => filename, :comment => comment } )
-    else
-      self.attachments_nfo[key] =  { :filename => filename, :comment => comment } 
-    end
-  end
-
-  private
-
-  def attachment_hash(name)
-    MD5.new(name).hexdigest
-  end
-
 end
