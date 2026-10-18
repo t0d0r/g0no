@@ -37,6 +37,12 @@ could drift).
 Belong to a note. `comment` (string) plus one Active Storage file (`file`,
 required). Deleting the record purges the file.
 
+## note_versions
+
+History snapshots; see history.md. `event`, `title`, `description`,
+`color`, `author`, `details`, `created_at`; index on `(note_id,
+created_at)`. Deleted with the note.
+
 ## users
 
 Devise columns (see auth.md) plus `username` (unique, case-insensitive,

@@ -7,6 +7,7 @@
 | [features.md](features.md) | pages and behaviour the app must keep |
 | [ui.md](ui.md) | look and feel: macOS Stickies style, colours, layout, translations |
 | [admin.md](admin.md) | admin flag, admin panel for users, stats and shared notes |
+| [history.md](history.md) | version history of notes, Time Machine style view and restore |
 | [sharing.md](sharing.md) | public share links, optionally with a password |
 | [auth.md](auth.md) | Devise setup, sign-in by username or email, legacy password hashes |
 | [couchdb-import.md](couchdb-import.md) | one-off import of the 2011 CouchDB data |

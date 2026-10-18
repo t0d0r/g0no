@@ -368,44 +368,52 @@ form.button_to {
 
 /* ---------- flash ---------- */
 
+/* Messages are small stickies pinned to the top right of the desk. */
 .flash-stack {
+  position: fixed;
+  top: 48px;
+  right: 16px;
+  z-index: 150;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-width: 760px;
-  margin: 0 auto 18px;
+  gap: 10px;
+  width: min(320px, calc(100vw - 32px));
 }
 
 .flash {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 12px 10px 14px;
-  border-left: 4px solid var(--accent);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: var(--shadow);
-  color: #1d1d1f;
-  font-size: 14px;
+  animation: flash-in 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.flash--alert {
-  border-left-color: var(--danger);
+.flash.is-leaving {
+  opacity: 0;
+  transform: translateX(24px);
 }
 
 .flash__text {
-  flex: 1;
-  min-width: 0;
+  margin: 0;
+  padding: 10px 14px 12px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
 }
 
-.flash__close {
-  padding: 0 2px;
-  border: 0;
-  background: none;
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
+.flash--alert .flash__text {
+  color: #7a1712;
+}
+
+@keyframes flash-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash,
+  .flash.is-leaving {
+    animation: none;
+    transform: none;
+  }
 }
 
 /* ---------- sticky paper ---------- */
@@ -495,6 +503,28 @@ form.button_to {
 .swatch[aria-pressed="true"],
 .swatch:has(input:checked) {
   box-shadow: 0 0 0 1.5px var(--bar), 0 0 0 2.5px rgba(0, 0, 0, 0.55);
+}
+
+.swatch--random {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  margin-left: 2px;
+  border: 0;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.swatch--random:hover {
+  color: rgba(0, 0, 0, 0.9);
+  transform: rotate(90deg) scale(1.15);
+  transition: transform 0.2s ease;
+}
+
+.sticky__box--icon .icon {
+  vertical-align: 0;
 }
 
 .swatch:focus-visible,
@@ -1379,6 +1409,259 @@ form.button_to {
   color: var(--danger);
 }
 
+/* ---------- history ("time capsule") ---------- */
+
+/* A night sky behind the stack, like Time Machine's backdrop. */
+body.time-capsule {
+  background:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.8), transparent 60%),
+    radial-gradient(1px 1px at 27% 72%, rgba(255, 255, 255, 0.6), transparent 60%),
+    radial-gradient(1.5px 1.5px at 41% 34%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(1px 1px at 58% 12%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 66% 58%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(1.5px 1.5px at 79% 26%, rgba(255, 255, 255, 0.8), transparent 60%),
+    radial-gradient(1px 1px at 88% 81%, rgba(255, 255, 255, 0.6), transparent 60%),
+    radial-gradient(1px 1px at 94% 44%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(ellipse at 50% 115%, #4a5aa8 0%, #232a57 42%, #0d1024 100%) fixed;
+  color: #e9e9f2;
+}
+
+.time-capsule .flash-stack {
+  position: relative;
+  z-index: 100;
+}
+
+.capsule {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px 28px;
+  min-height: calc(100vh - 36px - 80px);
+}
+
+.capsule__head {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.capsule__heading {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.capsule__count,
+.capsule__position {
+  color: rgba(233, 233, 242, 0.65);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cards share one spot; --depth (0 = front, 1.. = older, negative = newer)
+   pushes older ones up and away and lets newer ones fly past the viewer. */
+.capsule__stack {
+  position: relative;
+  height: max(420px, calc(100vh - 250px));
+  perspective: 1200px;
+}
+
+.capsule__card {
+  --step: clamp(0, var(--depth), 7);
+  position: absolute;
+  top: 190px;
+  left: 50%;
+  width: min(640px, 100%);
+  height: calc(100% - 200px);
+  transform-origin: 50% 0;
+  transform: translateX(-50%) translateY(calc(var(--step) * -26px)) scale(calc(1 - var(--step) * 0.06));
+  /* Opaque so older titles do not show through; only the last few fade. */
+  opacity: clamp(0, calc(1.75 - var(--step) * 0.25), 1);
+  z-index: calc(100 - var(--step));
+  filter: brightness(calc(1 - var(--step) * 0.07));
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.45s ease, filter 0.45s ease;
+  cursor: pointer;
+}
+
+/* Newer than the selected version: gone past the viewer. Far in the past:
+   out of sight. */
+.capsule__card.is-future {
+  transform: translateX(-50%) translateY(120px) scale(1.12);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.capsule__card.is-far {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Cards behind the front one are only targets for "go back to here": their
+   contents ignore the pointer and their buttons leave the tab order. */
+.capsule__card[aria-hidden="true"] * {
+  pointer-events: none;
+}
+
+.capsule__card[aria-hidden="true"] .capsule__body,
+.capsule__card[aria-hidden="true"] .capsule__footer {
+  visibility: hidden;
+}
+
+.capsule__card[aria-hidden="false"] {
+  cursor: auto;
+}
+
+.capsule__body {
+  flex: 1;
+  min-height: 0;
+  padding: 16px 22px;
+  overflow: auto;
+}
+
+.capsule__title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.capsule__text {
+  font: 15px/1.55 var(--font);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.capsule__card ins {
+  border-radius: 2px;
+  background: rgba(46, 160, 67, 0.28);
+  text-decoration: none;
+}
+
+.capsule__card del {
+  border-radius: 2px;
+  background: rgba(179, 38, 30, 0.18);
+  color: var(--danger);
+}
+
+.capsule--plain .capsule__card del {
+  display: none;
+}
+
+.capsule--plain .capsule__card ins {
+  background: none;
+}
+
+.capsule__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.capsule__now {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.capsule__timeline {
+  grid-row: 2 / 4;
+  grid-column: 2;
+  max-height: calc(100vh - 170px);
+  overflow-y: auto;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.capsule__timeline ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capsule__day {
+  padding: 10px 12px 4px;
+  color: rgba(233, 233, 242, 0.55);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.capsule__tick {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  padding: 4px 12px;
+  color: rgba(233, 233, 242, 0.8);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.capsule__tick::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -1px;
+  width: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.capsule__tick:hover {
+  background: rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+}
+
+.capsule__tick[aria-current="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-weight: 600;
+}
+
+.capsule__tick[aria-current="true"]::before {
+  width: 14px;
+  border-top: 2px solid #fff;
+}
+
+.capsule__tick:focus-visible {
+  outline: 2px solid #9ec5ff;
+  outline-offset: -2px;
+}
+
+.capsule__tick-time {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.capsule__tick-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.capsule__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.capsule__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.capsule__arrow {
+  padding: 5px 9px;
+}
+
 /* ---------- small screens ---------- */
 
 @media (max-width: 560px) {
@@ -1428,6 +1711,28 @@ form.button_to {
   .menubar__search {
     flex: 1 0 100%;
     order: 10;
+  }
+
+  .flash-stack {
+    top: 72px;
+  }
+
+  .capsule {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .capsule__timeline {
+    display: none;
+  }
+
+  .capsule__stack {
+    height: max(380px, calc(100vh - 230px));
+  }
+
+  .capsule__card {
+    top: 110px;
+    height: calc(100% - 115px);
+    transform: translateX(-50%) translateY(calc(var(--step) * -15px)) scale(calc(1 - var(--step) * 0.05));
   }
 
   .preview {

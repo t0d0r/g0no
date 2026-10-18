@@ -59,6 +59,19 @@ upload. All done in one turn:
   on share pages made the password form fail CSRF (Origin: null); now
   `same-origin`.
 
+### Late evening: history and random colour
+
+- `note_versions` table with full snapshots (title, description, colour)
+  per change plus file / expense events; existing notes got one "baseline"
+  row. Model callbacks record them; `Current.user` names the author.
+- `/notes/:id/history`: Time Machine style stack on a night sky, timeline,
+  word diff (`TextDiff`), restore with confirm. Clock box in the title strip.
+- Dice button after the colour swatches picks another colour at random.
+- Operator asked whether history needed a database change: no, it is one
+  more SQLite table (recorded in specs/history.md).
+- Flash messages restyled as small stickies at the top right (yellow
+  notice that fades after 6 s, pink alert that stays), on operator request.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -68,6 +81,8 @@ off, no JS framework, secrets only from the environment.
 - Colours are a fixed set of six; no custom colours (operator: "colors by
   set, not custom one"). The menu bar filter is server-side (`GET /notes`).
 - A non-admin opening `/admin` is redirected with an alert (not a 404).
+- History stores full snapshots, not diffs, so any version restores alone;
+  restore covers title, description and colour, not files or expenses.
 - Sharing again always makes a new token, so "change password" and "new
   link" are the same action and old links die.
 
@@ -83,6 +98,12 @@ off, no JS framework, secrets only from the environment.
   user were deleted.
 
 ## Files touched
+
+Late evening: db/migrate/20261019090001, app/models (current,
+note_version, text_diff, note, note_attachment, finance_entry),
+app/helpers/history_helper.rb, app/views/notes/history.html.erb,
+_window, _color_menu, partials/_flash, layout, application.js/css, locales, tests,
+specs/history.md and related specs.
 
 Evening: db/migrate/20261018200001-04, app/models (note, note_attachment,
 user), app/controllers (notes, shared_notes, admin/*, concerns/attachment_serving),
@@ -108,7 +129,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 66 tests
+- `make check` - rubocop, brakeman, 81 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)
@@ -117,7 +138,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 ## Next step
 
 Try the new features with `make run` (sign in as admin, open `/admin`, share
-a note, drop a file on a note). Then:
+a note, drop a file on a note, open a note's history with the clock box). Then:
 
 Run `COUCHDB_URL=... make import` (or `make docker-import`) against the real
 2011 CouchDB and compare the note count and totals with the old app.

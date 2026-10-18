@@ -213,15 +213,96 @@ function setUpDropUpload(form) {
 }
 
 // The colour menu of a new note changes the paper right away; the colour is
-// saved with the note.
+// saved with the note. The dice picks one of the other colours.
 function setUpColorChoices() {
-  document.querySelectorAll("[data-color-choice]").forEach((input) => {
+  const choices = [...document.querySelectorAll("[data-color-choice]")];
+  choices.forEach((input) => {
     input.addEventListener("change", () => {
       const sticky = input.closest("[data-sticky]");
       if (!sticky) return;
       sticky.className = sticky.className.replace(/\bsticky--\w+/, `sticky--${input.value}`);
     });
   });
+
+  document.querySelectorAll("[data-color-random]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const others = choices.filter((input) => !input.checked);
+      const pick = others[Math.floor(Math.random() * others.length)];
+      if (!pick) return;
+      pick.checked = true;
+      pick.dispatchEvent(new Event("change"));
+    });
+  });
+}
+
+// The time capsule: versions stacked into the distance, the selected one in
+// front. Arrow keys, the arrow buttons and the timeline move through time;
+// links keep working without JavaScript.
+function setUpCapsule(capsule) {
+  const cards = [...capsule.querySelectorAll("[data-capsule-card]")];
+  const ticks = [...capsule.querySelectorAll("[data-capsule-jump]")];
+  const position = capsule.querySelector("[data-capsule-position]");
+  let selected = Number(capsule.dataset.selected);
+
+  const show = (index, { focusTick = false } = {}) => {
+    selected = Math.max(0, Math.min(cards.length - 1, index));
+    cards.forEach((card, i) => {
+      const depth = selected - i;
+      card.style.setProperty("--depth", depth);
+      card.classList.toggle("is-future", depth < 0);
+      card.classList.toggle("is-far", depth > 7);
+      card.setAttribute("aria-hidden", i !== selected);
+    });
+    ticks.forEach((tick, i) => {
+      if (i === selected) tick.setAttribute("aria-current", "true");
+      else tick.removeAttribute("aria-current");
+    });
+    const tick = ticks[selected];
+    if (tick) {
+      tick.scrollIntoView({ block: "nearest" });
+      if (focusTick) tick.focus();
+    }
+    position.textContent = `${selected + 1} / ${cards.length}`;
+    const id = cards[selected].id.replace("version-", "");
+    history.replaceState(null, "", `${capsule.dataset.url}?v=${id}`);
+  };
+
+  ticks.forEach((tick) => {
+    tick.addEventListener("click", (event) => {
+      event.preventDefault();
+      show(Number(tick.dataset.capsuleJump));
+    });
+  });
+  capsule.querySelectorAll("[data-capsule-step]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      show(selected + Number(button.dataset.capsuleStep));
+    });
+  });
+  // A click on a card behind the front one travels back to it.
+  cards.forEach((card, i) => {
+    card.addEventListener("click", () => { if (i !== selected) show(i); });
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.target.closest("input, textarea, select") || document.querySelector("dialog[open]")) return;
+    if (event.key === "ArrowUp") { event.preventDefault(); show(selected - 1); }
+    if (event.key === "ArrowDown") { event.preventDefault(); show(selected + 1); }
+  });
+  // Mouse wheel over the stack moves through time, one step per notch.
+  let wheelLock = false;
+  capsule.querySelector("[data-capsule-stack]").addEventListener("wheel", (event) => {
+    if (event.target.closest(".capsule__body") && event.target.closest("[data-capsule-card]") === cards[selected]) return;
+    event.preventDefault();
+    if (wheelLock || Math.abs(event.deltaY) < 4) return;
+    wheelLock = true;
+    setTimeout(() => { wheelLock = false; }, 250);
+    show(selected + (event.deltaY < 0 ? -1 : 1));
+  }, { passive: false });
+
+  const changes = capsule.querySelector("[data-capsule-changes]");
+  changes.addEventListener("change", () => capsule.classList.toggle("capsule--plain", !changes.checked));
+
+  show(selected);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -232,6 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll("[data-preview-dialog]").forEach(setUpPreview);
   setUpColorChoices();
+  document.querySelectorAll("[data-capsule]").forEach(setUpCapsule);
   document.querySelectorAll("form[data-drop-upload]").forEach(setUpDropUpload);
 
   // Picking a colour in the menu bar filter searches right away.
@@ -266,8 +348,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Notices fade out after a few seconds (not while hovered or focused);
+  // alerts stay until closed.
   document.querySelectorAll("[data-flash]").forEach((flash) => {
+    const dismiss = () => {
+      flash.classList.add("is-leaving");
+      setTimeout(() => flash.remove(), 400);
+    };
     const close = flash.querySelector("[data-dismiss]");
-    if (close) close.addEventListener("click", () => flash.remove());
+    if (close) close.addEventListener("click", dismiss);
+    if (flash.dataset.flashKind !== "notice") return;
+    let timer = setTimeout(dismiss, 6000);
+    const pause = () => clearTimeout(timer);
+    const resume = () => { timer = setTimeout(dismiss, 3000); };
+    flash.addEventListener("mouseenter", pause);
+    flash.addEventListener("mouseleave", resume);
+    flash.addEventListener("focusin", pause);
+    flash.addEventListener("focusout", resume);
   });
 });

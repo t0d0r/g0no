@@ -1,7 +1,8 @@
 class NotesController < ApplicationController
   include AttachmentServing
 
-  before_action :set_note, only: %i[show edit update destroy download_file preview_file delete_file share unshare]
+  before_action :set_note, only: %i[show edit update destroy download_file preview_file delete_file share unshare
+                                   history restore]
 
   # The search box in the menu bar sends q (title or description) and color.
   def index
@@ -84,6 +85,24 @@ class NotesController < ApplicationController
   def unshare
     @note.unshare!
     redirect_to note_url(@note, anchor: "sharing"), notice: t("flash.note_unshared")
+  end
+
+  HISTORY_LIMIT = 200
+
+  # The time capsule: the latest HISTORY_LIMIT versions, oldest first, with
+  # ?v=<version id> in front (default: the newest).
+  def history
+    @versions = @note.versions.reorder(created_at: :desc, id: :desc).limit(HISTORY_LIMIT).to_a.reverse
+    @selected = @versions.index { |version| version.id.to_s == params[:v].to_s } || (@versions.size - 1)
+  end
+
+  def restore
+    version = @note.versions.find(params[:version_id])
+    if @note.restore(version)
+      redirect_to note_url(@note), notice: t("flash.version_restored", time: l(version.created_at, format: :long))
+    else
+      redirect_to history_note_url(@note, v: version.id), alert: @note.errors.full_messages.to_sentence
+    end
   end
 
   def destroy

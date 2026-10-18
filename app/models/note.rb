@@ -6,6 +6,7 @@ class Note < ApplicationRecord
   has_many :tags, through: :taggings
   has_many :finance_entries, -> { order(created_at: :desc) }, dependent: :destroy
   has_many :note_attachments, -> { order(:created_at) }, dependent: :destroy
+  has_many :versions, -> { order(:created_at, :id) }, class_name: "NoteVersion", dependent: :delete_all
 
   # The share password is optional, so has_secure_password's own presence
   # validations are off.
@@ -16,6 +17,10 @@ class Note < ApplicationRecord
   validates :title, presence: true, uniqueness: true
   validates :color, inclusion: { in: COLORS }
   validates :share_password, length: { in: 6..72 }, allow_nil: true
+
+  # Every change to title, description or colour is kept (see NoteVersion).
+  after_create { NoteVersion.record(self, "created") }
+  after_update :record_version, if: -> { saved_change_to_title? || saved_change_to_description? || saved_change_to_color? }
 
   scope :tagged_with, ->(name) { joins(:tags).where(tags: { name: name }) }
   scope :shared, -> { where.not(share_token: nil) }
@@ -60,5 +65,26 @@ class Note < ApplicationRecord
 
   def unshare!
     update!(share_token: nil, share_password_digest: nil, shared_at: nil)
+  end
+
+  # Puts back the title, description and colour of an older version. The
+  # current state is already in the history, so a restore can be undone.
+  def restore(version)
+    @restored_from = version
+    update(title: version.title, description: version.description, color: version.color,
+           updated_from: Current.user&.display_name || updated_from)
+  ensure
+    @restored_from = nil
+  end
+
+  private
+
+  def record_version
+    event =
+      if @restored_from then "restored"
+      elsif saved_change_to_title? || saved_change_to_description? then "edited"
+      else "recolored"
+      end
+    NoteVersion.record(self, event, details: @restored_from&.created_at&.iso8601)
   end
 end

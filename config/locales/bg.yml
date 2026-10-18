@@ -61,6 +61,7 @@ bg:
       pink: "Розов"
       purple: "Лилав"
       gray: "Сив"
+      random: "Случаен цвят"
     files_count:
       zero: "без файлове"
       one: "%{count} файл"
@@ -148,6 +149,36 @@ bg:
       hint: "Можете и да пуснете файлове върху бележката, за да ги прикачите."
       overlay: "Пуснете файловете, за да ги прикачите към бележката"
       uploading: "Качване..."
+    history:
+      open: "История"
+      title: "История на %{title}"
+      heading: "%{title} във времето"
+      count:
+        one: "%{count} версия"
+        other: "%{count} версии"
+      timeline: "Времева линия"
+      current: "Това е текущата версия"
+      same_as_current: "Същата като текущата версия"
+      restore: "Възстанови"
+      restore_title: "Да се възстанови ли тази версия?"
+      restore_body: "Бележката ще получи заглавието, текста и цвета от %{time}. Файловете и разходите не се променят. Текущата версия остава в историята и можете да се върнете към нея."
+      done: "Готово"
+      older: "По-стара (стрелка нагоре)"
+      newer: "По-нова (стрелка надолу)"
+      show_changes: "Покажи промените"
+      position: "%{index} от %{total}"
+      events:
+        baseline: "Начало на историята"
+        created: "Създадена"
+        edited: "Редактирана"
+        recolored: "Сменен цвят"
+        restored: "Възстановена от %{time}"
+        file_added: "Добавен файл: %{details}"
+        file_deleted: "Изтрит файл: %{details}"
+        expense_added: "Добавен разход: %{details}"
+    flash:
+      notice: "Съобщение"
+      alert: "Внимание"
     send_reset_instructions: "Изпрати инструкции за нова парола"
 
   flash:
@@ -164,6 +195,7 @@ bg:
     user_updated: "Потребител %{name} е обновен."
     user_deleted: "Потребител %{name} е изтрит."
     user_self_delete: "Не можете да изтриете собствения си акаунт оттук."
+    version_restored: "Възстановена е версията от %{time}."
 
   date:
     formats:

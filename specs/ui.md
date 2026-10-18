@@ -42,8 +42,12 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   each with a one-line form.
 - **Account pages** (sign in, sign up, password reset): a small yellow
   sticky centred on the desk.
-- **Flash messages:** white rounded banners above the content with a
-  coloured left edge (blue notice, red alert) and a close button.
+- **Flash messages:** small stickies pinned at the top right under the menu
+  bar (operator: notices should look like the site itself): yellow paper
+  with caption "Notice" for notices, pink with "Attention" for alerts, a
+  close box in the title strip. Notices fade out after 6 seconds (paused
+  while hovered or focused); alerts stay until closed. They slide in, and
+  do not animate with reduced motion.
 
 - **Menu bar search:** a search field and a round colour button between the
   links and the user name. The button opens a small menu of the six colours
@@ -60,6 +64,11 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   question, a sentence on what will happen, Cancel and a red action button.
 - **Drop overlay:** dashed blue border and "Drop files to attach them to
   this note" over the note window while files are dragged onto it.
+- **Colour menu dice:** a small five-dot die after the swatches; it turns a
+  little on hover.
+- **History:** night-sky page; versions stacked like Time Machine windows,
+  timeline at the right, controls at the bottom; green insertions, red
+  struck-through deletions (history.md). Clock box in the note title strip.
 - **Admin:** coloured stat tiles, grey sticky panels with tables.
 - **Shared note:** the note window without boxes or forms, caption "Shared
   note"; password page and "link not available" page as small stickies.

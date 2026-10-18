@@ -8,7 +8,7 @@
   <%= stylesheet_link_tag "application" %>
   <%= javascript_include_tag "application", defer: true %>
 </head>
-<body>
+<body class="<%= content_for(:body_class) %>">
   <header class="menubar">
     <%= link_to "g0No", root_path, class: "menubar__brand" %>
     <% if user_signed_in? %>

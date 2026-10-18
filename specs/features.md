@@ -13,6 +13,7 @@ signed-in user.
 | `GET /notes/:id/files/:attachment_id` | download an attachment (always as a download) |
 | `GET /notes/:id/files/:attachment_id/preview` | inline copy for the preview dialog, only for allowed types (below); 404 for anything else; supports one `Range` |
 | `POST /notes/:id/share`, `DELETE /notes/:id/share` | create or replace / stop the share link (sharing.md) |
+| `GET /notes/:id/history`, `POST /notes/:id/history/:version_id/restore` | history of the note and restore (history.md) |
 | `DELETE /notes/:id/delete_file?attachment_id=` | delete an attachment |
 | `DELETE /notes/:id` | delete a note (the "-" box in the note's title bar, with a confirmation prompt) |
 | `GET /notes/:tag/by_tag` | notes with the given tag |
@@ -24,7 +25,9 @@ A note has one of six paper colours (`Note::COLORS`: yellow, blue, green,
 pink, purple, gray), stored in `notes.color` (default yellow). There are no
 custom colours: the operator asked for "colors by set, not custom one". The
 colour menu in the note's title strip changes it; for a new note the choice
-is saved with the note. Existing notes got `id mod 6` when the column was
+is saved with the note. A dice button after the six squares picks a random
+colour other than the current one (for a saved note the pick is made when
+the page is drawn, so it works without JavaScript). Existing notes got `id mod 6` when the column was
 added, which is the colour they showed before.
 
 ## Attachments: drag and drop

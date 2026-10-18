@@ -1,0 +1,74 @@
+<% content_for :title, t("ui.history.title", title: @note.title) %>
+<% content_for :body_class, "time-capsule" %>
+<div class="capsule" data-capsule data-selected="<%= @selected %>" data-url="<%= history_note_path(@note) %>">
+  <div class="capsule__head">
+    <h1 class="capsule__heading"><%= icon :clock, size: 18 %> <%= t("ui.history.heading", title: @note.title) %></h1>
+    <span class="capsule__count"><%= t("ui.history.count", count: @versions.size) %></span>
+  </div>
+
+  <div class="capsule__stack" data-capsule-stack>
+    <% @versions.each_with_index do |version, index| %>
+      <% previous = index.positive? ? @versions[index - 1] : nil %>
+      <% latest = index == @versions.size - 1 %>
+      <% position = capsule_card_attributes(index, @selected) %>
+      <article class="sticky sticky--<%= version.color %> capsule__card <%= position[:class].join(" ") %>"
+               id="version-<%= version.id %>" data-capsule-card style="<%= position[:style] %>"
+               aria-hidden="<%= index != @selected %>" aria-label="<%= l(version.created_at, format: :long) %>">
+        <header class="sticky__bar">
+          <span class="sticky__caption">
+            <%= version_event(version) %> - <%= version.author.presence || "-" %> - <%= l(version.created_at, format: :long) %>
+          </span>
+        </header>
+        <div class="capsule__body">
+          <h2 class="capsule__title"><%= diff_html(previous&.title, version.title) %></h2>
+          <div class="capsule__text"><%= diff_html(previous&.description.to_s, version.description.to_s) if previous || version.description.present? %></div>
+        </div>
+        <footer class="capsule__footer">
+          <% if latest %>
+            <span class="capsule__now"><%= t("ui.history.current") %></span>
+          <% elsif version.differs_from?(@note) %>
+            <%= button_to t("ui.history.restore"), restore_version_note_path(@note, version_id: version), class: "btn btn--primary",
+                          form: { data: confirm_data(title: t("ui.history.restore_title"),
+                                                     body: t("ui.history.restore_body", time: l(version.created_at, format: :long)),
+                                                     button: t("ui.history.restore")) } %>
+          <% else %>
+            <span class="capsule__now"><%= t("ui.history.same_as_current") %></span>
+          <% end %>
+        </footer>
+      </article>
+    <% end %>
+  </div>
+
+  <nav class="capsule__timeline" aria-label="<%= t("ui.history.timeline") %>">
+    <ol>
+      <% @versions.each_with_index do |version, index| %>
+        <% if index.zero? || version.created_at.to_date != @versions[index - 1].created_at.to_date %>
+          <li class="capsule__day"><%= l(version.created_at.to_date, format: :long) %></li>
+        <% end %>
+        <li>
+          <%= link_to history_note_path(@note, v: version.id), class: "capsule__tick", data: { capsule_jump: index },
+                      aria: { current: (index == @selected ? "true" : nil) } do %>
+            <span class="capsule__tick-time"><%= l(version.created_at, format: "%H:%M") %></span>
+            <span class="capsule__tick-label"><%= version_event(version) %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  </nav>
+
+  <div class="capsule__controls">
+    <%= link_to t("ui.history.done"), note_path(@note), class: "btn" %>
+    <label class="capsule__toggle">
+      <input type="checkbox" checked data-capsule-changes> <%= t("ui.history.show_changes") %>
+    </label>
+    <span class="capsule__position" data-capsule-position></span>
+    <%= link_to history_note_path(@note, v: @versions[[ @selected - 1, 0 ].max]&.id), class: "btn capsule__arrow",
+                data: { capsule_step: -1 }, title: t("ui.history.older"), aria: { label: t("ui.history.older") } do %>
+      <%= icon :up %>
+    <% end %>
+    <%= link_to history_note_path(@note, v: @versions[[ @selected + 1, @versions.size - 1 ].min]&.id), class: "btn capsule__arrow",
+                data: { capsule_step: 1 }, title: t("ui.history.newer"), aria: { label: t("ui.history.newer") } do %>
+      <%= icon :down %>
+    <% end %>
+  </div>
+</div>

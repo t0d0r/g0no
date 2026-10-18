@@ -6,6 +6,12 @@
     </span>
     <%= render "color_menu", note: note %>
     <% if note.persisted? %>
+      <%= link_to history_note_path(note), class: "sticky__box sticky__box--icon",
+                  title: t("ui.history.open"), aria: { label: t("ui.history.open") } do %>
+        <%= icon :clock, size: 10 %>
+      <% end %>
+    <% end %>
+    <% if note.persisted? %>
       <%= button_to "−", note_path(note), method: :delete, class: "sticky__box",
                     title: t("ui.delete_note"), aria: { label: t("ui.delete_note") },
                     form: { data: confirm_data(

@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   around_action :switch_locale
   before_action :authenticate_user!, unless: :devise_controller?
+  before_action { Current.user = current_user }
 
   private
 

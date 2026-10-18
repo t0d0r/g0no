@@ -192,7 +192,7 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
   test "the note window has a colour menu" do
     sign_in users(:admin)
     get note_url(@note)
-    assert_select ".color-menu button[name=?]", "note[color]", 6
+    assert_select ".color-menu button.swatch:not(.swatch--random)[name=?]", "note[color]", 6
     assert_select ".color-menu button[aria-pressed=true][value=yellow]"
   end
 
@@ -329,6 +329,71 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     post share_note_url(@note)
     get shared_note_download_url(@note.reload.share_token, other)
     assert_response :not_found
+  end
+
+
+  test "the note window links to its history" do
+    sign_in users(:admin)
+    get note_url(@note)
+    assert_select "a.sticky__box[href=?]", history_note_path(@note)
+  end
+
+  test "history shows versions with changes and a timeline" do
+    sign_in users(:admin)
+    @note.versions.create!(event: "baseline", title: "Groceries", description: "Weekly shopping", color: "yellow",
+                           created_at: 1.day.ago)
+    patch note_url(@note), params: { note: { description: "Weekly shopping list" } }
+
+    get history_note_url(@note)
+    assert_response :success
+    assert_select "body.time-capsule"
+    assert_select ".capsule__card", 2
+    assert_select ".capsule__card[aria-hidden=false] ins", "list"
+    assert_select ".capsule__card[aria-hidden=false] .capsule__now"
+    assert_select ".capsule__tick", 2
+    assert_select ".capsule__card[aria-hidden=true] form[action=?]",
+                  restore_version_note_path(@note, version_id: @note.versions.first)
+  end
+
+  test "history selects the version from the v parameter" do
+    sign_in users(:admin)
+    first = @note.versions.create!(event: "baseline", title: "Groceries", description: "old", color: "yellow",
+                                   created_at: 1.day.ago)
+    @note.update!(description: "new")
+    get history_note_url(@note, v: first.id)
+    assert_select "#version-#{first.id}[aria-hidden=false]"
+    assert_select "#version-#{@note.versions.last.id}.is-future"
+  end
+
+  test "restores a version" do
+    sign_in users(:admin)
+    old = @note.versions.create!(event: "baseline", title: "Groceries", description: "old text", color: "green",
+                                 created_at: 1.day.ago)
+    post restore_version_note_url(@note, version_id: old)
+    assert_redirected_to note_url(@note)
+    @note.reload
+    assert_equal [ "old text", "green" ], [ @note.description, @note.color ]
+    assert_equal "restored", @note.versions.last.event
+    assert_equal "admin", @note.versions.last.author
+  end
+
+  test "a restore that clashes with another title shows the error" do
+    sign_in users(:admin)
+    old = @note.versions.create!(event: "baseline", title: "Trip", description: "x", color: "yellow")
+    post restore_version_note_url(@note, version_id: old)
+    assert_redirected_to history_note_url(@note, v: old.id)
+    assert flash[:alert].present?
+    assert_equal "Groceries", @note.reload.title
+  end
+
+  test "the colour menu has a random button with another colour" do
+    sign_in users(:admin)
+    get note_url(@note)
+    assert_select ".color-menu button.swatch--random" do |buttons|
+      assert_includes Note::COLORS - [ "yellow" ], buttons.first["value"]
+    end
+    get new_note_url
+    assert_select ".color-menu button.swatch--random[data-color-random][type=button]"
   end
 
   private

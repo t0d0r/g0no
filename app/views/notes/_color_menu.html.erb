@@ -7,6 +7,11 @@
               class="swatch sticky--<%= color %>" title="<%= t("ui.colors.#{color}") %>"
               aria-label="<%= t("ui.colors.#{color}") %>" aria-pressed="<%= color == current %>"></button>
     <% end %>
+    <%# The random pick is chosen when the page is drawn, so it works without JavaScript. %>
+    <button type="submit" name="note[color]" value="<%= (Note::COLORS - [ current ]).sample %>"
+            class="swatch swatch--random" title="<%= t("ui.colors.random") %>" aria-label="<%= t("ui.colors.random") %>">
+      <%= icon :dice, size: 11 %>
+    </button>
   <% end %>
 <% else %>
   <%# Inputs belong to the note form (form="note_form"), so the colour is saved with the new note. %>
@@ -18,5 +23,9 @@
         <span class="sr-only"><%= t("ui.colors.#{color}") %></span>
       </label>
     <% end %>
+    <button type="button" class="swatch swatch--random" data-color-random
+            title="<%= t("ui.colors.random") %>" aria-label="<%= t("ui.colors.random") %>">
+      <%= icon :dice, size: 11 %>
+    </button>
   </span>
 <% end %>

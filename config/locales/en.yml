@@ -54,6 +54,7 @@ en:
       pink: "Pink"
       purple: "Purple"
       gray: "Gray"
+      random: "Random colour"
     files_count:
       zero: "no files"
       one: "%{count} file"
@@ -141,6 +142,36 @@ en:
       hint: "You can also drag files onto the note to attach them."
       overlay: "Drop files to attach them to this note"
       uploading: "Uploading..."
+    history:
+      open: "History"
+      title: "History of %{title}"
+      heading: "%{title} through time"
+      count:
+        one: "%{count} version"
+        other: "%{count} versions"
+      timeline: "Timeline"
+      current: "This is the current version"
+      same_as_current: "Same as the current version"
+      restore: "Restore"
+      restore_title: "Restore this version?"
+      restore_body: "The note gets the title, text and colour it had on %{time}. Files and expenses are not changed. The current version stays in the history, so you can come back to it."
+      done: "Done"
+      older: "Older (arrow up)"
+      newer: "Newer (arrow down)"
+      show_changes: "Show changes"
+      position: "%{index} of %{total}"
+      events:
+        baseline: "History started"
+        created: "Created"
+        edited: "Edited"
+        recolored: "Colour changed"
+        restored: "Restored from %{time}"
+        file_added: "File added: %{details}"
+        file_deleted: "File deleted: %{details}"
+        expense_added: "Expense added: %{details}"
+    flash:
+      notice: "Notice"
+      alert: "Attention"
     send_reset_instructions: "Send me reset instructions"
 
   flash:
@@ -157,6 +188,7 @@ en:
     user_updated: "User %{name} updated."
     user_deleted: "User %{name} deleted."
     user_self_delete: "You cannot delete your own account here."
+    version_restored: "Restored the version from %{time}."
 
   activerecord:
     attributes:

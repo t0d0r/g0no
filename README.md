@@ -7,7 +7,9 @@ macOS Stickies.
 
 Notes can be searched and filtered by colour from the menu bar, recoloured
 from a fixed set, shared by link (optionally with a password), and given
-files by drag and drop; attachments open in a preview dialog. Administrators
+files by drag and drop; attachments open in a preview dialog. Every change
+is kept in a Time Machine style history from which older versions can be
+restored. Administrators
 manage users and shared links at `/admin`.
 
 Started in 2011 on Rails 3.0 with CouchDB; migrated in 2026 to Rails 8.1 with

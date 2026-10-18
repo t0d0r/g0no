@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_18_200004) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_19_090001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -56,6 +56,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_200004) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["note_id"], name: "index_note_attachments_on_note_id"
+  end
+
+  create_table "note_versions", force: :cascade do |t|
+    t.integer "note_id", null: false
+    t.string "event", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.string "color", null: false
+    t.string "author"
+    t.string "details"
+    t.datetime "created_at", null: false
+    t.index ["note_id", "created_at"], name: "index_note_versions_on_note_id_and_created_at"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -119,6 +131,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_200004) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "finance_entries", "notes"
   add_foreign_key "note_attachments", "notes"
+  add_foreign_key "note_versions", "notes"
   add_foreign_key "taggings", "notes"
   add_foreign_key "taggings", "tags"
 end

@@ -9,6 +9,8 @@ Rails.application.routes.draw do
       delete :delete_file
       post :share
       delete :share, action: :unshare
+      get :history
+      post "history/:version_id/restore", action: :restore, as: :restore_version
     end
   end
 
