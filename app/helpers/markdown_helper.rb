@@ -16,7 +16,9 @@ module MarkdownHelper
 
   # interactive: task list check boxes can be clicked; each carries
   # data-task-line, the line of its "- [ ]" in the text (application.js
-  # flips it there). Otherwise they are read-only.
+  # flips it there), and blocks keep data-sourcepos ("line:col-line:col")
+  # so a double-click can put the caret at the same place in the text.
+  # Otherwise check boxes are read-only and no positions are kept.
   def render_markdown(text, interactive: false)
     options = MARKDOWN_OPTIONS.merge(render: MARKDOWN_OPTIONS[:render].merge(sourcepos: true))
     html = Commonmarker.to_html(text.to_s, options: options, plugins: { syntax_highlighter: nil })
@@ -38,7 +40,7 @@ module MarkdownHelper
         input["disabled"] = "disabled"
       end
     end
-    fragment.css("[data-sourcepos]").each { |element| element.remove_attribute("data-sourcepos") }
+    fragment.css("[data-sourcepos]").each { |element| element.remove_attribute("data-sourcepos") } unless interactive
     fragment.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 

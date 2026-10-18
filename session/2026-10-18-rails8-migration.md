@@ -96,6 +96,13 @@ upload. All done in one turn:
   into a title attribute); tests now raise on missing translations and
   check that en and bg keys match.
 
+- Double-click unlock puts the caret at the click point (plain fields: the
+  first click's caret; Markdown: source positions + character matching,
+  verified for bold, italic, heading, task, table cell, after a link).
+- Text size is now three A buttons; text areas hide overflow on both axes
+  (zoom rounding showed a horizontal scroll bar in Safari).
+- A demo note ("Caret plain demo") was kept: the operator edited it.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead

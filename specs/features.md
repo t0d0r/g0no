@@ -53,8 +53,8 @@ unlock it if dbl click".
   still be selected and copied); the status line says "Double-click the note
   to edit it".
 - Double-click on the title or description unlocks both and puts the caret
-  where the double-click was (at the end of the selected word, so typing
-  does not replace it).
+  exactly where the double-click was (the caret position of its first
+  click), not on a selected word that typing would replace.
 - Keyboard and touch: Enter on a locked field unlocks it; the padlock box in
   the title strip toggles the lock (unlocking puts the caret at the end of
   the description).
@@ -67,8 +67,10 @@ unlock it if dbl click".
 
 A sun/moon button in the menu bar switches between light and dark desk (the
 moon shows in light mode, the sun in dark mode). Without a choice the theme
-follows the system. An "Aa" menu offers three text sizes: Normal, Big
-(115%), Extra big (130%); the whole page scales (`zoom` on `body`). Both are
+follows the system. Three "A" buttons of growing size next to it choose the text
+size: Normal, Big (115%), Extra big (130%); the pressed one is highlighted
+and the whole page scales (`zoom` on `body`). Text areas hide overflow on
+both axes, since zoom rounding could otherwise show a 1px scroll bar. Both are
 kept in the cookies `theme` and `scale` (one year, SameSite=Lax), so the
 layout renders them on `<html data-theme data-scale>` before any script
 runs; with JavaScript they apply at once without a request. They are on

@@ -420,30 +420,32 @@ form.button_to {
   display: none;
 }
 
-.scale-menu__glyph {
-  font-weight: 600;
-  letter-spacing: -0.02em;
+.scale-buttons {
+  display: inline-flex;
+  align-items: baseline;
+  margin-left: 2px;
 }
 
-.scale-menu__glyph small {
-  font-size: 0.75em;
+.scale-button {
+  min-width: 20px;
+  padding: 0 3px;
+  font-weight: 500;
+  line-height: 24px;
+  opacity: 0.6;
 }
 
-.scale-option {
-  width: 100%;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
+.scale-button--normal { font-size: 11px; }
+.scale-button--big { font-size: 14px; }
+.scale-button--extra { font-size: 17px; }
+
+.scale-button:hover,
+.scale-button[aria-pressed="true"] {
+  opacity: 1;
 }
 
-.scale-option--big { font-size: 15px; }
-.scale-option--extra { font-size: 17px; }
-
-.scale-option[aria-pressed="true"] {
-  background: rgba(10, 100, 214, 0.12);
-  font-weight: 600;
+.scale-button[aria-pressed="true"] {
+  background: var(--tool-hover);
+  font-weight: 700;
 }
 
 /* Text size: the whole page scales, like a larger text setting. */

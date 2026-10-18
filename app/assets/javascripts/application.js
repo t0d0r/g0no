@@ -2,10 +2,12 @@
 
 // Text areas grow with their text instead of scrolling. scrollHeight leaves
 // out the border, which with border-box sizing would leave the box a pixel
-// short and bring back the scroll bar. Without JavaScript the field keeps
+// short and bring back the scroll bar. Overflow is hidden on both axes: the
+// text always wraps, and with the Big / Extra big zoom rounding can make the
+// content a fraction wider than the box. Without JavaScript the field keeps
 // its normal scroll bar, so no text is hidden.
 function autoGrow(textarea) {
-  textarea.style.overflowY = "hidden";
+  textarea.style.overflow = "hidden";
   const grow = () => {
     textarea.style.height = "auto";
     const border = textarea.offsetHeight - textarea.clientHeight;
@@ -230,25 +232,33 @@ function setUpNoteLock(form, { save, say }) {
     say(form.dataset.lockedHint);
   };
 
-  // The padlock opens the text, with the caret at its end.
-  const unlock = (field = fields[fields.length - 1], caretAtSelectionEnd = false) => {
+  // caret: where to put the caret; without one (padlock, Enter) the text
+  // opens with the caret at its end.
+  const unlock = (field = fields[fields.length - 1], caret = null) => {
     locked = false;
     fields.forEach((f) => { f.readOnly = false; });
     showFormatted(false);
     show();
     say("");
     field.focus();
-    // A double-click selects a word; typing would replace it, so put the
-    // caret at its end instead.
-    if (caretAtSelectionEnd) {
-      field.setSelectionRange(field.selectionEnd, field.selectionEnd);
+    if (caret !== null) {
+      field.setSelectionRange(caret, caret);
     } else if (field === fields[fields.length - 1]) {
       field.setSelectionRange(field.value.length, field.value.length);
     }
   };
 
+  // The first click of a double-click puts the (invisible) caret of the
+  // read-only field where the pointer was; the second click selects a word.
+  // Remember the first so editing starts exactly there.
+  const clickCaret = new Map();
   fields.forEach((field) => {
-    field.addEventListener("dblclick", () => { if (locked) unlock(field, true); });
+    field.addEventListener("click", (event) => {
+      if (locked && event.detail === 1) clickCaret.set(field, field.selectionStart);
+    });
+    field.addEventListener("dblclick", () => {
+      if (locked) unlock(field, clickCaret.get(field) ?? field.selectionEnd);
+    });
     field.addEventListener("keydown", (event) => {
       if (locked && event.key === "Enter") {
         event.preventDefault();
@@ -261,8 +271,60 @@ function setUpNoteLock(form, { save, say }) {
 
   view?.addEventListener("dblclick", (event) => {
     if (!locked || event.target.closest("a, input")) return;
-    unlock(description);
+    unlock(description, sourceOffsetAt(event.clientX, event.clientY));
   });
+
+  // Maps a point in the formatted view to an offset in the Markdown text:
+  // the clicked block's data-sourcepos gives where it starts in the text,
+  // then the visible characters before the point are matched one by one in
+  // the source, skipping Markdown syntax (*, _, #, [, ](url), "- [ ]", ...).
+  const sourceOffsetAt = (x, y) => {
+    let node;
+    let offset;
+    if (document.caretPositionFromPoint) {
+      const position = document.caretPositionFromPoint(x, y);
+      if (!position) return null;
+      ({ offsetNode: node, offset } = position);
+    } else if (document.caretRangeFromPoint) {
+      const range = document.caretRangeFromPoint(x, y);
+      if (!range) return null;
+      ({ startContainer: node, startOffset: offset } = range);
+    } else {
+      return null;
+    }
+    const block = (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement)?.closest("[data-sourcepos]");
+    if (!block || !view.contains(block)) return null;
+
+    const source = description.value;
+    const lineStarts = [0];
+    for (let i = 0; i < source.length; i += 1) if (source[i] === "\n") lineStarts.push(i + 1);
+    const at = (line, column) => Math.min(source.length, (lineStarts[line - 1] ?? source.length) + column - 1);
+    const [[startLine, startColumn], [endLine, endColumn]] =
+      block.dataset.sourcepos.split("-").map((point) => point.split(":").map(Number));
+    const start = at(startLine, startColumn);
+    const end = at(endLine, endColumn) + 1;
+
+    // Link addresses "](...)" are not visible text; never match inside them.
+    const hidden = new Set();
+    for (const match of source.slice(start, end).matchAll(/\]\([^)\n]*\)/g)) {
+      for (let i = 0; i < match[0].length; i += 1) hidden.add(start + match.index + i);
+    }
+
+    const before = document.createRange();
+    before.selectNodeContents(block);
+    before.setEnd(node, offset);
+    let caret = start;
+    for (const character of before.toString()) {
+      if (/\s/.test(character)) continue;
+      let found = source.indexOf(character, caret);
+      while (found !== -1 && hidden.has(found)) found = source.indexOf(character, found + 1);
+      if (found === -1 || found >= end) break;
+      caret = found + 1;
+    }
+    // A click just after a space lands after it, not before it.
+    if (/\s$/.test(before.toString()) && source[caret] === " ") caret += 1;
+    return caret;
+  };
   view?.addEventListener("change", (event) => {
     if (event.target.matches("input[type=checkbox][data-task-line]")) toggleTask(event.target);
   });
@@ -580,7 +642,6 @@ document.addEventListener("DOMContentLoaded", () => {
         form.querySelectorAll("button[name=scale]").forEach((option) => {
           option.setAttribute("aria-pressed", option === button);
         });
-        button.closest("details").open = false;
       }
     });
   });

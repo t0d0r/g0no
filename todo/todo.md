@@ -25,6 +25,8 @@
 - [x] yellow sticky site icon (specs/ui.md)
 - [x] notes locked on single click, unlocked by double-click (specs/features.md)
 - [x] Markdown switch per note with clickable task lists (specs/markdown.md)
+- [x] double-click puts the caret where clicked, also in Markdown notes (specs/markdown.md)
+- [x] text size as three A buttons; no scroll bar at Big / Extra big (specs/features.md)
 - [ ] run `make import` against the real CouchDB and check the notes (specs/couchdb-import.md)
 - [ ] move the old users database to storage/ and migrate it, or recreate users (specs/auth.md)
 - [ ] decide whether registration stays open; restrict it if the app is public (specs/auth.md)

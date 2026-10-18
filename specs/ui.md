@@ -63,8 +63,8 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   question, a sentence on what will happen, Cancel and a red action button.
 - **Drop overlay:** dashed blue border and "Drop files to attach them to
   this note" over the note window while files are dragged onto it.
-- **Menu bar tools:** sun/moon theme button and an "Aa" text size menu
-  (Normal / Big / Extra big), styled like the colour filter menu. In dark
+- **Menu bar tools:** sun/moon theme button and three "A" buttons (small,
+  medium, large letter) for Normal / Big / Extra big text. In dark
   theme the desk, menu bar and menus darken; notes keep their paper colours.
   Dark colours are CSS variables, redefined under
   `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and

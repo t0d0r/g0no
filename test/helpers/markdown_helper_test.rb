@@ -33,6 +33,8 @@ class MarkdownHelperTest < ActionView::TestCase
     assert boxes.none? { |box| box["disabled"] }
     assert boxes.last["checked"]
 
+    assert interactive.at_css("p")["data-sourcepos"].start_with?("1:1")
+
     read_only = Nokogiri::HTML5.fragment(render_markdown(text))
     assert read_only.css("input[type=checkbox]").all? { |box| box["disabled"] && !box["data-task-line"] }
   end

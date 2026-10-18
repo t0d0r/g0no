@@ -17,7 +17,12 @@ on. It is not a content change, so it adds no history entry.
 - Locked note (see features.md, Locked notes): the description is shown
   formatted; the text area is hidden. Double-click on the formatted text
   (not on a link or check box), Enter or the padlock unlocks and shows the
-  plain text for editing (caret at the end). Locking again shows the
+  plain text for editing. After a double-click the caret is put at the same
+  place in the text: the clicked block's `data-sourcepos` (kept on the
+  interactive view) gives its start in the text, then the visible characters
+  before the click are matched one by one in the source, skipping Markdown
+  syntax and link addresses `](...)`. Enter or the padlock put the caret at
+  the end. Locking again shows the
   formatted view, re-rendered from the autosave response (`html`).
 - Without JavaScript both the formatted view and the text area are shown.
 - Shared notes render Markdown read-only; board cards show the text without
