@@ -121,6 +121,9 @@ upload. All done in one turn:
 - Unlocking a long note no longer jumps to the top (focus without scroll,
   auto-grow restores scroll, caret line aligned to the click).
 
+- Per-note wide option (notes.wide): title strip box, instant toggle saved
+  in the background.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -183,7 +186,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 107 tests
+- `make check` - rubocop, brakeman, 108 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)

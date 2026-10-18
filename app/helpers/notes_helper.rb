@@ -51,6 +51,8 @@ module NotesHelper
     markdown: '<rect x="1" y="3.5" width="14" height="9" rx="1.5" />' \
               '<path d="M3.5 10V6l2 2.3L7.5 6v4M11.5 6v4M10 8.6l1.5 1.5 1.5-1.5" />',
     sort: '<path d="M5 3v10M2.5 10.5 5 13l2.5-2.5M11 13V3M8.5 5.5 11 3l2.5 2.5" />',
+    widen: '<path d="M9.5 2.5h4v4M13.5 2.5 9.2 6.8M6.5 13.5h-4v-4M2.5 13.5l4.3-4.3" />',
+    narrow: '<path d="M13.5 2.5 9.2 6.8M9.2 3.3v3.5h3.5M2.5 13.5l4.3-4.3M6.8 12.7V9.2H3.3" />',
     up: '<path d="m4 10 4-4 4 4" />',
     down: '<path d="m4 6 4 4 4-4" />'
   }.freeze

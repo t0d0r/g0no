@@ -146,7 +146,7 @@ class NotesController < ApplicationController
   end
 
   def note_params
-    params.fetch(:note, {}).permit(:title, :description, :tag_list, :visited_on, :color, :markdown)
+    params.fetch(:note, {}).permit(:title, :description, :tag_list, :visited_on, :color, :markdown, :wide)
   end
 
   def finance_params

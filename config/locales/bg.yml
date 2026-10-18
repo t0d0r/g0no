@@ -211,6 +211,9 @@ bg:
       updated_asc: "Отдавна нередактирани"
     nav:
       label: "Раздели"
+    wide:
+      widen: "По-широка бележка"
+      narrow: "По-тясна бележка"
     send_reset_instructions: "Изпрати инструкции за нова парола"
 
   flash:

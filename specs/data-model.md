@@ -16,6 +16,7 @@ Schema source of truth: `db/schema.rb`. Migrations live in `db/migrate/`.
 | couchdb_id | string, unique | `_id` of the CouchDB document it was imported from |
 | color | string, not null, default "yellow" | one of `Note::COLORS` |
 | markdown | boolean, default false | show the description as Markdown (markdown.md) |
+| wide | boolean, default false | note window uses the full desk width (features.md) |
 | note_attachments_count | integer, default 0 | counter cache for the paperclip badge |
 | share_token | string, unique | set while the note is shared (sharing.md) |
 | share_password_digest | string | bcrypt hash of the optional share password |

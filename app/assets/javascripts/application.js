@@ -637,6 +637,34 @@ function setUpDropUpload(form) {
   window.addEventListener("drop", (event) => { if (hasFiles(event)) event.preventDefault(); }, { signal: pageSignal });
 }
 
+// The wide box in a note's title strip: the window widens or narrows at once
+// (a short max-width transition) and the choice is saved in the background.
+function setUpWideToggle(form) {
+  const windowEl = form.closest(".note-window");
+  const button = form.querySelector("button[name='note[wide]']");
+  if (!windowEl || !button) return;
+
+  const regrow = () => windowEl.querySelectorAll("[data-autogrow]").forEach((area) => area.dispatchEvent(new Event("autogrow")));
+  windowEl.addEventListener("transitionend", (event) => { if (event.propertyName === "max-width") regrow(); });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const wide = button.value === "1";
+    windowEl.classList.toggle("note-window--wide", wide);
+    button.value = wide ? "0" : "1";
+    button.setAttribute("aria-pressed", String(wide));
+    button.title = wide ? form.dataset.wideLabel : form.dataset.narrowLabel;
+    button.setAttribute("aria-label", button.title);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) regrow();
+
+    const body = new FormData(form);
+    body.set("note[wide]", wide ? "1" : "0");
+    const token = document.querySelector("meta[name=csrf-token]");
+    if (token) body.set("authenticity_token", token.content);
+    fetch(form.action, { method: "POST", body, headers: { Accept: "application/json" }, credentials: "same-origin" });
+  });
+}
+
 // The colour menu of a new note changes the paper right away; the colour is
 // saved with the note. The dice picks one of the other colours.
 function setUpColorChoices() {
@@ -750,6 +778,7 @@ function setUpPage() {
 
   document.querySelectorAll("[data-preview-dialog]").forEach(setUpPreview);
   setUpColorChoices();
+  document.querySelectorAll("form[data-wide-toggle]").forEach(setUpWideToggle);
   document.querySelectorAll("[data-sort-button]").forEach(setUpSort);
   document.querySelectorAll("[data-capsule]").forEach(setUpCapsule);
   document.querySelectorAll("form[data-drop-upload]").forEach(setUpDropUpload);

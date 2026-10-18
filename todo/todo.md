@@ -32,6 +32,7 @@
 - [x] Turbo Drive (specs/ui.md)
 - [x] menu bar brand and section pills in the app style (specs/ui.md)
 - [x] keep the page still when a long note is unlocked (specs/features.md)
+- [x] per-note wide option (specs/features.md)
 - [ ] run `make import` against the real CouchDB and check the notes (specs/couchdb-import.md)
 - [ ] move the old users database to storage/ and migrate it, or recreate users (specs/auth.md)
 - [ ] decide whether registration stays open; restrict it if the app is public (specs/auth.md)

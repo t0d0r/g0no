@@ -67,6 +67,18 @@ exists only inside `<noscript>`).
 - Several saves by the same person within 10 minutes of each other form one
   "edited" history entry (history.md).
 
+## Wide notes
+
+Operator, 2026-10-19: "add option note to be wider". Per note, like the
+zoom button of a window: a box with diagonal arrows next to the Markdown
+box widens the note window from 760px to the full desk width (up to about
+1090px) and back (`notes.wide`, `PATCH note[wide]`). With JavaScript the
+width changes at once with a 0.25 s transition (none with reduced motion),
+the text area regrows afterwards, and the flag is saved in the background;
+without JavaScript the box is a form. Shared notes use the same width. Not
+a content change, so no history entry. Hidden on phones, where notes are
+already full width.
+
 ## Locked notes
 
 Operator, 2026-10-19: "make note to be locked from editing if just click,

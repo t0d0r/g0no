@@ -549,6 +549,28 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[data-preview-download][data-turbo=false]"
   end
 
+
+  test "a note can be made wider" do
+    sign_in users(:admin)
+    get note_url(@note)
+    assert_select ".note-window:not(.note-window--wide)"
+    assert_select "form[data-wide-toggle] button[name=?][value='1'][aria-pressed=false]", "note[wide]"
+
+    assert_no_difference("@note.versions.count") do
+      patch note_url(@note), params: { note: { wide: "1" } }, as: :json
+    end
+    assert_response :success
+    assert @note.reload.wide?
+
+    get note_url(@note)
+    assert_select ".note-window.note-window--wide"
+    assert_select "form[data-wide-toggle] button[value='0'][aria-pressed=true]"
+
+    @note.share
+    get shared_note_url(@note.share_token)
+    assert_select ".shared-note.note-window--wide"
+  end
+
   private
 
   def attach_file(note)

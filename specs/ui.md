@@ -82,6 +82,8 @@ page changes, otherwise plain JavaScript.
 - **Markdown box:** M-down icon right after the close box; dark while the
   note is shown as Markdown (markdown.md). Formatted text uses the note's
   font; code and tables get a light grey background and rules.
+- **Wide box:** diagonal arrows pointing out (widen) or in (narrow), next to
+  the Markdown box.
 - **Lock:** padlock box in the title strip (closed when locked, open while
   editing). While editing, the title and description show their dashed
   rules; locked fields have a default cursor.

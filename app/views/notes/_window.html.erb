@@ -1,4 +1,4 @@
-<article class="sticky sticky--<%= sticky_color(note) %> note-window" data-sticky>
+<article class="sticky sticky--<%= sticky_color(note) %> note-window <%= "note-window--wide" if note.wide? %>" data-sticky>
   <header class="sticky__bar">
     <%= link_to "×", notes_path, class: "sticky__box", title: t("ui.back"), aria: { label: t("ui.back") } %>
     <% if note.persisted? %>
@@ -7,6 +7,18 @@
         <button type="submit" name="note[markdown]" value="<%= note.markdown? ? 0 : 1 %>"
                 class="sticky__box sticky__box--icon markdown-box" aria-pressed="<%= note.markdown? %>"
                 title="<%= label %>" aria-label="<%= label %>"><%= icon :markdown, size: 11 %></button>
+      <% end %>
+      <%# Wide note, like the zoom button of a window; application.js applies it
+          at once and saves it in the background. %>
+      <%= form_with model: note, class: "box-form wide-form", data: { wide_toggle: true,
+                    wide_label: t("ui.wide.narrow"), narrow_label: t("ui.wide.widen") } do %>
+        <% label = note.wide? ? t("ui.wide.narrow") : t("ui.wide.widen") %>
+        <button type="submit" name="note[wide]" value="<%= note.wide? ? 0 : 1 %>"
+                class="sticky__box sticky__box--icon wide-box" aria-pressed="<%= note.wide? %>"
+                title="<%= label %>" aria-label="<%= label %>">
+          <span class="wide-box__widen"><%= icon :widen, size: 10 %></span>
+          <span class="wide-box__narrow"><%= icon :narrow, size: 10 %></span>
+        </button>
       <% end %>
     <% end %>
     <span class="sticky__caption">

@@ -204,6 +204,9 @@ en:
       updated_asc: "Least recently edited"
     nav:
       label: "Sections"
+    wide:
+      widen: "Make the note wider"
+      narrow: "Make the note narrower"
     send_reset_instructions: "Send me reset instructions"
 
   flash:

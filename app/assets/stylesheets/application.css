@@ -900,6 +900,27 @@ form.button_to {
 .note-window {
   max-width: 760px;
   margin: 0 auto;
+  transition: max-width 0.25s ease;
+}
+
+/* Wide note: the whole desk width. */
+.note-window--wide {
+  max-width: 100%;
+}
+
+.wide-box__narrow,
+.note-window--wide .wide-box__widen {
+  display: none;
+}
+
+.note-window--wide .wide-box__narrow {
+  display: inline-flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-window {
+    transition: none;
+  }
 }
 
 .note-window__body {
@@ -2059,6 +2080,11 @@ body.time-capsule {
 
   .nav-link {
     padding: 0 7px;
+  }
+
+  /* Notes already use the full width on phones. */
+  .wide-form {
+    display: none;
   }
 
   .menubar {

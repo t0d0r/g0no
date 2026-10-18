@@ -1,5 +1,5 @@
 <% content_for :title, @note.title %>
-<article class="sticky sticky--<%= sticky_color(@note) %> note-window shared-note">
+<article class="sticky sticky--<%= sticky_color(@note) %> note-window shared-note <%= "note-window--wide" if @note.wide? %>">
   <header class="sticky__bar">
     <span class="sticky__box sticky__box--spacer" aria-hidden="true"></span>
     <span class="sticky__caption"><%= t("ui.share.shared_note") %></span>
