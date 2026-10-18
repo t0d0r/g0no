@@ -453,6 +453,40 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_select "button.lock-box", 0
   end
 
+
+  test "the Markdown switch renders the note formatted" do
+    sign_in users(:admin)
+    @note.update!(description: "# Shopping\n\n- [ ] milk")
+    get note_url(@note)
+    assert_select ".markdown-box[aria-pressed=false][value='1']"
+    assert_select "[data-markdown-view]", 0
+
+    patch note_url(@note), params: { note: { markdown: "1" } }
+    assert @note.reload.markdown?
+    get note_url(@note)
+    assert_select ".markdown-box[aria-pressed=true][value='0']"
+    assert_select "[data-markdown-view] h1", "Shopping"
+    assert_select "[data-markdown-view] input[type=checkbox][data-task-line='3']:not([disabled])"
+    assert_select "textarea#note_description", text: /# Shopping/
+  end
+
+  test "autosave of a Markdown note returns the rendered text" do
+    sign_in users(:admin)
+    @note.update!(markdown: true)
+    patch note_url(@note), params: { note: { title: "Groceries", description: "- [x] milk" } }, as: :json
+    assert_match 'data-task-line="1"', response.parsed_body["html"]
+    assert_match "checked", response.parsed_body["html"]
+  end
+
+  test "shared Markdown notes are formatted with read-only task boxes" do
+    @note.update!(markdown: true, description: "**bold**\n\n- [ ] task")
+    @note.share
+    get shared_note_url(@note.share_token)
+    assert_select ".note-markdown strong", "bold"
+    assert_select ".note-markdown input[type=checkbox][disabled]"
+    assert_select ".note-text[hidden]"
+  end
+
   private
 
   def attach_file(note)

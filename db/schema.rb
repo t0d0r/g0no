@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_19_090001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_19_120001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -86,6 +86,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_090001) do
     t.string "share_password_digest"
     t.datetime "shared_at"
     t.string "color", default: "yellow", null: false
+    t.boolean "markdown", default: false, null: false
     t.index ["couchdb_id"], name: "index_notes_on_couchdb_id", unique: true
     t.index ["share_token"], name: "index_notes_on_share_token", unique: true
     t.index ["title"], name: "index_notes_on_title", unique: true

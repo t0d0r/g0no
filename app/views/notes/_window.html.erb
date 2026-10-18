@@ -1,6 +1,14 @@
 <article class="sticky sticky--<%= sticky_color(note) %> note-window" data-sticky>
   <header class="sticky__bar">
     <%= link_to "×", notes_path, class: "sticky__box", title: t("ui.back"), aria: { label: t("ui.back") } %>
+    <% if note.persisted? %>
+      <%= form_with model: note, class: "box-form" do %>
+        <% label = note.markdown? ? t("ui.markdown.show_plain") : t("ui.markdown.show_formatted") %>
+        <button type="submit" name="note[markdown]" value="<%= note.markdown? ? 0 : 1 %>"
+                class="sticky__box sticky__box--icon markdown-box" aria-pressed="<%= note.markdown? %>"
+                title="<%= label %>" aria-label="<%= label %>"><%= icon :markdown, size: 11 %></button>
+      <% end %>
+    <% end %>
     <span class="sticky__caption">
       <%= note.persisted? ? t("ui.edited", time: time_ago_in_words(note.updated_at)) : t("ui.new_note") %>
     </span>

@@ -24,6 +24,11 @@
       </div>
     <% end %>
   </div>
+  <% if note.persisted? && note.markdown? %>
+    <%# Formatted view of a Markdown note; application.js shows it while the note
+        is locked and the plain text while it is being edited. %>
+    <div class="note-markdown markdown-body" data-markdown-view><%= render_markdown(note.description, interactive: true) %></div>
+  <% end %>
   <%= f.label :description, t(:description), class: "sr-only" %>
   <%= f.text_area :description, class: "note-description", rows: 4,
                   placeholder: t(:description).capitalize, autocomplete: :off, data: { autogrow: true } %>

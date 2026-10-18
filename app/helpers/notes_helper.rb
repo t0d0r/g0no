@@ -47,6 +47,8 @@ module NotesHelper
     copy: '<rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />' \
           '<path d="M10.5 3.5V3A1.5 1.5 0 0 0 9 1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" />',
     check: '<path d="m3.5 8.5 3 3 6-7" />',
+    markdown: '<rect x="1" y="3.5" width="14" height="9" rx="1.5" />' \
+              '<path d="M3.5 10V6l2 2.3L7.5 6v4M11.5 6v4M10 8.6l1.5 1.5 1.5-1.5" />',
     up: '<path d="m4 10 4-4 4 4" />',
     down: '<path d="m4 6 4 4 4-4" />'
   }.freeze

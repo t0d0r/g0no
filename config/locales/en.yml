@@ -193,6 +193,9 @@ en:
       hint: "Double-click the note to edit it."
       lock: "Lock the note (stop editing)"
       unlock: "Unlock the note to edit it"
+    markdown:
+      show_formatted: "Show as Markdown"
+      show_plain: "Show as plain text"
     send_reset_instructions: "Send me reset instructions"
 
   flash:

@@ -15,7 +15,12 @@
         </div>
       <% end %>
     </div>
-    <div class="note-text"><%= @note.description %></div>
+    <% if @note.markdown? %>
+      <div class="note-markdown markdown-body"><%= render_markdown(@note.description) %></div>
+      <div class="note-text" hidden><%= @note.description %></div>
+    <% else %>
+      <div class="note-text"><%= @note.description %></div>
+    <% end %>
 
     <% finance_entries = @note.finance_entries.to_a %>
     <% if finance_entries.any? %>

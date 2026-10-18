@@ -672,6 +672,17 @@ form.button_to {
   border-bottom-color: var(--rule);
 }
 
+/* Markdown switch: a form in the title strip; pressed while Markdown is on. */
+.box-form {
+  display: inline-flex;
+  margin: 0;
+}
+
+.markdown-box[aria-pressed="true"] {
+  background: rgba(0, 0, 0, 0.62);
+  color: var(--paper);
+}
+
 /* Copy box: the copy icon turns into a check mark for a moment. */
 .copy-note__done,
 .copy-note.is-copied > .icon {
@@ -919,6 +930,112 @@ form.button_to {
 
 .note-autosave__status--failed {
   color: var(--danger);
+}
+
+/* Formatted Markdown on the paper. */
+.note-markdown {
+  min-height: 7.5em;
+  margin-top: 8px;
+  font: 15px/1.55 var(--font);
+  overflow-wrap: anywhere;
+  cursor: default;
+}
+
+.markdown-body > :first-child {
+  margin-top: 0;
+}
+
+.markdown-body > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin: 1.1em 0 0.4em;
+  line-height: 1.25;
+}
+
+.markdown-body h1 { font-size: 1.5em; }
+.markdown-body h2 { font-size: 1.3em; }
+.markdown-body h3 { font-size: 1.12em; }
+.markdown-body h4 { font-size: 1em; }
+
+.markdown-body p,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body blockquote,
+.markdown-body pre,
+.markdown-body table {
+  margin: 0 0 0.8em;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.5em;
+}
+
+.markdown-body li:has(> input[type="checkbox"]) {
+  list-style: none;
+  margin-left: -1.3em;
+}
+
+.markdown-body input[type="checkbox"] {
+  margin: 0 0.4em 0 0;
+  vertical-align: -1px;
+  accent-color: var(--accent);
+}
+
+.markdown-body input[type="checkbox"]:not([disabled]) {
+  cursor: pointer;
+}
+
+.markdown-body code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.07);
+  font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.markdown-body pre {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.06);
+  overflow-x: auto;
+}
+
+.markdown-body pre code {
+  padding: 0;
+  background: none;
+}
+
+.markdown-body blockquote {
+  padding-left: 12px;
+  border-left: 3px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.markdown-body hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.markdown-body table {
+  display: block;
+  max-width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+}
+
+.markdown-body th,
+.markdown-body td {
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+}
+
+.markdown-body a {
+  text-decoration: underline;
 }
 
 .form-errors {

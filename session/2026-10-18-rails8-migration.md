@@ -90,6 +90,12 @@ upload. All done in one turn:
 - Notes open locked (read-only); double-click, Enter or the padlock box
   unlocks; leaving the fields or Escape saves and locks again.
 
+- Markdown switch per note (commonmarker gem, sanitized), formatted while
+  locked, plain while editing, clickable task boxes that flip [ ]/[x] in the
+  text. Found: YAML keys on/off are booleans (missing translation leaked
+  into a title attribute); tests now raise on missing translations and
+  check that en and bg keys match.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -152,7 +158,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 92 tests
+- `make check` - rubocop, brakeman, 102 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)

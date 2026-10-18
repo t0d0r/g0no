@@ -11,6 +11,9 @@ gem "puma", ">= 5.0"
 # Authentication
 gem "devise", "~> 5.0"
 
+# Markdown rendering for notes (GitHub flavoured, precompiled native gem)
+gem "commonmarker", "~> 2.10"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

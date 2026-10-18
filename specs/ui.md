@@ -73,6 +73,9 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   (the height includes the border; it is measured again on resize, when
   fonts load and when the text size changes). Without JavaScript it keeps a
   normal scroll bar so no text is hidden.
+- **Markdown box:** M-down icon right after the close box; dark while the
+  note is shown as Markdown (markdown.md). Formatted text uses the note's
+  font; code and tables get a light grey background and rules.
 - **Lock:** padlock box in the title strip (closed when locked, open while
   editing). While editing, the title and description show their dashed
   rules; locked fields have a default cursor.

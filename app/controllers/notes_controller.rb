@@ -127,7 +127,7 @@ class NotesController < ApplicationController
   end
 
   def note_params
-    params.fetch(:note, {}).permit(:title, :description, :tag_list, :visited_on, :color)
+    params.fetch(:note, {}).permit(:title, :description, :tag_list, :visited_on, :color, :markdown)
   end
 
   def finance_params
@@ -135,8 +135,12 @@ class NotesController < ApplicationController
   end
 
   # Answer to the note form's automatic saves (application.js).
+  # For Markdown notes the rendered text comes along, so the page can show it
+  # again when the note locks.
   def autosave_json
-    { url: note_path(@note), saved_at: l(@note.updated_at, format: "%H:%M") }
+    json = { url: note_path(@note), saved_at: l(@note.updated_at, format: "%H:%M") }
+    json[:html] = helpers.render_markdown(@note.description, interactive: true) if @note.markdown?
+    json
   end
 
   def errors_for(note)

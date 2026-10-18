@@ -12,6 +12,8 @@ function autoGrow(textarea) {
     textarea.style.height = `${textarea.scrollHeight + border}px`;
   };
   textarea.addEventListener("input", grow);
+  // Sent when a hidden text area is shown again (Markdown notes).
+  textarea.addEventListener("autogrow", grow);
   window.addEventListener("resize", grow);
   document.fonts?.ready.then(grow);
   // The text size menu changes data-scale on <html>; the wrap changes with it.
@@ -125,6 +127,9 @@ function setUpNoteForm(form) {
       if (!response.ok) throw new Error(data.error || response.statusText);
       saved = body;
       if (isNew()) becomeExisting(data.url);
+      const view = form.querySelector("[data-markdown-view]");
+      // Rendered and sanitized by the server (MarkdownHelper).
+      if (view && typeof data.html === "string") view.innerHTML = data.html;
       say(`${form.dataset.saved} ${data.saved_at}`);
     } catch (error) {
       say(`${form.dataset.failed} ${error.message}`, true);
@@ -176,9 +181,34 @@ function setUpNoteForm(form) {
 function setUpNoteLock(form, { save, say }) {
   if (form.dataset.lockable !== "true") return;
   const fields = [...form.querySelectorAll(".note-title, .note-description")];
+  const description = form.querySelector(".note-description");
+  const view = form.querySelector("[data-markdown-view]");
   const windowEl = form.closest(".note-window");
   const box = windowEl?.querySelector("[data-lock-box]");
   let locked = false;
+
+  // Markdown notes: formatted while locked, plain text while editing.
+  const showFormatted = (formatted) => {
+    if (!view) return;
+    view.hidden = !formatted;
+    description.hidden = formatted;
+    if (!formatted) description.dispatchEvent(new Event("autogrow"));
+  };
+
+  // A task list box clicked in the formatted view flips "[ ]" / "[x]" on its
+  // line of the text (data-task-line) and saves.
+  const toggleTask = (checkbox) => {
+    const lines = description.value.split("\n");
+    const index = Number(checkbox.dataset.taskLine) - 1;
+    const marker = /^(\s*(?:>\s*)*(?:[-+*]|\d+[.)])\s+)\[[ xX]\]/;
+    if (!marker.test(lines[index] ?? "")) {
+      checkbox.checked = !checkbox.checked;
+      return;
+    }
+    lines[index] = lines[index].replace(marker, `$1[${checkbox.checked ? "x" : " "}]`);
+    description.value = lines.join("\n");
+    save();
+  };
 
   const show = () => {
     windowEl?.classList.toggle("is-editing", !locked);
@@ -195,6 +225,7 @@ function setUpNoteLock(form, { save, say }) {
   const lock = () => {
     locked = true;
     fields.forEach((field) => { field.readOnly = true; });
+    showFormatted(true);
     show();
     say(form.dataset.lockedHint);
   };
@@ -203,6 +234,7 @@ function setUpNoteLock(form, { save, say }) {
   const unlock = (field = fields[fields.length - 1], caretAtSelectionEnd = false) => {
     locked = false;
     fields.forEach((f) => { f.readOnly = false; });
+    showFormatted(false);
     show();
     say("");
     field.focus();
@@ -225,6 +257,14 @@ function setUpNoteLock(form, { save, say }) {
         field.blur();
       }
     });
+  });
+
+  view?.addEventListener("dblclick", (event) => {
+    if (!locked || event.target.closest("a, input")) return;
+    unlock(description);
+  });
+  view?.addEventListener("change", (event) => {
+    if (event.target.matches("input[type=checkbox][data-task-line]")) toggleTask(event.target);
   });
 
   // Lock again once focus leaves both fields (after the blur save).
