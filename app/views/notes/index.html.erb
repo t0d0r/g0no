@@ -8,16 +8,7 @@
       <%= t "Content" %>
     <% end %>
   </h1>
-  <span class="desk__meta">
-    <% if @color %>
-      <span class="filter__dot sticky--<%= @color %>" aria-hidden="true"></span><%= t("ui.colors.#{@color}") %> -
-    <% end %>
-    <%= t("ui.notes_count", count: @notes.size) %>
-    <%= render "sort_button", sort: @sort %>
-    <% if filtered %>
-      - <%= link_to t("ui.search.clear"), notes_path, class: "desk__clear" %>
-    <% end %>
-  </span>
+  <%= render "board_tools", notes: @notes, sort: @sort, query: @query, color: @color %>
 </div>
 
 <div class="board">

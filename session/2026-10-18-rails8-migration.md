@@ -107,6 +107,11 @@ upload. All done in one turn:
   edited) in a cookie; cards glide to new places (FLIP, transform only,
   300 ms, zoom-corrected, off with reduced motion).
 
+- Search box and colour filter moved from the menu bar to the board
+  header next to the count and sort button (notes/_board_tools).
+- Operator asked about the Rails "single page feel": Hotwire Turbo (was
+  Turbolinks). Not adopted; the app stays framework-free unless asked.
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
@@ -169,7 +174,7 @@ The 2011 README moved to doc/NOTES-2011.md.
 
 ## How to run and verify
 
-- `make check` - rubocop, brakeman, 104 tests
+- `make check` - rubocop, brakeman, 105 tests
 - `make run` - development server on http://localhost:3000; admin password
   is `ADMIN_PASSWORD` in `.env`
 - `make docker-up` - production image via compose (needs `.env`)

@@ -209,14 +209,27 @@ form.button_to {
   cursor: pointer;
 }
 
-/* Search box and colour filter in the menu bar. */
-.menubar__search {
-  position: relative;
+/* Search box and colour filter in the board header (notes/_board_tools). */
+.desk__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px 10px;
+  min-width: 0;
+}
+
+.board-search {
   display: flex;
   align-items: center;
   gap: 6px;
-  flex: 0 1 260px;
-  min-width: 0;
+  margin: 0;
+}
+
+.board-search .search-field {
+  flex: 0 1 220px;
+  width: 220px;
+  height: 28px;
 }
 
 .search-field {
@@ -243,7 +256,7 @@ form.button_to {
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--menubar-ink);
+  color: var(--desk-ink);
   font: 13px var(--font);
   outline: none;
 }
@@ -255,34 +268,6 @@ form.button_to {
 
 .filter {
   position: relative;
-}
-
-.filter__toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  list-style: none;
-  cursor: pointer;
-}
-
-.filter__toggle::-webkit-details-marker {
-  display: none;
-}
-
-.filter__toggle:hover,
-.filter[open] .filter__toggle {
-  background: var(--tool-hover);
-}
-
-.filter__toggle:focus-visible {
-  outline: 3px solid var(--accent-ring);
-}
-
-.filter__toggle--active .filter__dot {
-  box-shadow: 0 0 0 2px var(--menubar-bg), 0 0 0 3.5px var(--accent);
 }
 
 .filter__dot {
@@ -299,10 +284,6 @@ form.button_to {
 .sticky--all {
   background: conic-gradient(#f5e270 0 60deg, #a9d1f5 0 120deg, #ade5a0 0 180deg,
                              #f4b0cf 0 240deg, #c9b9f5 0 300deg, #d8d6cf 0);
-}
-
-.desk__meta .filter__dot {
-  margin-right: 5px;
 }
 
 .filter__menu {
@@ -493,10 +474,10 @@ form.button_to {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-left: 8px;
   padding: 2px 8px;
   border-radius: 6px;
-  color: inherit;
+  color: var(--desk-ink-soft);
+  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -508,6 +489,24 @@ form.button_to {
 
 .sort-button:focus-visible {
   outline: 3px solid var(--accent-ring);
+}
+
+.filter__summary {
+  margin-left: 0;
+  list-style: none;
+  cursor: pointer;
+}
+
+.filter__summary::-webkit-details-marker {
+  display: none;
+}
+
+.filter[open] > .filter__summary {
+  background: var(--tool-hover);
+}
+
+.filter__summary .filter__dot {
+  margin-right: 2px;
 }
 
 /* ---------- flash ---------- */
@@ -2012,9 +2011,22 @@ body.time-capsule {
     padding: 6px 16px;
   }
 
-  .menubar__search {
-    flex: 1 0 100%;
-    order: 10;
+  .desk__header {
+    flex-wrap: wrap;
+  }
+
+  .desk__tools {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .board-search {
+    flex: 1 1 100%;
+  }
+
+  .board-search .search-field {
+    flex: 1;
+    width: auto;
   }
 
   .flash-stack {

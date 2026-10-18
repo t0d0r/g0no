@@ -1,0 +1,40 @@
+<%# Board header tools: search (title and description), colour filter, note
+    count and sort. Search and colour are one GET form, so each keeps the
+    other; the sort order lives in a cookie. Locals: notes, sort, query, color. %>
+<div class="desk__tools">
+  <%= form_with url: notes_path, method: :get, class: "board-search", role: "search", data: { search_form: true } do %>
+    <label class="search-field">
+      <%= icon :search %>
+      <span class="sr-only"><%= t("ui.search.label") %></span>
+      <%= search_field_tag :q, query, id: "board_q", class: "search-field__input",
+                           placeholder: t("ui.search.placeholder"), autocomplete: "off", enterkeyhint: "search" %>
+    </label>
+    <details class="filter" data-filter>
+      <summary class="sort-button filter__summary" title="<%= t("ui.search.filter") %>">
+        <span class="filter__dot sticky--<%= color || "all" %>" aria-hidden="true"></span>
+        <%= color ? t("ui.colors.#{color}") : t("ui.colors.all") %>
+      </summary>
+      <fieldset class="filter__menu">
+        <legend class="filter__legend"><%= t("ui.color") %></legend>
+        <label class="filter__option">
+          <input type="radio" name="color" value="" <%= "checked" unless color %> data-filter-choice>
+          <span class="filter__dot sticky--all" aria-hidden="true"></span><%= t("ui.colors.all") %>
+        </label>
+        <% Note::COLORS.each do |choice| %>
+          <label class="filter__option">
+            <input type="radio" name="color" value="<%= choice %>" <%= "checked" if choice == color %> data-filter-choice>
+            <span class="filter__dot sticky--<%= choice %>" aria-hidden="true"></span><%= t("ui.colors.#{choice}") %>
+          </label>
+        <% end %>
+        <noscript><button type="submit" class="btn"><%= t("ui.search.apply") %></button></noscript>
+      </fieldset>
+    </details>
+  <% end %>
+  <span class="desk__meta">
+    <%= t("ui.notes_count", count: notes.size) %>
+    <% if query.present? || color %>
+      - <%= link_to t("ui.search.clear"), notes_path, class: "desk__clear" %>
+    <% end %>
+  </span>
+  <%= render "sort_button", sort: sort %>
+</div>

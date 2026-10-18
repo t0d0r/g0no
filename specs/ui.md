@@ -48,10 +48,9 @@ Styles: `app/assets/stylesheets/application.css`. Behaviour:
   while hovered or focused); alerts stay until closed. They slide in, and
   do not animate with reduced motion.
 
-- **Menu bar search:** a search field and a round colour button between the
-  links and the user name. The button opens a small menu of the six colours
-  plus "All colours"; picking one searches at once. On phones the search
-  field takes its own row under the links.
+- **Board tools:** search box, colour filter and sort button in the board
+  header next to the note count (features.md, Sorting); small grey text
+  buttons that highlight on hover. The menu bar has no search.
 - **Colour menu:** six small squares in a note's title strip, the current one
   ringed. Fixed set only.
 - **Card badges:** paperclip + file count, link icon for shared notes, then

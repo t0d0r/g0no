@@ -21,7 +21,6 @@
           <%= link_to_unless_current(t("ui.admin.title"), admin_root_path) { content_tag(:span, t("ui.admin.title"), class: "current") } %>
         <% end %>
       </nav>
-      <%= render "partials/search" %>
     <% end %>
     <div class="menubar__right">
       <%= render "partials/preferences" %>

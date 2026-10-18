@@ -515,6 +515,23 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a.sort-button[data-sort=created_asc][href=?]", "/notes?color=blue&q=o&sort=created_desc"
   end
 
+
+  test "search, colour filter, count and sort sit in the board header" do
+    sign_in users(:admin)
+    get notes_url(q: "o", color: "blue")
+    assert_select ".menubar input[name=q]", 0
+    assert_select ".desk__header .desk__tools" do
+      assert_select "form.board-search input[name=q][value=o]"
+      assert_select "form.board-search input[name=color][value=blue][checked]"
+      assert_select ".filter__summary", /Blue/
+      assert_select ".desk__meta", /1 note/
+      assert_select "a.sort-button[data-sort-button]"
+    end
+
+    get by_tag_note_url("home")
+    assert_select ".desk__header form.board-search[action=?]", notes_path
+  end
+
   private
 
   def attach_file(note)

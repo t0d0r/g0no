@@ -6,7 +6,7 @@ signed-in user.
 | route | behaviour |
 |-------|-----------|
 | `GET /` and `GET /notes` | board of note cards (in the chosen order, see Sorting) with title, the first 250 characters of the description, age and author, a paperclip with the number of files, a link icon when shared, and the total expense when above zero; the first card links to a new note |
-| `GET /notes?q=&color=` | search from the menu bar: `q` matches title or description (case-insensitive, `%` and `_` taken literally), `color` limits to one paper colour; unknown colours are ignored; the header shows the filter with a "Clear filter" link and the new-note tile is hidden |
+| `GET /notes?q=&color=` | search from the board header: `q` matches title or description (case-insensitive, `%` and `_` taken literally), `color` limits to one paper colour; unknown colours are ignored; the header shows the filter with a "Clear filter" link and the new-note tile is hidden |
 | `GET /notes/new`, `POST /notes` | create a note; author is the current user; a missing or duplicate title re-renders the form with status 422 (JSON: `{error}` with 422, `{url, saved_at}` with 201) |
 | `GET /notes/:id` | a note window: title and description edited in place and saved automatically (see Autosave), the total expense, the expense list (newest first) with the add-expense form, the attachment list with the upload form, and the sharing section (sharing.md); the title bar has close (back to the list), the colour menu and delete boxes |
 | `PATCH /notes/:id` | one action for the note forms: title/description, colour (`note[color]`), a finance entry (`finance[date, amount, comment]`), and uploads (`note[attachments][]` with `note[attachment_comment]`); sets `updated_from`; on a validation error re-renders the page with 422 and the messages in the flash; with `Accept: application/json` (autosave) answers `{url, saved_at}` or `{error}` with 422 |
@@ -25,6 +25,12 @@ signed-in user.
 Operator, 2026-10-19: a button next to the note count that cycles the
 order, with light animation when the cards rearrange.
 
+- The board header holds, right of the title: the search box, the colour
+  filter (dot + colour name, opens the colour menu), the note count with
+  "Clear filter" when filtered, and the sort button (operator, 2026-10-19:
+  colour filter and search moved next to sort). Search and colour are one
+  GET form, so each keeps the other. On phones the tools wrap under the
+  title with the search on its own row.
 - Orders, in cycle order: Oldest first (`created_asc`, the default), Newest
   first (`created_desc`), Recently edited (`updated_desc`), Least recently
   edited (`updated_asc`); ties by id. Applies to the board, search results
