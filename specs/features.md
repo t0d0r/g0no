@@ -78,6 +78,13 @@ unlock it if dbl click".
 - Double-click on the title or description unlocks both and puts the caret
   exactly where the double-click was (the caret position of its first
   click), not on a selected word that typing would replace.
+- Unlocking never moves the page: the field is focused without scrolling,
+  any scroll caused by showing the plain text is undone, and after a
+  double-click the page shifts only so that the caret's line is at the
+  height of the click (measured with a hidden copy of the text area). This
+  matters for Markdown notes, whose plain text is laid out differently.
+  Auto-grow keeps the scroll position too, so typing in a long note does
+  not jump.
 - Keyboard and touch: Enter on a locked field unlocks it; the padlock box in
   the title strip toggles the lock (unlocking puts the caret at the end of
   the description).

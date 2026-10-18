@@ -14,10 +14,14 @@ let pageSignal;
 // its normal scroll bar, so no text is hidden.
 function autoGrow(textarea) {
   textarea.style.overflow = "hidden";
+  // Measuring needs height "auto" for a moment, which shrinks a long page
+  // and makes the browser pull the scroll position up; put it back.
   const grow = () => {
+    const scrollY = window.scrollY;
     textarea.style.height = "auto";
     const border = textarea.offsetHeight - textarea.clientHeight;
     textarea.style.height = `${textarea.scrollHeight + border}px`;
+    if (window.scrollY !== scrollY) window.scrollTo(window.scrollX, scrollY);
   };
   textarea.addEventListener("input", grow);
   // Sent when a hidden text area is shown again (Markdown notes).
@@ -29,6 +33,34 @@ function autoGrow(textarea) {
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-scale"] });
   pageSignal.addEventListener("abort", () => observer.disconnect());
   grow();
+}
+
+// Viewport y of the middle of the line holding `position` in a text area:
+// a hidden copy with the same box and font gets the text up to that point
+// and a marker. Rectangles (not offsets) keep it right under the text size
+// zoom.
+function caretClientY(textarea, position) {
+  const style = getComputedStyle(textarea);
+  const mirror = document.createElement("div");
+  for (const property of ["boxSizing", "width", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
+                          "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth",
+                          "fontFamily", "fontSize", "fontWeight", "fontStyle", "letterSpacing", "lineHeight",
+                          "wordSpacing", "tabSize", "textTransform"]) {
+    mirror.style[property] = style[property];
+  }
+  Object.assign(mirror.style, {
+    position: "absolute", top: "0", left: "-10000px", visibility: "hidden",
+    whiteSpace: "pre-wrap", overflowWrap: "break-word", borderStyle: "solid"
+  });
+  mirror.textContent = textarea.value.slice(0, position);
+  const marker = document.createElement("span");
+  marker.textContent = "\u200b";
+  mirror.append(marker);
+  document.body.append(mirror);
+  const mirrorRect = mirror.getBoundingClientRect();
+  const markerRect = marker.getBoundingClientRect();
+  mirror.remove();
+  return textarea.getBoundingClientRect().top + (markerRect.top - mirrorRect.top) + markerRect.height / 2;
 }
 
 // Copies the note's text (or its title when there is no text) to the
@@ -246,17 +278,26 @@ function setUpNoteLock(form, { save, say }) {
 
   // caret: where to put the caret; without one (padlock, Enter) the text
   // opens with the caret at its end.
-  const unlock = (field = fields[fields.length - 1], caret = null) => {
+  // The page must not move: focus without scrolling, put back any scroll
+  // the swap to plain text caused, then (after a double-click at pointerY)
+  // scroll so the caret's line sits where the user clicked.
+  const unlock = (field = fields[fields.length - 1], caret = null, pointerY = null) => {
+    const scrollY = window.scrollY;
     locked = false;
     fields.forEach((f) => { f.readOnly = false; });
     showFormatted(false);
     show();
     say("");
-    field.focus();
+    field.focus({ preventScroll: true });
     if (caret !== null) {
       field.setSelectionRange(caret, caret);
     } else if (field === fields[fields.length - 1]) {
       field.setSelectionRange(field.value.length, field.value.length);
+    }
+    window.scrollTo(window.scrollX, scrollY);
+    if (pointerY !== null && caret !== null && field.tagName === "TEXTAREA") {
+      const shift = caretClientY(field, caret) - pointerY;
+      if (Math.abs(shift) > 2) window.scrollBy(0, shift);
     }
   };
 
@@ -268,8 +309,8 @@ function setUpNoteLock(form, { save, say }) {
     field.addEventListener("click", (event) => {
       if (locked && event.detail === 1) clickCaret.set(field, field.selectionStart);
     });
-    field.addEventListener("dblclick", () => {
-      if (locked) unlock(field, clickCaret.get(field) ?? field.selectionEnd);
+    field.addEventListener("dblclick", (event) => {
+      if (locked) unlock(field, clickCaret.get(field) ?? field.selectionEnd, event.clientY);
     });
     field.addEventListener("keydown", (event) => {
       if (locked && event.key === "Enter") {
@@ -283,7 +324,7 @@ function setUpNoteLock(form, { save, say }) {
 
   view?.addEventListener("dblclick", (event) => {
     if (!locked || event.target.closest("a, input")) return;
-    unlock(description, sourceOffsetAt(event.clientX, event.clientY));
+    unlock(description, sourceOffsetAt(event.clientX, event.clientY), event.clientY);
   });
 
   // Maps a point in the formatted view to an offset in the Markdown text:

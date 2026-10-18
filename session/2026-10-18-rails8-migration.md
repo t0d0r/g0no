@@ -118,6 +118,9 @@ upload. All done in one turn:
 - Menu bar left side redesigned: sticky icon + name, section pills with
   paper colour squares.
 
+- Unlocking a long note no longer jumps to the top (focus without scroll,
+  auto-grow restores scroll, caret line aligned to the click).
+
 ## Decisions
 
 See specs/overview.md ("Migration from Rails 3.0"). Main ones: SQLite instead
