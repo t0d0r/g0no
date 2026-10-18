@@ -1,1 +1,4 @@
-<%= render "form" %>
+<% content_for :title, @note.title %>
+<%= render layout: "window", locals: { note: @note } do %>
+  <%= render "form", note: @note %>
+<% end %>

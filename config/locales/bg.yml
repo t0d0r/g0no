@@ -24,6 +24,41 @@ bg:
   tags: "тагове"
   title: "заглавие"
 
+  ui:
+    back: "Към бележките"
+    cancel: "Отказ"
+    created_by: "преди %{time} от %{author}"
+    delete_note: "Изтрий бележката"
+    dismiss: "Затвори"
+    edited: "редактирана преди %{time}"
+    expenses: "Разходи"
+    files: "Файлове"
+    login: "Имейл или потребителско име"
+    new_note: "Нова бележка"
+    no_notes: "Все още няма бележки. Създайте първата."
+    notes_count:
+      one: "%{count} бележка"
+      other: "%{count} бележки"
+    save: "Запис"
+    sign_in: "Вход"
+    upload: "Качи"
+    links:
+      forgot_password: "Забравена парола?"
+      sign_in: "Вход"
+      sign_up: "Регистрация"
+    change_password: "Смяна на паролата"
+    confirm_new_password: "Повторете новата парола"
+    new_password: "Нова парола"
+    password_minimum:
+      one: "поне %{count} символ"
+      other: "поне %{count} символа"
+    send_reset_instructions: "Изпрати инструкции за нова парола"
+
+  flash:
+    note_created: "Бележката е създадена."
+    note_deleted: "Документ със заглавие '%{title}' беше изтрит успешно"
+    file_deleted: "Файлът %{filename} беше изтрит."
+
   date:
     formats:
       default: "%d.%m.%Y"
@@ -164,6 +199,25 @@ bg:
       second: "Секунди"
 
   activerecord:
+    models:
+      user: "потребител"
+      note: "бележка"
+    attributes:
+      user:
+        email: "Имейл"
+        password: "Парола"
+        password_confirmation: "Повторете паролата"
+        current_password: "Текуща парола"
+        remember_me: "Запомни ме"
+        username: "Потребителско име"
+      note:
+        title: "Заглавие"
+        description: "Описание"
+      finance_entry:
+        amount: "Сума"
+        date: "Дата"
+      note_attachment:
+        file: "Файл"
     errors:
       template:
         header:

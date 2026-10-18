@@ -28,8 +28,9 @@ audit: deps ## check gems for known vulnerabilities (downloads the advisory data
 
 check: lint test ## lint and test; must pass before a commit
 
-run: build ## build and start the development server on http://localhost:3000
-	bin/rails server
+run: build ## build, create the admin user from .env if missing, start http://localhost:3000
+	@bin/setup-env
+	@set -a; . ./.env; set +a; bin/rails db:seed && exec bin/rails server
 
 clean: ## remove caches, logs, compiled assets and test uploads (keeps databases in storage/)
 	rm -rf tmp/cache tmp/storage/* public/assets
@@ -42,8 +43,8 @@ import: deps ## import notes from the legacy CouchDB (needs COUCHDB_URL)
 docker-build: ## build the production Docker image
 	docker build -t $(IMAGE) .
 
-docker-up: ## build and start the app with docker compose on http://localhost:3000 (needs .env)
-	@test -f .env || { echo ".env is missing: cp .env.example .env and set SECRET_KEY_BASE (bin/rails secret)"; exit 1; }
+docker-up: ## build and start the app with docker compose on http://localhost:3000
+	@bin/setup-env
 	docker compose up -d --build
 
 docker-down: ## stop the docker compose app (data stays in the storage volume)
@@ -53,5 +54,5 @@ docker-logs: ## follow the docker compose app logs
 	docker compose logs -f web
 
 docker-import: ## import from the legacy CouchDB inside the container (COUCHDB_URL in .env)
-	@test -f .env || { echo ".env is missing: cp .env.example .env"; exit 1; }
+	@bin/setup-env
 	docker compose run --rm web sh -c "bin/rails db:prepare && bin/rails couchdb:import"

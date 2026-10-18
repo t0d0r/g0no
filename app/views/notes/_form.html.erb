@@ -1,18 +1,33 @@
-<%= form_with model: @note, html: { class: "note" } do |f| %>
-  <div style="clear: both;">
-    <div class="label">
-      <%= f.label :title, t(:title), class: :note_title %>
-      <%= f.text_field :title, title: "заглавие", class: "blur", autocomplete: :off %>
+<%= form_with model: note, class: "note-form", data: { note_form: true } do |f| %>
+  <% if note.errors.any? %>
+    <div class="form-errors" role="alert">
+      <ul>
+        <% note.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
     </div>
-    <div class="label">
-      <%= f.label :description, t(:description), class: :note_description %>
-      <%= f.text_area :description, autocomplete: :off %>
-    </div>
+  <% end %>
+  <div class="note-head">
+    <%= f.label :title, t(:title), class: "sr-only" %>
+    <%= f.text_field :title, class: "note-title", placeholder: t(:title).capitalize,
+                     autocomplete: :off, autofocus: note.new_record? %>
+    <% if note.persisted? && note.finance_total > 0 %>
+      <div class="note-total">
+        <span class="note-total__label"><%= t("expence") %></span>
+        <span class="note-total__value"><%= f_price note.finance_total %></span>
+      </div>
+    <% end %>
   </div>
-  <div id="note_button_bar_container">
-    <div id="note_button_bar" style="display: none">
-      <%= f.submit "Запис", class: "button" %>
-      <%= f.button "Отказ", type: "reset", id: "note_reset_button", class: "button" %>
-    </div>
+  <%= f.label :description, t(:description), class: "sr-only" %>
+  <%= f.text_area :description, class: "note-description", rows: 4,
+                  placeholder: t(:description).capitalize, autocomplete: :off, data: { autogrow: true } %>
+  <div class="note-actions" data-note-actions <%= "hidden" if note.persisted? && note.errors.none? %>>
+    <% if note.persisted? %>
+      <%= f.button t("ui.cancel"), type: "reset", class: "btn", data: { note_reset: true } %>
+    <% else %>
+      <%= link_to t("ui.cancel"), notes_path, class: "btn" %>
+    <% end %>
+    <%= f.submit t("ui.save"), class: "btn btn--primary" %>
   </div>
 <% end %>

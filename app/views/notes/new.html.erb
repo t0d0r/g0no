@@ -1,3 +1,4 @@
-<h1 id="title">Note</h1>
-
-<%= render "form" %>
+<% content_for :title, t("ui.new_note") %>
+<%= render layout: "window", locals: { note: @note } do %>
+  <%= render "form", note: @note %>
+<% end %>

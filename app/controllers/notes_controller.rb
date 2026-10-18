@@ -15,7 +15,7 @@ class NotesController < ApplicationController
   def create
     @note = Note.new(note_params.merge(author: current_user.display_name))
     if @note.save
-      redirect_to notes_path, notice: "Success !"
+      redirect_to notes_path, notice: t("flash.note_created")
     else
       render :new, status: :unprocessable_content
     end
@@ -61,12 +61,12 @@ class NotesController < ApplicationController
   def delete_file
     attachment = @note.note_attachments.find(params[:attachment_id])
     attachment.destroy
-    redirect_to note_url(@note), notice: "file #{attachment.filename} was deleted!"
+    redirect_to note_url(@note), notice: t("flash.file_deleted", filename: attachment.filename)
   end
 
   def destroy
     @note.destroy
-    redirect_to notes_path, notice: "Документ със заглавие '#{@note.title}' беше изтрит успешно"
+    redirect_to notes_path, notice: t("flash.note_deleted", title: @note.title)
   end
 
   private

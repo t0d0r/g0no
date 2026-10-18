@@ -1,46 +1,4 @@
-// Page behaviour for g0No. Plain JavaScript; replaces the jQuery, jQuery UI
-// and Prototype code used before the Rails 8 migration.
-
-let oldColor = "";
-let buttonBarShown = false;
-
-function showButtonBar(input) {
-  const newColor = "red";
-  oldColor = getComputedStyle(input).borderColor;
-  const bar = document.querySelector("div#note_button_bar");
-  if (bar && !buttonBarShown) {
-    bar.style.display = "";
-    buttonBarShown = true;
-  }
-  if (newColor !== oldColor) {
-    input.style.borderColor = newColor;
-  }
-}
-
-function hideButtonBar() {
-  document.querySelectorAll("input#note_title, textarea#note_description").forEach((el) => {
-    el.style.borderColor = oldColor;
-  });
-  const bar = document.querySelector("div#note_button_bar");
-  if (bar) bar.style.display = "none";
-  buttonBarShown = false;
-}
-
-// Shows a label inside its empty input and hides it while the input has focus
-// or a value.
-function labelOver(label, overClass) {
-  const input = document.getElementById(label.htmlFor);
-  if (!input) return;
-
-  const hide = () => { label.style.textIndent = "-10000px"; };
-  const show = () => { if (input.value === "") label.style.textIndent = "0"; };
-
-  input.addEventListener("focus", hide);
-  input.addEventListener("blur", show);
-  label.classList.add(overClass);
-  label.addEventListener("click", () => input.focus());
-  if (input.value !== "") hide();
-}
+// Page behaviour for g0No. Plain JavaScript, no framework.
 
 function autoGrow(textarea) {
   const grow = () => {
@@ -51,60 +9,48 @@ function autoGrow(textarea) {
   grow();
 }
 
-function toggle(selector) {
-  const el = document.querySelector(selector);
-  if (el) el.style.display = el.style.display === "none" ? "" : "none";
+// The save/cancel bar of an existing note stays hidden until the title or
+// description changes, like editing a sticky in place.
+function setUpNoteForm(form) {
+  const actions = form.querySelector("[data-note-actions]");
+  const title = form.querySelector(".note-title");
+  const show = () => { if (actions) actions.hidden = false; };
+
+  form.querySelectorAll(".note-title, .note-description").forEach((field) => {
+    field.addEventListener("input", show);
+  });
+
+  if (title) {
+    title.addEventListener("input", () => {
+      document.title = title.value ? `g0No - ${title.value}` : "g0No";
+    });
+  }
+
+  const reset = form.querySelector("[data-note-reset]");
+  if (reset) {
+    form.addEventListener("reset", () => {
+      // Let the browser restore the values first, then resize and hide.
+      setTimeout(() => {
+        form.querySelectorAll("[data-autogrow]").forEach((el) => el.dispatchEvent(new Event("input")));
+        if (actions) actions.hidden = true;
+      });
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  [
-    "label.note_title",
-    "label.note_description",
-    "label.finance_date",
-    "label.finance_amount",
-    "label.finance_comment",
-    "label.note_attachment_comment"
-  ].forEach((selector) => {
-    document.querySelectorAll(selector).forEach((label) => labelOver(label, "over"));
-  });
-
-  const title = document.querySelector("input#note_title");
-  if (title) {
-    title.addEventListener("keyup", () => {
-      document.title = title.value;
-      showButtonBar(title);
-    });
-  }
-
-  const description = document.querySelector("textarea#note_description");
-  if (description) {
-    autoGrow(description);
-    description.addEventListener("keyup", () => showButtonBar(description));
-  }
-
-  const reset = document.querySelector("#note_reset_button");
-  if (reset) reset.addEventListener("click", hideButtonBar);
-
-  const financeSwitch = document.querySelector("#finance_switch");
-  if (financeSwitch) {
-    financeSwitch.addEventListener("click", (event) => {
-      event.preventDefault();
-      toggle("#add_finance");
-    });
-  }
-
-  const uploadSwitch = document.querySelector("#upload_file_switch");
-  if (uploadSwitch) {
-    uploadSwitch.addEventListener("click", (event) => {
-      event.preventDefault();
-      toggle("#upload_file_div");
-    });
-  }
+  document.querySelectorAll("[data-autogrow]").forEach(autoGrow);
+  document.querySelectorAll("form[data-note-form]").forEach(setUpNoteForm);
 
   // Forms rendered with data-confirm (delete buttons) ask before submitting.
   document.querySelectorAll("form[data-confirm]").forEach((form) => {
     form.addEventListener("submit", (event) => {
       if (!window.confirm(form.dataset.confirm)) event.preventDefault();
     });
+  });
+
+  document.querySelectorAll("[data-flash]").forEach((flash) => {
+    const close = flash.querySelector("[data-dismiss]");
+    if (close) close.addEventListener("click", () => flash.remove());
   });
 });

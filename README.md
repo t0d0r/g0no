@@ -15,18 +15,18 @@ SQLite. The 2011 development notes are in `doc/NOTES-2011.md`.
 ## Run locally
 
 ```sh
-make build          # gems into vendor/bundle, create/migrate storage/development.sqlite3
-ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=change-me bin/rails db:seed   # first user
 make run            # http://localhost:3000
 ```
 
-Sign in with the email or the username (`admin` by default).
+`make run` installs gems, prepares `storage/development.sqlite3`, creates
+`.env` with a random `ADMIN_PASSWORD` on first use (`bin/setup-env`), and
+creates the user `admin` from it when that user does not exist. Sign in with
+`admin` (or the email in `ADMIN_EMAIL`) and the password from `.env`.
 
 ## Run with Docker
 
 ```sh
-cp .env.example .env    # set SECRET_KEY_BASE (bin/rails secret), ADMIN_EMAIL, ADMIN_PASSWORD
-make docker-up          # http://localhost:3000
+make docker-up          # http://localhost:3000 (creates .env like make run)
 make docker-logs
 make docker-down
 ```
@@ -56,7 +56,8 @@ make audit    # known-vulnerability check for gems
 ## Security Note
 
 - Never commit `.env`, `config/master.key` or any credential. Production
-  needs `SECRET_KEY_BASE` from the environment.
+  needs `SECRET_KEY_BASE` from the environment. `.env` is created with mode
+  600 and holds the admin password in plain text; keep it on your machine.
 - The 2011 code committed a session secret, a Devise pepper and a default
   admin password to git history. They are no longer used by the code, but
   treat them as public: use a new `SECRET_KEY_BASE`, change the admin

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
 <head>
-  <title>g0No: <%= controller.action_name %></title>
+  <title><%= ["g0No", content_for(:title)].compact_blank.join(" - ") %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
@@ -9,34 +9,36 @@
   <%= javascript_include_tag "application", defer: true %>
 </head>
 <body>
-  <div id="top-bar">
-    <div id="nbar"></div>
-    <div id="nuser">
-      <% if user_signed_in? %>
-        <%= button_to t("logout"), destroy_user_session_path, method: :delete %>
-      <% end %>
-    </div>
-  </div>
-  <div id="flash">
-    <% flash.each do |type, message| %>
-      <%= render "partials/flash", type: type, message: message %>
+  <header class="menubar">
+    <%= link_to "g0No", root_path, class: "menubar__brand" %>
+    <% if user_signed_in? %>
+      <nav class="menubar__nav">
+        <%= link_to_unless_current(t("Content"), notes_path) { content_tag(:span, t("Content"), class: "current") } %>
+      </nav>
+      <div class="menubar__right">
+        <span class="menubar__user"><%= current_user.display_name %></span>
+        <%= button_to t("logout"), destroy_user_session_path, method: :delete, class: "menubar__button" %>
+      </div>
     <% end %>
-  </div>
-  <div id="container">
-    <div class="upper-nav">
-      <ul id="menu">
-        <li><%= link_to_unless_current t("content"), notes_path %></li>
-      </ul>
-    </div>
-    <div class="upper-nfo">
-      <%= show_finance_total(@note) %>
-      <%= show_add_remove_buttons?(controller) %>
-    </div>
-    <div style="clear: both;">
-    <%= yield %>
-    </div>
-    <div style="display: block; clear: both; height: 3em;">
-    </div>
-  </div>
+  </header>
+
+  <main class="desk">
+    <% if flash.any? %>
+      <div class="flash-stack">
+        <% flash.each do |type, message| %>
+          <%= render "partials/flash", type: type, message: message %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if devise_controller? %>
+      <div class="sticky sticky--yellow auth">
+        <div class="sticky__bar"><span class="sticky__caption">g0No</span></div>
+        <div class="auth__body"><%= yield %></div>
+      </div>
+    <% else %>
+      <%= yield %>
+    <% end %>
+  </main>
 </body>
 </html>

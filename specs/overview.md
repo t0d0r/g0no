@@ -38,12 +38,15 @@ couchrest_model and users in SQLite. Decisions made while moving to Rails 8.1:
   plain JavaScript (`app/assets/javascripts/application.js`) and a native
   `<input type="date">`. Delete buttons are `button_to` forms with a
   `data-confirm` prompt handled by that script.
-- **Sass compiled once to CSS.** The committed CSS was a Sass syntax error
-  dump (tabs mixed with spaces). The Sass was fixed, compiled once, and is now
-  maintained as `app/assets/stylesheets/application.css`.
+- **Plain CSS.** The committed CSS was a Sass syntax error dump (tabs mixed
+  with spaces). The styles now live in `app/assets/stylesheets/application.css`
+  with no Sass build step.
 - **Secrets from the environment.** `secret_token.rb`, the hard-coded Devise
   pepper and the seeded admin password were removed. See auth.md and
   docker.md.
+- **macOS Stickies look (2026-10-18, operator request).** The 2011 layout
+  (one yellow page with a folded-corner image) was replaced by a board of
+  pastel sticky notes and a note window; see ui.md.
 - **Debug leftovers removed:** the index page no longer sets sample flash
   messages, and the edit action no longer references the uninstalled
   MarkItUp editor.

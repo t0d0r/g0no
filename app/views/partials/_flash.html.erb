@@ -1,1 +1,4 @@
-<%= content_tag :div, message, id: flash_id(type) %>
+<div class="flash flash--<%= flash_kind(type) %>" role="<%= flash_kind(type) == "alert" ? "alert" : "status" %>" data-flash>
+  <span class="flash__text"><%= message %></span>
+  <button type="button" class="flash__close" aria-label="<%= t("ui.dismiss") %>" data-dismiss>&times;</button>
+</div>

@@ -24,20 +24,21 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     sign_in users(:admin)
     get notes_url
     assert_response :success
-    assert_select ".content_line .title", text: /Groceries/
-    assert_select ".content_line .amount", text: /3.75/
+    assert_select ".card .card__title", text: "Groceries"
+    assert_select ".card .amount", text: /3.75/
+    assert_select "a.card--new[href=?]", new_note_path
   end
 
   test "uses Bulgarian when the browser asks for it" do
     sign_in users(:admin)
     get notes_url, headers: { "Accept-Language" => "bg,en;q=0.8" }
-    assert_select "h1#note-content", "Съдържание"
+    assert_select "h1.desk__title", "Съдържание"
   end
 
   test "falls back to English for unsupported languages" do
     sign_in users(:admin)
     get notes_url, headers: { "Accept-Language" => "fr-FR" }
-    assert_select "h1#note-content", "Content"
+    assert_select "h1.desk__title", "Content"
   end
 
   test "creates a note with the current user as author" do
@@ -55,6 +56,13 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
       post notes_url, params: { note: { title: "" } }
     end
     assert_response :unprocessable_content
+    assert_select ".form-errors li"
+  end
+
+  test "sign-in page is a sticky with the login form" do
+    get new_user_session_url
+    assert_response :success
+    assert_select ".sticky.auth form input[name=?]", "user[email]"
   end
 
   test "shows a note" do
@@ -62,7 +70,8 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     get note_url(@note)
     assert_response :success
     assert_select ".table-finance tr", 2
-    assert_select ".big-finance .total", text: /3.75/
+    assert_select ".note-total__value", text: /3.75/
+    assert_select "[data-note-actions][hidden]"
   end
 
   test "updates title and description" do

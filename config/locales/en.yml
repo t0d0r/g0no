@@ -12,5 +12,42 @@ en:
   description: "description"
   expence: "expense"
   logout: "Logout"
+  password: "Password"
+  remember_me: "Remember me"
   tags: "Tags"
   title: "title"
+
+  ui:
+    back: "Back to notes"
+    cancel: "Cancel"
+    created_by: "%{time} ago by %{author}"
+    delete_note: "Delete note"
+    dismiss: "Dismiss"
+    edited: "edited %{time} ago"
+    expenses: "Expenses"
+    files: "Files"
+    login: "Email or username"
+    new_note: "New note"
+    no_notes: "No notes yet. Create the first one."
+    notes_count:
+      one: "%{count} note"
+      other: "%{count} notes"
+    save: "Save"
+    sign_in: "Sign in"
+    upload: "Upload"
+    links:
+      forgot_password: "Forgot your password?"
+      sign_in: "Sign in"
+      sign_up: "Sign up"
+    change_password: "Change your password"
+    confirm_new_password: "Confirm new password"
+    new_password: "New password"
+    password_minimum:
+      one: "at least %{count} character"
+      other: "at least %{count} characters"
+    send_reset_instructions: "Send me reset instructions"
+
+  flash:
+    note_created: "Note created."
+    note_deleted: "Note '%{title}' was deleted."
+    file_deleted: "File %{filename} was deleted."

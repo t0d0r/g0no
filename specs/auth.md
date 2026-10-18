@@ -9,9 +9,27 @@ in 2011).
 - Sign-up accepts email and password only; `username` is set by the seed or
   the console (it was not mass-assignable in 2011 either).
 - Sign-out is `DELETE /users/sign_out` (a `button_to` in the top bar).
-- The first user is created by `db/seeds.rb` from `ADMIN_EMAIL`,
-  `ADMIN_PASSWORD` and optional `ADMIN_USERNAME` (default `admin`). Without
-  them the seed prints a message and does nothing.
+- Sign-in, sign-up and password reset pages are translated (`bg`, `en`),
+  including Devise's flash messages (`config/locales/devise.bg.yml`).
+
+## Admin user
+
+`db/seeds.rb` creates the user `ADMIN_USERNAME` (default `admin`) with
+`ADMIN_EMAIL` and `ADMIN_PASSWORD` when no user with that username exists
+(case-insensitive), even if other users exist. An existing admin user is
+never changed, so editing `.env` later does not change its password. Without
+`ADMIN_EMAIL` or `ADMIN_PASSWORD` the seed prints a message and does nothing.
+The password is never printed.
+
+`bin/setup-env` creates `.env` from `.env.example` (mode 600) when it is
+missing and fills only empty values: `SECRET_KEY_BASE` (random),
+`ADMIN_EMAIL` (`admin@localhost`), `ADMIN_USERNAME` (`admin`) and
+`ADMIN_PASSWORD` (24 random hex characters). `make run` runs it, loads
+`.env`, runs the seed and starts the server. `make docker-up` runs it before
+starting the container, whose entrypoint runs the seed on every start.
+
+To change the admin password, update the user (for example with
+`bin/rails runner`), not `.env`.
 
 ## Users created by the 2011 app
 

@@ -1,0 +1,37 @@
+#!/bin/sh
+# Creates .env from .env.example when it is missing, and fills empty values
+# that can be generated safely: SECRET_KEY_BASE, ADMIN_EMAIL, ADMIN_USERNAME
+# and a random ADMIN_PASSWORD. Values already set are never changed.
+# Secrets are written only to .env (mode 600) and never printed.
+set -eu
+cd "$(dirname "$0")/.."
+
+ENV_FILE=.env
+
+if [ ! -f "$ENV_FILE" ]; then
+  cp .env.example "$ENV_FILE"
+  echo "setup-env: created $ENV_FILE from .env.example"
+fi
+chmod 600 "$ENV_FILE"
+
+# fill KEY VALUE - sets KEY=VALUE when KEY is missing or empty in .env
+fill() {
+  if grep -Eq "^$1=.+" "$ENV_FILE"; then
+    return
+  fi
+  tmp=$(mktemp "$ENV_FILE.XXXXXX")
+  if grep -Eq "^$1=" "$ENV_FILE"; then
+    awk -v key="$1" -v value="$2" '$0 == key "=" { print key "=" value; next } { print }' "$ENV_FILE" > "$tmp"
+  else
+    cat "$ENV_FILE" > "$tmp"
+    printf '%s=%s\n' "$1" "$2" >> "$tmp"
+  fi
+  chmod 600 "$tmp"
+  mv "$tmp" "$ENV_FILE"
+  echo "setup-env: generated $1 in $ENV_FILE"
+}
+
+fill SECRET_KEY_BASE "$(openssl rand -hex 64)"
+fill ADMIN_EMAIL "admin@localhost"
+fill ADMIN_USERNAME "admin"
+fill ADMIN_PASSWORD "$(openssl rand -hex 12)"

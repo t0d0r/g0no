@@ -1,16 +1,16 @@
-<h1 id='note-content'><%= t "Content" %></h1>
-  <div class="empty_line"></div>
-<% @notes.each_with_index do |note, idx| %>
-  <%= link_to(note_path(note)) do %>
-    <div class="content_line">
-        <%= idx + 1 %>.
-        <div class="title"> <%= note.title %></div>
-        <% if note.finance_total > 0 %>
-          <div class="amount"><%= f_price note.finance_total %></div>
-        <% end %>
-        <p><%= truncate note.description, length: 250, separator: " " %></p>
-        <div class="created_at">създаден преди <span><%= time_ago_in_words note.created_at %></span> от <%= note.author %></div>
-    </div>
+<% content_for :title, t("Content") %>
+<div class="desk__header">
+  <h1 class="desk__title"><%= t "Content" %></h1>
+  <span class="desk__meta"><%= t("ui.notes_count", count: @notes.size) %></span>
+</div>
+
+<div class="board">
+  <%= link_to new_note_path, class: "card--new sticky" do %>
+    <span class="card--new__plus" aria-hidden="true">+</span>
+    <span><%= t("ui.new_note") %></span>
   <% end %>
-  <div class="empty_line"></div>
-<% end %>
+  <%= render partial: "card", collection: @notes, as: :note %>
+  <% if @notes.empty? %>
+    <p class="empty"><%= t("ui.no_notes") %></p>
+  <% end %>
+</div>

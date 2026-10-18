@@ -7,6 +7,8 @@
 - [x] replace jQuery/Prototype with plain JavaScript; compile Sass to CSS (specs/overview.md)
 - [x] Docker image and compose file (specs/docker.md)
 - [x] Makefile, specs, todo and session notes per ../AGENTS.md
+- [x] make run creates .env with a random admin password and the admin user if missing (specs/auth.md)
+- [x] macOS Stickies style UI, translated account pages (specs/ui.md)
 - [ ] run `make import` against the real CouchDB and check the notes (specs/couchdb-import.md)
 - [ ] move the old users database to storage/ and migrate it, or recreate users (specs/auth.md)
 - [ ] decide whether registration stays open; restrict it if the app is public (specs/auth.md)

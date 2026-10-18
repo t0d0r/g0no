@@ -1,7 +1,9 @@
-<h1><%= t "Notes by tag" %>: <%= @tag %></h1>
+<% content_for :title, @tag %>
+<div class="desk__header">
+  <h1 class="desk__title"><%= t "Notes by tag" %>: <%= @tag %></h1>
+  <span class="desk__meta"><%= t("ui.notes_count", count: @notes.size) %></span>
+</div>
 
-<% @notes.each do |note| %>
-  <h2><%= link_to note.title, note_path(note) %></h2>
-  <p><%= note.description %></p>
-  <small><em><%= t "tags" %>:</em> <%= note.tags.map(&:name).join(", ") %></small>
-<% end %>
+<div class="board">
+  <%= render partial: "card", collection: @notes, as: :note %>
+</div>

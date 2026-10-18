@@ -1,76 +1,53 @@
-<div class="form">
-<%= render "form" %>
-</div>
+<% content_for :title, @note.title_was %>
+<%= render layout: "window", locals: { note: @note } do %>
+  <%= render "form", note: @note %>
 
-<% finance_entries = @note.finance_entries.select(&:persisted?) %>
-<% unless finance_entries.empty? %>
-  <table width="100%" cellspacing="0" cellpadding="0" class="table-finance">
-    <%= render partial: "finance", collection: finance_entries %>
-  </table>
-<div class="empty_line"></div>
-<% end %>
-<div id="finance">
-  <%= form_with model: @note do |f| %>
-    <div id="add_finance">
-        <div class="label finance_date">
-          <%= label :finance, :date, t(:Date), class: :finance_date %>
-          <%= date_field :finance, :date, value: Date.current %>
-        </div>
-        <div class="label finance_amount">
-          <%= label :finance, :amount, t(:amount), class: :finance_amount %>
-          <%= text_field :finance, :amount, size: 5, autocomplete: :off, inputmode: :decimal %>
-        </div>
-        <div class="label finance_comment">
-          <%= label :finance, :comment, t(:comment), class: :finance_comment %>
-          <%= text_field :finance, :comment, autocomplete: :off %>
-        </div>
-        <%= f.submit t("Add"), id: "submit_finance" %>
-    </div>
-  <% end %>
-</div>
-<div class="empty_line"></div>
+  <section class="note-section" aria-labelledby="expenses-title">
+    <h2 class="section-title" id="expenses-title"><%= t("ui.expenses") %></h2>
+    <% finance_entries = @note.finance_entries.select(&:persisted?) %>
+    <% if finance_entries.any? %>
+      <table class="ledger table-finance">
+        <%= render partial: "finance", collection: finance_entries %>
+      </table>
+    <% end %>
+    <%= form_with model: @note, class: "inline-form", id: "add_finance" do |f| %>
+      <%= label :finance, :date, t(:Date), class: "sr-only" %>
+      <%= date_field :finance, :date, value: Date.current, class: "field-input field-input--date" %>
+      <%= label :finance, :amount, t(:amount), class: "sr-only" %>
+      <%= text_field :finance, :amount, class: "field-input field-input--amount", placeholder: t(:amount).capitalize,
+                     autocomplete: :off, inputmode: :decimal %>
+      <%= label :finance, :comment, t(:comment), class: "sr-only" %>
+      <%= text_field :finance, :comment, class: "field-input field-input--comment", placeholder: t(:comment).capitalize,
+                     autocomplete: :off %>
+      <%= f.submit t("Add"), id: "submit_finance", class: "btn" %>
+    <% end %>
+  </section>
 
-<div class="add_bar" style="clear: both">
-  <ul>
-    <li><%= link_to "+ Добави приход/разход", "#", id: "finance_switch" %></li>
-    <li><%= link_to "+ Добави файл", "#", id: "upload_file_switch" %></li>
-  </ul>
-</div>
-
-<% attachments = @note.note_attachments.select(&:persisted?) %>
-<% unless attachments.empty? %>
-  <div style="width: 100%;">
-    <table width="100%" cellspacing="0" cellpadding="0" class="table-files">
-      <% attachments.each_with_index do |attachment, idx| %>
-        <tr class="<%= odd_or_even(idx) %>">
-          <td width="20%">
-            <%= link_to_attachment @note, attachment %>
-          </td>
-          <td width="10%" align="right">
-            <%= number_to_human_size(attachment.byte_size) %>
-          </td>
-          <td align="left" width="65%">
-            <%= attachment.comment %>
-          </td>
-          <td align="right" width="5%">
-            <%= button_to t("delete"), delete_file_note_path(@note, attachment_id: attachment), method: :delete,
-                          form: { data: { confirm: t("Are You sure?") } } %>
-          </td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-  <div class="empty_line"></div>
-<% end %>
-<%= form_with model: @note, multipart: true do |f| %>
-  <div id="upload_file_div">
-    <div class="upload-filename">
-      <%= file_field_tag "note[attachments][]", multiple: true, id: "note_attachments_" %>
-    </div>
-    <div class="label attachment">
-      <%= label :note, :attachment_comment, t(:comment), class: :note_attachment_comment %>
-      <%= text_field_tag "note[attachment_comment]", nil, autocomplete: :off %>
-    </div>
-    <%= f.submit t("Add"), id: "submit_attachment", class: :button %>
-  </div>
+  <section class="note-section" aria-labelledby="files-title">
+    <h2 class="section-title" id="files-title"><%= t("ui.files") %></h2>
+    <% attachments = @note.note_attachments.select(&:persisted?) %>
+    <% if attachments.any? %>
+      <table class="ledger table-files">
+        <% attachments.each do |attachment| %>
+          <tr>
+            <td class="text"><%= link_to_attachment @note, attachment %></td>
+            <td class="comment"><%= attachment.comment %></td>
+            <td class="size"><%= number_to_human_size(attachment.byte_size) %></td>
+            <td class="action">
+              <%= button_to t("delete"), delete_file_note_path(@note, attachment_id: attachment), method: :delete,
+                            class: "link-button", form: { data: { confirm: t("Are You sure?") } } %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+    <%= form_with model: @note, multipart: true, class: "inline-form", id: "upload_file_div" do |f| %>
+      <%= label_tag "note_attachments_", t("ui.files"), class: "sr-only" %>
+      <%= file_field_tag "note[attachments][]", multiple: true, id: "note_attachments_", class: "field-file" %>
+      <%= label :note, :attachment_comment, t(:comment), class: "sr-only" %>
+      <%= text_field_tag "note[attachment_comment]", nil, id: "note_attachment_comment",
+                         class: "field-input field-input--comment", placeholder: t(:comment).capitalize, autocomplete: :off %>
+      <%= f.submit t("ui.upload"), id: "submit_attachment", class: "btn" %>
+    <% end %>
+  </section>
 <% end %>
