@@ -57,6 +57,16 @@
   (or recreate users) was removed the same way; specs/auth.md is
   unchanged.
 
+## Dependabot alerts
+
+- The 35 open alerts (Rails 3.0, json 1.5, mail 2.x, ...) date from 2019 and
+  were never updated: the repository's dependency graph was disabled, so
+  GitHub never read the new Gemfile.lock. Enabled it on 2026-10-19 with
+  the API (`PUT /repos/t0d0r/g0no/vulnerability-alerts`, which also turns
+  on the graph). The graph is built on the next push to master; then the
+  old alerts should close as fixed. `make audit` (bundler-audit) is clean
+  locally.
+
 ## Files touched
 
 config/application.rb, config/cable.yml, app/models/note.rb,
