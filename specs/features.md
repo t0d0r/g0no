@@ -56,6 +56,9 @@ exists only inside `<noscript>`).
 - Requests are `POST` with the form data (`_method=patch` for existing
   notes) and `Accept: application/json`; one at a time, a change during a
   save is sent right after it.
+- An existing note sends only the fields (title, description, colour) that
+  changed since the last save, and uses Turbo's `fetch` so its own live
+  refresh is skipped (live-updates.md).
 - The token sent is the page-wide one from the `csrf-token` meta tag: Rails
   per-form tokens are bound to the form's action, which changes when a new
   note becomes an existing one.

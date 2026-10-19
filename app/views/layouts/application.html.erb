@@ -12,9 +12,14 @@
       fetches the page, so an old copy of a note can never be shown (and then
       autosaved over newer text), and nothing stays cached after sign-out. %>
   <meta name="turbo-cache-control" content="no-cache">
+  <%# A live refresh (live-updates.md) reloads the page where it is scrolled. %>
+  <meta name="turbo-refresh-scroll" content="preserve">
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "turbo.min", type: "module", "data-turbo-track": "reload" %>
-  <%= javascript_include_tag "application", defer: true, "data-turbo-track": "reload" %>
+  <%# data-turbo-eval=false: Turbo shows an error page (such as a revoked share
+      link) by swapping the whole document, which would run this script a
+      second time. %>
+  <%= javascript_include_tag "application", defer: true, "data-turbo-track": "reload", "data-turbo-eval": "false" %>
 </head>
 <body class="<%= content_for(:body_class) %>">
   <header class="menubar">

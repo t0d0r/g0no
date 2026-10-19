@@ -36,6 +36,8 @@
     <span class="note-autosave__status" data-autosave-status role="status" aria-live="polite">
       <%= t("ui.autosave.hint") if note.new_record? %>
     </span>
+    <%# Shown by application.js when a live refresh waits for editing to finish. %>
+    <span class="note-autosave__remote" data-remote-notice hidden><%= t("ui.autosave.remote_change") %></span>
     <noscript><%= f.submit t("ui.save"), class: "btn btn--primary" %></noscript>
   </div>
 <% end %>

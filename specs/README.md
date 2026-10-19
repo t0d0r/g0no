@@ -10,6 +10,7 @@
 | [markdown.md](markdown.md) | per-note Markdown switch, formatted view, clickable task lists |
 | [history.md](history.md) | version history of notes, Time Machine style view and restore |
 | [sharing.md](sharing.md) | public share links, optionally with a password |
+| [live-updates.md](live-updates.md) | note and share pages reload themselves when the note changes (Action Cable) |
 | [auth.md](auth.md) | Devise setup, sign-in by username or email, legacy password hashes |
 | [couchdb-import.md](couchdb-import.md) | one-off import of the 2011 CouchDB data |
 | [docker.md](docker.md) | Docker image, compose file and environment variables |

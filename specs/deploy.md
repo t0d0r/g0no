@@ -25,6 +25,11 @@ read the operator's home or other apps' files.
 Why not the Redmine pattern: Redmine on the same server runs as root
 Podman on the host network. The operator asked for a separate user instead.
 
+Live updates (live-updates.md) use a WebSocket at `/cable`; the vhost's
+`ProxyPass` carries `upgrade=websocket` (Apache 2.4.47+) so it passes
+through. An installed vhost without it keeps working, only without live
+updates.
+
 Why a hand-written vhost and not an ISPConfig site: the operator chose it
 (2026-10-19); it is the pattern of another proxied service on the server
 and can be set up over ssh.

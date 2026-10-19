@@ -1,4 +1,6 @@
 <% content_for :title, @note.title %>
+<%# Live updates: the page reloads itself when the note changes (live-updates.md). %>
+<%= turbo_stream_from @note %>
 <%= render layout: "window", locals: { note: @note } do %>
   <%= render "form", note: @note %>
 <% end %>

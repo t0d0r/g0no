@@ -132,8 +132,14 @@ class NotesController < ApplicationController
 
   private
 
+  # A note deleted while its page is open: the live refresh (or a reload)
+  # lands on the board with a notice instead of a 404 page.
   def set_note
-    @note = Note.find(params[:id])
+    @note = Note.find_by(id: params[:id])
+    return if @note
+    raise ActiveRecord::RecordNotFound unless request.get? && action_name.in?(%w[show edit])
+
+    redirect_to notes_path, alert: t("flash.note_gone")
   end
 
   # ?sort= (from the sort button without JavaScript) wins and is remembered

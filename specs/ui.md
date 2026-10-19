@@ -123,6 +123,10 @@ page changes, otherwise plain JavaScript.
   Turbo visit has no `pagehide`. Address changes (new note, history) use
   `history.replaceState(history.state, ...)` to keep Turbo's restoration
   data.
+- Live updates (live-updates.md) use Turbo's page refresh with
+  `turbo-refresh-scroll` `preserve`; a refresh waits while the page is busy.
+  `application.js` has `data-turbo-eval="false"` so an error page swap does
+  not run it twice.
 - File downloads (`data-turbo="false"`) and the sort link (no hover
   prefetch: it sets a cookie) opt out. Assets carry
   `data-turbo-track="reload"`, so a deploy with new CSS or JS reloads the

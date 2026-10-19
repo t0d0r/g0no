@@ -1,4 +1,6 @@
 <% content_for :title, @note.title %>
+<%# Live updates: the page reloads itself when the note changes (live-updates.md). %>
+<%= turbo_stream_from(*@note.share_stream) %>
 <article class="sticky sticky--<%= sticky_color(@note) %> note-window shared-note <%= "note-window--wide" if @note.wide? %>">
   <header class="sticky__bar">
     <span class="sticky__box sticky__box--spacer" aria-hidden="true"></span>

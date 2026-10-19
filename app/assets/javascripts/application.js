@@ -5,6 +5,13 @@
 // { signal: pageSignal }, so they are removed when the next page loads.
 let pageAbort = null;
 let pageSignal;
+// Functions that say whether the page has work in progress that a live
+// refresh would throw away (see setUpLiveRefresh); reset on every page.
+let busyChecks = [];
+
+// Requests made with Turbo's fetch carry an X-Turbo-Request-Id that Turbo
+// remembers, so the live refresh caused by this page's own save is skipped.
+const turboFetch = (...args) => (window.Turbo?.fetch ?? window.fetch)(...args);
 
 // Text areas grow with their text instead of scrolling. scrollHeight leaves
 // out the border, which with border-box sizing would leave the box a pixel
@@ -128,10 +135,17 @@ function setUpNoteForm(form) {
   // The form's own token is bound to its original action (Rails per-form
   // tokens), which changes once a new note is created; the page-wide token
   // from the csrf-token meta tag is valid for any action.
-  const formData = () => {
+  // An existing note sends only the fields that changed, so saving the text
+  // does not put back a colour someone else changed meanwhile.
+  const formData = (snapshot) => {
     const body = new FormData(form);
     const token = document.querySelector("meta[name=csrf-token]");
     if (token) body.set("authenticity_token", token.content);
+    if (!isNew()) {
+      ["note[title]", "note[description]", "note[color]"].forEach((key) => {
+        if (snapshot.get(key) === saved.get(key)) body.delete(key);
+      });
+    }
     return body;
   };
 
@@ -146,6 +160,7 @@ function setUpNoteForm(form) {
 
   const save = async () => {
     clearTimeout(timer);
+    timer = null;
     if (!dirty()) return;
     if (!title.value.trim()) {
       say(form.dataset.needsTitle, true);
@@ -156,10 +171,11 @@ function setUpNoteForm(form) {
       return;
     }
     saving = true;
-    const body = formData();
+    const snapshot = new FormData(form);
+    const body = formData(snapshot);
     say(form.dataset.saving);
     try {
-      const response = await fetch(form.action, {
+      const response = await turboFetch(form.action, {
         method: "POST",
         body,
         headers: { Accept: "application/json" },
@@ -167,7 +183,7 @@ function setUpNoteForm(form) {
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || response.statusText);
-      saved = body;
+      saved = snapshot;
       if (isNew()) becomeExisting(data.url);
       const view = form.querySelector("[data-markdown-view]");
       // Rendered and sanitized by the server (MarkdownHelper).
@@ -197,9 +213,10 @@ function setUpNoteForm(form) {
   // left with keepalive so the request outlives the page.
   const flush = () => {
     if (!dirty() || !title.value.trim()) return;
-    const body = formData();
-    fetch(form.action, { method: "POST", body, keepalive: true, headers: { Accept: "application/json" }, credentials: "same-origin" });
-    saved = body;
+    const snapshot = new FormData(form);
+    turboFetch(form.action, { method: "POST", body: formData(snapshot), keepalive: true, headers: { Accept: "application/json" },
+                              credentials: "same-origin" });
+    saved = snapshot;
   };
   window.addEventListener("pagehide", flush, { signal: pageSignal });
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(); },
@@ -214,6 +231,9 @@ function setUpNoteForm(form) {
   });
 
   setUpNoteLock(form, { save, say });
+
+  // Unlocked for editing, typed but not saved yet, or saving.
+  busyChecks.push(() => !form.classList.contains("is-locked") || dirty() || saving);
 
   title.addEventListener("input", () => {
     document.title = title.value ? `g0No - ${title.value}` : "g0No";
@@ -661,7 +681,7 @@ function setUpWideToggle(form) {
     body.set("note[wide]", wide ? "1" : "0");
     const token = document.querySelector("meta[name=csrf-token]");
     if (token) body.set("authenticity_token", token.content);
-    fetch(form.action, { method: "POST", body, headers: { Accept: "application/json" }, credentials: "same-origin" });
+    turboFetch(form.action, { method: "POST", body, headers: { Accept: "application/json" }, credentials: "same-origin" });
   });
 }
 
@@ -758,6 +778,71 @@ function setUpCapsule(capsule) {
   show(selected);
 }
 
+// Live updates (specs/live-updates.md). A note's page and its share page
+// subscribe to a stream (turbo_stream_from) on which the server sends only
+// "refresh" when the note changes; Turbo then fetches the page again and
+// keeps the scroll position. A refresh that would throw away work in
+// progress waits until the page is idle: a note being edited or saved, a
+// typed field or chosen file, an open dialog or menu.
+let pendingRefresh = null;
+let refreshScroll = null;
+
+function fieldChanged(field) {
+  if (field.type === "file") return field.files.length > 0;
+  if (field.type === "checkbox" || field.type === "radio") return field.checked !== field.defaultChecked;
+  return field.value !== field.defaultValue;
+}
+
+function pageIsBusy() {
+  if (busyChecks.some((check) => check())) return true;
+  if (document.querySelector("dialog[open], details[open]")) return true;
+  const active = document.activeElement;
+  if (active?.matches("textarea, select, input:not([type=checkbox], [type=radio], [type=button], [type=submit])") &&
+      !active.readOnly) return true;
+  // The note's own fields are covered by its busy check (they differ from
+  // their first value after every autosave).
+  return [...document.querySelectorAll("input, textarea, select")]
+    .some((field) => !field.closest("form[data-note-form]") && fieldChanged(field));
+}
+
+function runPendingRefresh() {
+  const refresh = pendingRefresh;
+  pendingRefresh = null;
+  // The new body starts with short text areas until autoGrow sizes them,
+  // which can pull a long page's scroll up; setUpPage puts it back.
+  refreshScroll = { url: location.href, y: window.scrollY, at: Date.now() };
+  refresh();
+}
+
+function setUpLiveRefresh() {
+  pendingRefresh = null;
+  if (refreshScroll && refreshScroll.url === location.href && Date.now() - refreshScroll.at < 10000) {
+    const { y } = refreshScroll;
+    const restore = () => window.scrollTo(window.scrollX, y);
+    restore();
+    document.fonts?.ready.then(restore);
+  }
+  refreshScroll = null;
+
+  const interval = setInterval(() => {
+    if (pendingRefresh && !pageIsBusy()) runPendingRefresh();
+  }, 1000);
+  pageSignal.addEventListener("abort", () => clearInterval(interval));
+}
+
+document.addEventListener("turbo:before-stream-render", (event) => {
+  if (event.detail.newStream.getAttribute("action") !== "refresh") return;
+  const render = event.detail.render;
+  event.detail.render = async (stream) => {
+    pendingRefresh = () => render(stream);
+    if (!pageIsBusy()) {
+      runPendingRefresh();
+    } else if (document.querySelector("form[data-note-form]:not(.is-locked)")) {
+      document.querySelectorAll("[data-remote-notice]").forEach((notice) => { notice.hidden = false; });
+    }
+  };
+});
+
 // Close an open filter menu when clicking elsewhere (once, for all pages).
 document.addEventListener("click", (event) => {
   document.querySelectorAll("[data-filter][open]").forEach((menu) => {
@@ -769,6 +854,7 @@ function setUpPage() {
   pageAbort?.abort();
   pageAbort = new AbortController();
   pageSignal = pageAbort.signal;
+  busyChecks = [];
 
   document.querySelectorAll("[data-autogrow]").forEach(autoGrow);
   document.querySelectorAll("[data-copy-note]").forEach(setUpCopyNote);
@@ -782,6 +868,7 @@ function setUpPage() {
   document.querySelectorAll("[data-sort-button]").forEach(setUpSort);
   document.querySelectorAll("[data-capsule]").forEach(setUpCapsule);
   document.querySelectorAll("form[data-drop-upload]").forEach(setUpDropUpload);
+  setUpLiveRefresh();
 
   // Theme and text size apply at once; the cookie keeps them for the next page.
   document.querySelectorAll("form[data-preference]").forEach((form) => {

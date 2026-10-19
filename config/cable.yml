@@ -1,0 +1,13 @@
+# Action Cable carries the live-update signals (specs/live-updates.md).
+# The async adapter keeps subscriptions in the Puma process. The app runs as
+# one Puma process (threads, no workers), so every page and every broadcast
+# meet in that process. Running several processes would need a shared
+# adapter such as solid_cable or Redis.
+development:
+  adapter: async
+
+test:
+  adapter: test
+
+production:
+  adapter: async

@@ -22,6 +22,9 @@ class Note < ApplicationRecord
   after_create { NoteVersion.record(self, "created") }
   after_update :record_version, if: -> { saved_change_to_title? || saved_change_to_description? || saved_change_to_color? }
 
+  # Open pages of the note reload themselves when it changes (live-updates.md).
+  after_commit :broadcast_refresh_to_viewers, on: %i[update destroy]
+
   scope :tagged_with, ->(name) { joins(:tags).where(tags: { name: name }) }
   scope :shared, -> { where.not(share_token: nil) }
 
@@ -75,6 +78,24 @@ class Note < ApplicationRecord
            updated_from: Current.user&.display_name || updated_from)
   ensure
     @restored_from = nil
+  end
+
+  # Sends "refresh" to the note's own pages and to the page of its share link
+  # (also the link it had before this save, so a revoked link shows that at
+  # once). Only the signal goes over Action Cable; each page fetches its new
+  # content over HTTP, where sign-in and the share checks apply. Broadcasts
+  # are debounced, so a burst of autosaves sends one refresh.
+  def broadcast_refresh_to_viewers
+    broadcast_refresh_later
+    [ share_token, share_token_before_last_save ].compact.uniq.each do |token|
+      broadcast_refresh_later_to(*share_stream(token))
+    end
+  end
+
+  # Stream of the share link's page, named after a hash of the token so the
+  # token never shows up in Action Cable's logs or the signed stream name.
+  def share_stream(token = share_token)
+    [ self, :share, Digest::SHA256.hexdigest(token.to_s) ]
   end
 
   private

@@ -10,4 +10,6 @@ class FinanceEntry < ApplicationRecord
       NoteVersion.record(note, "expense_added", details: [ format("%.2f", amount), comment.presence ].compact.join(" - "))
     end
   end
+
+  after_commit { note.broadcast_refresh_to_viewers }
 end

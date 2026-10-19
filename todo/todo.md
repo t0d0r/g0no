@@ -33,6 +33,8 @@
 - [x] menu bar brand and section pills in the app style (specs/ui.md)
 - [x] keep the page still when a long note is unlocked (specs/features.md)
 - [x] per-note wide option (specs/features.md)
+- [x] live updates of note and share pages over Action Cable (specs/live-updates.md)
+- [ ] add `upgrade=websocket` to the installed Apache vhost and deploy, for live updates (specs/deploy.md)
 - [ ] run `make import` against the real CouchDB and check the notes (specs/couchdb-import.md)
 - [ ] move the old users database to storage/ and migrate it, or recreate users (specs/auth.md)
 - [x] close sign-up in production with REGISTRATION_OPEN (specs/auth.md)

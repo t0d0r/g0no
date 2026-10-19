@@ -1027,6 +1027,14 @@ form.button_to {
   color: var(--danger);
 }
 
+/* A live refresh is waiting until the note is locked again. */
+.note-autosave__remote {
+  margin-right: auto;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-style: italic;
+}
+
 /* Formatted Markdown on the paper. */
 .note-markdown {
   min-height: 7.5em;

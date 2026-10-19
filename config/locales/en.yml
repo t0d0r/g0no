@@ -178,6 +178,7 @@ en:
       saved: "Saved at"
       failed: "Not saved:"
       needs_title: "Add a title to save this note."
+      remote_change: "Changed somewhere else. It reloads when you stop editing; text you changed is saved over it, and both stay in History."
     prefs:
       dark: "Dark theme"
       light: "Light theme"
@@ -212,6 +213,7 @@ en:
   flash:
     note_created: "Note created."
     note_deleted: "Note '%{title}' was deleted."
+    note_gone: "That note was deleted."
     file_deleted: "File %{filename} was deleted."
     note_shared: "Share link created."
     note_unshared: "The note is no longer shared."

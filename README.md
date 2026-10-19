@@ -43,6 +43,8 @@ A Markdown note with a task list, opened locked for reading:
   Machine style view; any older version can be restored.
 - **Sharing** - public read-only link per note, optionally with a password;
   sharing again replaces the old link.
+- **Live updates** - an open note or share page reloads itself when the
+  note changes elsewhere (Action Cable); it waits while you are editing.
 - **Admin panel** - at `/admin`: manage users, see stats and all shared
   links.
 - **Look and feel** - macOS Stickies style, light and dark theme, three

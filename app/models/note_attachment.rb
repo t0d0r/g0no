@@ -22,6 +22,7 @@ class NoteAttachment < ApplicationRecord
   # Files saved together with a new note belong to its "created" entry.
   after_create { NoteVersion.record(note, "file_added", details: filename.to_s) unless note.previously_new_record? }
   after_destroy { NoteVersion.record(note, "file_deleted", details: filename.to_s) unless destroyed_by_association }
+  after_commit { note.broadcast_refresh_to_viewers }
 
   # "image", "pdf", "video", "audio", "text", or nil when there is no preview.
   def preview_kind
