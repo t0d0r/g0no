@@ -41,9 +41,13 @@
 - The board does not update live (not asked for).
 - Concurrent edits of the same field: last save wins, both versions are in
   History. Optimistic locking would be the next step if this matters.
-- Production: the vhost installed on the server still lacks
-  `upgrade=websocket`, and the new code is not deployed. Until both are
-  done, production works as before, without live updates.
+- Production: pushed to origin/master and deployed with `make deploy`
+  (74aa3f8 is up, `/up` answers 200). A WebSocket handshake straight to the
+  container answers 101, so Thruster and the origin check are fine. Through
+  Apache, `/cable` still answers 404: the installed vhost lacks
+  `upgrade=websocket`. Editing it needs root on the server, which the
+  agent's permissions did not allow, so the operator runs that step. Until
+  then production works as before, without live updates.
 - The operator's dev server on :3000 needs a restart to load Action Cable.
 
 ## Files touched
@@ -68,9 +72,10 @@ specs/deploy.md, README.md, todo/todo.md.
 
 ## Next step
 
-Add `upgrade=websocket` to the installed Apache vhost, reload Apache, and
-run `make deploy`. Then check in production that a share page updates
-when the note is edited.
+Add `upgrade=websocket` to the installed Apache vhost's `ProxyPass /`
+line, run `apache2ctl configtest`, reload Apache. Then check that
+`/cable` answers 101 to a WebSocket handshake and that a share page
+updates when the note is edited.
 
 ## Security Note
 
