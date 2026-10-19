@@ -36,7 +36,6 @@
 - [x] live updates of note and share pages over Action Cable (specs/live-updates.md)
 - [x] deploy live updates to production (specs/deploy.md)
 - [x] add `upgrade=websocket` to the installed Apache vhost, for live updates (specs/deploy.md)
-- [ ] run `make import` against the real CouchDB and check the notes (specs/couchdb-import.md)
 - [ ] move the old users database to storage/ and migrate it, or recreate users (specs/auth.md)
 - [x] close sign-up in production with REGISTRATION_OPEN (specs/auth.md)
 - [x] deploy to the server: rootless Podman as g0no, Apache, certbot (specs/deploy.md)

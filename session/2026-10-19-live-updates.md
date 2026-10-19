@@ -51,6 +51,9 @@
   own origin and 404 to a foreign origin (Action Cable's origin check);
   `/up` answers 200.
 - The operator's dev server on :3000 needs a restart to load Action Cable.
+- The operator removed the todo item to run `make import` against the
+  real CouchDB (2026-10-19); the import task and specs/couchdb-import.md
+  stay as they are.
 
 ## Files touched
 
