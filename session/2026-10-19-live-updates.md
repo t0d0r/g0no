@@ -53,7 +53,9 @@
 - The operator's dev server on :3000 needs a restart to load Action Cable.
 - The operator removed the todo item to run `make import` against the
   real CouchDB (2026-10-19); the import task and specs/couchdb-import.md
-  stay as they are.
+  stay as they are. The item to move the old users database to storage/
+  (or recreate users) was removed the same way; specs/auth.md is
+  unchanged.
 
 ## Files touched
 
