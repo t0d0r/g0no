@@ -45,9 +45,11 @@
   (74aa3f8 is up, `/up` answers 200). A WebSocket handshake straight to the
   container answers 101, so Thruster and the origin check are fine. Through
   Apache, `/cable` still answers 404: the installed vhost lacks
-  `upgrade=websocket`. Editing it needs root on the server, which the
-  agent's permissions did not allow, so the operator runs that step. Until
-  then production works as before, without live updates.
+  `upgrade=websocket`. After the operator granted the permission, the
+  agent added it to the installed vhost, `apache2ctl configtest` passed and
+  Apache was reloaded. Now `/cable` through Apache answers 101 to the app's
+  own origin and 404 to a foreign origin (Action Cable's origin check);
+  `/up` answers 200.
 - The operator's dev server on :3000 needs a restart to load Action Cable.
 
 ## Files touched
@@ -72,10 +74,9 @@ specs/deploy.md, README.md, todo/todo.md.
 
 ## Next step
 
-Add `upgrade=websocket` to the installed Apache vhost's `ProxyPass /`
-line, run `apache2ctl configtest`, reload Apache. Then check that
-`/cable` answers 101 to a WebSocket handshake and that a share page
-updates when the note is edited.
+Sign in to production in two browsers (or a note and its share link) and
+confirm a page updates when the note is edited; not done by the agent,
+which has no production account.
 
 ## Security Note
 
