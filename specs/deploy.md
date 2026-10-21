@@ -14,7 +14,7 @@ to be not affected in case of exploit".
 | data | `~g0no/storage` -> `/rails/storage` (SQLite databases and uploads); files belong to `g0no` on the host (`UserNS=keep-id:uid=1000,gid=1000`) |
 | settings | `~g0no/g0no.env`, mode 600, owner `g0no`; never in git |
 | network | the container publishes only `127.0.0.1:3182`; Apache on the host is the only way in |
-| TLS | Apache vhost from `deploy/apache.conf`, Let's Encrypt certificate from certbot (webroot of the existing ACME alias), renewed by `certbot.timer` |
+| TLS | Apache vhost from `deploy/apache.conf`, Let's Encrypt certificate from certbot (webroot of the existing ACME alias), renewed by `certbot.timer`; PageSpeed is disabled for this vhost because its global CSS rewrite emitted zstd data without `Content-Encoding` |
 
 The container runs with `no-new-privileges` and all capabilities dropped;
 the sysctl `net.ipv4.ip_unprivileged_port_start=80`, in the container's own
