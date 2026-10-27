@@ -40,6 +40,8 @@
 - [x] deploy to the server: rootless Podman as g0no, Apache, certbot (specs/deploy.md)
 - [x] disable PageSpeed for the production vhost after its global CSS rewrite
       returned zstd bytes without `Content-Encoding` (specs/deploy.md)
+- [x] keep ModSecurity from blocking browsers on the session cookie (specs/deploy.md)
+- [ ] add a Content-Security-Policy; production sends none (specs/deploy.md)
 - [ ] check the app comes back after a server reboot (specs/deploy.md)
 - [ ] check file uploads through Apache and mod_security in production (specs/deploy.md)
 - [ ] back up ~g0no/storage on the server (specs/deploy.md)

@@ -110,6 +110,43 @@ run as `g0no`, data files in `~g0no/storage` belong to `g0no`, a second
 reboot, file uploads through Apache (mod_security is loaded on the
 server).
 
+## ModSecurity and the session cookie (2026-10-27)
+
+The vhost is now managed by ISPConfig as site 24 (client 1); its proxy
+lines live in the site's Apache directives, not in a hand-written file.
+Apache runs ModSecurity 2.9 with the OWASP CRS 3.3 server-wide. On the
+sister app Stopan, CRS rule 941120 ("XSS Event Handler Vector") matched
+the random encrypted Rails session cookie now and then (something like
+`7onAbcd=-`), denied every request of that browser and showed 404, until
+the cookie was deleted. The same can happen to `_g0no_session`; no such
+block was found in g0no's logs, so this is preventive.
+
+The operator asked for the same fix: site 24's Apache directives end with
+
+```
+<IfModule security2_module>
+	SecAction "id:13182,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=OWASP_CRS;REQUEST_COOKIES:_g0no_session"
+</IfModule>
+```
+
+- Only that cookie is removed from the CRS rules' targets, per request,
+  for this site; URLs, arguments, headers and other cookies are still
+  inspected. Safe because Rails rejects any session cookie that does not
+  decrypt and authenticate.
+- Applied through the ISPConfig Remote API, `sites_web_domain_update`
+  (primary_id 24), passing the current `log_retention` and `pm_*` values
+  so they stay unchanged. The record before the change is saved on the
+  server (root only, `/root/stopan/site-24-before-modsecurity.json`).
+  ISPConfig restarted Apache (a few seconds for every site).
+- Checked: a session cookie with the pattern -> 302 to sign-in; the same
+  pattern in another cookie and `<script>` in the query string -> still
+  blocked; `/up` 200; `/cable` 101; HSTS, nosniff, X-Frame-Options
+  present; `configtest` OK; Stopan unaffected.
+- Rollback: `sites_web_domain_update` with the `apache_directives` of the
+  saved record.
+- Not changed: g0no sends no Content-Security-Policy (the initializer is
+  commented out); that is older and separate.
+
 ## Security Note
 
 Keep `g0no.env` and the admin password copy at mode 600 and out of git.
